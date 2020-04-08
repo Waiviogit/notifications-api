@@ -1,7 +1,7 @@
 const Joi = require('@hapi/joi');
 
 exports.operationsSchema = Joi.object().keys({
-  id: Joi.string().valid('comment', 'custom_json', 'transfer', 'account_witness_vote', 'restaurantStatus', 'withdraw_vesting').required(),
+  id: Joi.string().valid('comment', 'custom_json', 'transfer', 'account_witness_vote', 'restaurantStatus', 'withdraw_vesting', 'fillOrder').required(),
   block: Joi.number().required(),
   data: Joi
     .when('id', {
@@ -66,6 +66,17 @@ exports.operationsSchema = Joi.object().keys({
         creator: Joi.string().required(),
         body: Joi.string().required(),
         voter: Joi.string().allow('').default(''),
+      }).required(),
+    })
+    .when('id', {
+      is: 'fillOrder',
+      then: Joi.object().keys({
+        account: Joi.string().required(),
+        current_pays: Joi.string().required(),
+        open_pays: Joi.string().required(),
+        timestamp: Joi.number().required(),
+        exchanger: Joi.string().required(),
+        orderId: Joi.number().required(),
       }).required(),
     }),
 }).options({ allowUnknown: true, stripUnknown: true });

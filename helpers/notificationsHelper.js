@@ -121,39 +121,45 @@ const getNotifications = async (operation) => {
     case 'restaurantStatus':
       notifications = _.concat(notifications, fromRestaurantStatus(operation, params));
       break;
-    case 'comment': {
+    case 'comment':
       notifications = _.concat(notifications, fromComment(operation, params));
       break;
-    }
-    case 'custom_json': {
+    case 'fillOrder':
+      notifications.push([params.account, {
+        type,
+        account: params.account,
+        current_pays: params.current_pays,
+        timestamp: params.timestamp,
+        open_pays: params.open_pays,
+        block: operation.block,
+        exchanger: params.exchanger,
+        orderId: params.orderId
+      }]);
+      break;
+    case 'custom_json':
       notifications = _.concat(notifications, fromCustomJSON(operation, params));
       break;
-    }
-    case 'account_witness_vote': {
+    case 'account_witness_vote':
       /** Find witness vote */
-      const notification = {
+      notifications.push([params.witness, {
         type: 'witness_vote',
         account: params.account,
         approve: params.approve,
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
-      };
-      notifications.push([params.witness, notification]);
+      }]);
       break;
-    }
-    case 'transfer': {
+    case 'transfer':
       /** Find transfer */
-      const notification = {
+      notifications.push([params.to, {
         type: 'transfer',
         from: params.from,
         amount: params.amount,
         memo: params.memo,
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
-      };
-      notifications.push([params.to, notification]);
+      }]);
       break;
-    }
     case 'withdraw_vesting':
       notifications.push(await withdraw(operation, params));
   }
