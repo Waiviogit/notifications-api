@@ -41,6 +41,7 @@ const fromComment = (operation, params) => {
       permlink: params.permlink,
       timestamp: Math.round(new Date().valueOf() / 1000),
       block: operation.block,
+      reply: params.reply,
     };
     notifications.push([params.parent_author, notification]);
   }
@@ -133,7 +134,7 @@ const getNotifications = async (operation) => {
         open_pays: params.open_pays,
         block: operation.block,
         exchanger: params.exchanger,
-        orderId: params.orderId
+        orderId: params.orderId,
       }]);
       break;
     case 'custom_json':

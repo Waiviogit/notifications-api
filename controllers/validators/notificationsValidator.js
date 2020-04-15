@@ -13,6 +13,7 @@ exports.operationsSchema = Joi.object().keys({
         parent_permlink: Joi.string().allow('').required(),
         title: Joi.string().allow('').required(),
         body: Joi.string().required(),
+        reply: Joi.boolean().default(false),
       }).required(),
     })
     .when('id', {
