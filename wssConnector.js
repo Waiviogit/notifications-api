@@ -59,14 +59,15 @@ class WebSocket {
               ));
             })
             .catch((err) => {
-              console.error('Login failed', err);
-              ws.send(
-                JSON.stringify({
-                  id: call.id,
-                  result: {},
-                  error: 'Something is wrong',
-                }),
-              );
+              console.error('Login failed, try to login guest');
+              call.method = 'guest_login';
+              // ws.send(
+              //   JSON.stringify({
+              //     id: call.id,
+              //     result: {},
+              //     error: 'Something is wrong',
+              //   }),
+              // );
             });
         } else if (call.method === 'guest_login' && call.params && call.params[0]) {
           validateAuthToken(call.params[0])
