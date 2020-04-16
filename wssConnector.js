@@ -60,7 +60,7 @@ class WebSocket {
             })
             .catch((err) => {
               console.error('Login failed, try to login guest');
-              call.method = 'guest_login';
+              guestLogin(call, ws);
               // ws.send(
               //   JSON.stringify({
               //     id: call.id,
@@ -70,27 +70,28 @@ class WebSocket {
               // );
             });
         } else if (call.method === 'guest_login' && call.params && call.params[0]) {
-          validateAuthToken(call.params[0])
-            .then(({ error, result }) => {
-              console.log('Login success', result.name);
-              ws.name = result.name;
-              ws.verified = true;
-              ws.account = result.account;
-              ws.user_metadata = result.user_metadata;
-              ws.send(JSON.stringify(
-                { id: call.id, result: { login: true, username: result.name } },
-              ));
-            })
-            .catch((err) => {
-              console.error('Login failed', err);
-              ws.send(
-                JSON.stringify({
-                  id: call.id,
-                  result: {},
-                  error: 'Something is wrong',
-                }),
-              );
-            });
+          guestLogin(call, ws);
+          // validateAuthToken(call.params[0])
+          //   .then(({ error, result }) => {
+          //     console.log('Login success', result.name);
+          //     ws.name = result.name;
+          //     ws.verified = true;
+          //     ws.account = result.account;
+          //     ws.user_metadata = result.user_metadata;
+          //     ws.send(JSON.stringify(
+          //       { id: call.id, result: { login: true, username: result.name } },
+          //     ));
+          //   })
+          //   .catch((err) => {
+          //     console.error('Login failed', err);
+          //     ws.send(
+          //       JSON.stringify({
+          //         id: call.id,
+          //         result: {},
+          //         error: 'Something is wrong',
+          //       }),
+          //     );
+          //   });
         } else if (call.method === 'subscribe' && call.params && call.params[0]) {
           console.log('Subscribe success', call.params[0]);
           ws.name = call.params[0];
@@ -112,6 +113,30 @@ class WebSocket {
     });
   }
 }
+
+const guestLogin = (call, ws) => {
+  validateAuthToken(call.params[0])
+    .then(({ result }) => {
+      console.log('Login success', result.name);
+      ws.name = result.name;
+      ws.verified = true;
+      ws.account = result.account;
+      ws.user_metadata = result.user_metadata;
+      ws.send(JSON.stringify(
+        { id: call.id, result: { login: true, username: result.name } },
+      ));
+    })
+    .catch((err) => {
+      console.error('Login failed', err);
+      ws.send(
+        JSON.stringify({
+          id: call.id,
+          result: {},
+          error: 'Something is wrong',
+        }),
+      );
+    });
+};
 
 const wssConnection = new WebSocket();
 
