@@ -80,12 +80,6 @@ const fromComment = (operation, params) => {
 
 const fromRestaurantStatus = (operation, params) => {
   const notifications = [];
-  let status;
-  try {
-    status = JSON.parse(params.body);
-  } catch (e) {
-    console.error(e.message());
-  }
   _.forEach(params.experts, (expert) => {
     const notification = {
       type: 'status-change',
@@ -93,7 +87,8 @@ const fromRestaurantStatus = (operation, params) => {
       account: expert,
       object_name: params.object_name,
       author_permlink: params.author_permlink,
-      status: _.get(params, 'voter') ? '' : status.title,
+      oldStatus: params.oldStatus,
+      newStatus: params.newStatus,
       timestamp: Math.round(new Date().valueOf() / 1000),
       block: operation.block,
     };
