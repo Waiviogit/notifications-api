@@ -125,7 +125,7 @@ const getNotifications = async (operation) => {
         type,
         account: params.account,
         current_pays: params.current_pays,
-        timestamp: params.timestamp,
+        timestamp: Math.round(params.timestamp / 1000),
         open_pays: params.open_pays,
         block: operation.block,
         exchanger: params.exchanger,
