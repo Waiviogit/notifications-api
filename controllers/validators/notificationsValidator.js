@@ -59,7 +59,7 @@ exports.operationsSchema = Joi.object().keys({
       author_permlink: Joi.string().required(),
       experts: Joi.array().items(String).required(),
       creator: Joi.string().required(),
-      voter: Joi.string().allow('').default(''),
+      voter: Joi.string().allow(null).default(null),
       oldStatus: Joi.string().allow('').required(),
       newStatus: Joi.string().allow('').required(),
     }).required(),
