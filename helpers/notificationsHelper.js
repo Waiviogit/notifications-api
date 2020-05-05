@@ -78,6 +78,23 @@ const fromComment = (operation, params) => {
   return notifications;
 };
 
+const fromActivationCampaign = (operation, params) => {
+  const notifications = [];
+  _.forEach(params.users, (user) => {
+    const notification = {
+      type: 'activationCampaign',
+      author: params.guide,
+      account: user,
+      object_name: params.object_name,
+      author_permlink: params.author_permlink,
+      timestamp: Math.round(new Date().valueOf() / 1000),
+      block: operation.block,
+    };
+    notifications.push([user, notification]);
+  });
+  return notifications;
+};
+
 const fromRestaurantStatus = (operation, params) => {
   const notifications = [];
   _.forEach(params.experts, (expert) => {
@@ -114,6 +131,20 @@ const getNotifications = async (operation) => {
   const type = operation.id;
   const params = operation.data;
   switch (type) {
+    case 'rejectUpdate':
+      notifications.push([params.creator, {
+        type,
+        account: params.creator,
+        voter: params.voter,
+        author_permlink: params.author_permlink,
+        fieldName: params.fieldName,
+        timestamp: Math.round(new Date().valueOf() / 1000),
+        block: operation.block,
+      }]);
+      break;
+    case 'activateCampaign':
+      notifications = _.concat(notifications, fromActivationCampaign(operation, params));
+      break;
     case 'restaurantStatus':
       notifications = _.concat(notifications, fromRestaurantStatus(operation, params));
       break;

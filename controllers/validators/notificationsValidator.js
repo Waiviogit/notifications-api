@@ -1,7 +1,8 @@
 const Joi = require('@hapi/joi');
+const notificationTypes = require('../../constants/notificationTypes');
 
 exports.operationsSchema = Joi.object().keys({
-  id: Joi.string().valid('comment', 'custom_json', 'transfer', 'account_witness_vote', 'restaurantStatus', 'withdraw_vesting', 'fillOrder').required(),
+  id: Joi.string().valid(...notificationTypes).required(),
   block: Joi.number().required(),
   data: Joi.when('id', [{
     is: 'comment',
@@ -73,5 +74,21 @@ exports.operationsSchema = Joi.object().keys({
       exchanger: Joi.string().required(),
       orderId: Joi.number().required(),
     }).required(),
+  }, {
+    is: 'rejectUpdate',
+    then: Joi.object().keys({
+      creator: Joi.string().required(),
+      voter: Joi.string().required(),
+      author_permlink: Joi.string().required(),
+      fieldName: Joi.string().required(),
+    }),
+  }, {
+    is: 'activateCampaign',
+    then: Joi.object().keys({
+      guide: Joi.string().required(),
+      users: Joi.array().items(String).required(),
+      author_permlink: Joi.string().required(),
+      object_name: Joi.string().required(),
+    }),
   }]),
 }).options({ allowUnknown: true, stripUnknown: true });
