@@ -80,6 +80,9 @@ exports.operationsSchema = Joi.object().keys({
       creator: Joi.string().required(),
       voter: Joi.string().required(),
       author_permlink: Joi.string().required(),
+      object_name: Joi.string().required(),
+      parent_permlink: Joi.string().default(''),
+      parent_name: Joi.string().default(''),
       fieldName: Joi.string().required(),
     }),
   }, {
