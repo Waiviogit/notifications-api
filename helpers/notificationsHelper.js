@@ -144,7 +144,7 @@ const withdraw = async (operation, params) => {
   };
   await shareMessageBySubscribers(params.account,
     `${params.account} initiated PowerDown on ${amount}`,
-    `https://www.waivio.com/${params.account}`);
+    `https://www.waivio.com/@${params.account}`);
   return [params.account, notification];
 };
 
