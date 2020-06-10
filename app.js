@@ -1,12 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+
+if (process.env.NODE_ENV === 'production') {
+  const { WaivioBot } = require('./telegram/notificationsBot');
+
+  console.log('BOT STARTED!');
+}
 
 const port = process.env.PORT || 4000;
 const app = express();
 app.use(bodyParser.json());
 exports.server = app.listen(port, () => console.log(`Listening on ${port}`));
-const swaggerUi = require('swagger-ui-express');
 const router = require('./routes');
 const { heartbeat } = require('./helpers/wssHelper');
 const authMiddleware = require('./middlewares/authMiddleware');

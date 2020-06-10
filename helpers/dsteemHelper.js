@@ -2,6 +2,7 @@ const _ = require('lodash');
 const { dsteemModel } = require('../models');
 const config = require('../config');
 
+
 exports.getAmountFromVests = async (vests) => {
   try {
     const { result, error } = await dsteemModel.getGlobalProperties();

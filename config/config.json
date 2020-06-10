@@ -1,18 +1,58 @@
 {
   "production": {
     "waivioUrl": "https://www.waivio.com",
-    "currency": "HIVE"
+    "currency": "HIVE",
+    "db": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "notifier"
+    },
+    "waivioDB": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "waivio"
+    }
   },
   "staging": {
     "waivioUrl": "https://waiviodev.com",
-    "currency": "HIVE"
+    "currency": "HIVE",
+    "db": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "notifier"
+    },
+    "waivioDB": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "waivio"
+    }
   },
   "development": {
     "waivioUrl": "https://waiviodev.com",
-    "currency": "HIVE"
+    "currency": "HIVE",
+    "db": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "notifier"
+    },
+    "waivioDB": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "waivio"
+    }
   },
   "test": {
     "waivioUrl": "https://waiviodev.com",
-    "currency": "HIVE"
+    "currency": "HIVE",
+    "db": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "notifiertest"
+    },
+    "waivioDB": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "waivio"
+    }
   }
 }
