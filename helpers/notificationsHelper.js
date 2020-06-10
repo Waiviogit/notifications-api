@@ -29,7 +29,7 @@ const fromCustomJSON = async (operation, params) => {
     };
     await shareMessageBySubscribers(params.json.author,
       `${params.json.account} reblogged ${params.json.author} post`,
-      `https://www.waivio.com/@${params.json.following}/${params.json.permlink}`);
+      `https://www.waivio.com/@${params.json.author}/${params.json.permlink}`);
     notifications.push([params.json.author, notification]);
   }
   return notifications;
