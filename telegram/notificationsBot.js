@@ -33,7 +33,7 @@ class WaivioBot {
         case '/showsubscriptions':
           return subscribeHelper.showSubscriptions(msg.chat.id, this.bot);
         default:
-          return subscribeHelper.checkAndSubscribe(msg.text, msg.chat.id, this.bot);
+          return subscribeHelper.checkAndSubscribe(msg.text.toLowerCase(), msg.chat.id, this.bot);
       }
     });
 
