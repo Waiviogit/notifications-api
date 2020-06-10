@@ -82,7 +82,7 @@ const fromComment = async (operation, params) => {
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       };
-      await shareMessageBySubscribers(params.json.following,
+      await shareMessageBySubscribers(mention,
         `${params.author} mentioned ${mention} in a comment`,
         `https://www.waivio.com/@${params.author}/${params.permlink}`);
       notifications.push([mention, notification]);
