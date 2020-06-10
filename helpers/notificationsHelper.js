@@ -27,8 +27,8 @@ const fromCustomJSON = async (operation, params) => {
       timestamp: Math.round(new Date().valueOf() / 1000),
       block: operation.block,
     };
-    await shareMessageBySubscribers(params.json.following,
-      `${params.json.follower} reblogged ${params.json.following} post`,
+    await shareMessageBySubscribers(params.json.author,
+      `${params.json.account} reblogged ${params.json.author} post`,
       `https://www.waivio.com/@${params.json.following}/${params.json.permlink}`);
     notifications.push([params.json.author, notification]);
   }
@@ -168,7 +168,7 @@ const getNotifications = async (operation) => {
       }]);
       await shareMessageBySubscribers(params.creator,
         `${params.voter} rejected ${params.creator} update for ${params.object_name}`,
-        `https://www.waivio.com/object/${params.object_name}/updates/${params.fieldName}`);
+        `https://www.waivio.com/object/${params.author_permlink}/updates/${params.fieldName}`);
       break;
     case 'activateCampaign':
       notifications = _.concat(notifications, await fromActivationCampaign(operation, params));
@@ -190,7 +190,7 @@ const getNotifications = async (operation) => {
         exchanger: params.exchanger,
         orderId: params.orderId,
       }]);
-      await shareMessageBySubscribers(params.creator,
+      await shareMessageBySubscribers(params.account,
         `${params.account} bought ${params.current_pays} and get ${params.open_pays} from ${params.exchanger}`,
         `https://www.waivio.com/@${params.account}/transfers`);
       break;
@@ -217,7 +217,7 @@ const getNotifications = async (operation) => {
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       }]);
-      await shareMessageBySubscribers(params.creator,
+      await shareMessageBySubscribers(params.to,
         `${params.from} transfered ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.to}/transfers`);
       break;
