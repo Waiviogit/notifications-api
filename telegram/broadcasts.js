@@ -9,7 +9,7 @@ exports.shareMessageBySubscribers = async (user, message, url) => {
   for (const notifier of notifiers) {
     await WaivioBot.bot.sendMessage(notifier.chatId, message, {
       reply_markup: {
-        inline_keyboard: [[{ text: 'Go to website', url }]],
+        inline_keyboard: [[{ text: 'Go to website', url }], [{ text: `Unsubscribe ${user}`, callback_data: `unsubscribe:${user}` }]],
       },
     });
   }
