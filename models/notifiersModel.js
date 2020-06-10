@@ -9,6 +9,14 @@ exports.getOne = async ({ chatId }) => {
   }
 };
 
+exports.find = async ({ condition }) => {
+  try {
+    return { notifiers: await Notifier.find(condition) };
+  } catch (error) {
+    return { error };
+  }
+};
+
 exports.create = async ({ chatId }) => {
   try {
     const notifier = await Notifier.create({ chatId });
