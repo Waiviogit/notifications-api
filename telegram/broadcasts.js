@@ -1,7 +1,9 @@
 const { notifiersModel } = require('../models');
-const { WaivioBot } = require('./notificationsBot');
+
 
 exports.shareMessageBySubscribers = async (user, message, url) => {
+  if (process.env.NODE_ENV !== 'production') return;
+  const { WaivioBot } = require('./notificationsBot');
   const { notifiers } = await notifiersModel.find({ condition: { subscribedUsers: user } });
   if (!notifiers || !notifiers.length) return;
   for (const notifier of notifiers) {

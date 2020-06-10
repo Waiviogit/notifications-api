@@ -50,7 +50,7 @@ const fromComment = async (operation, params) => {
       block: operation.block,
       reply: params.reply,
     };
-    await shareMessageBySubscribers(params.json.following,
+    await shareMessageBySubscribers(params.parent_author,
       `${params.author} replied to ${params.parent_author} comment`,
       `https://www.waivio.com/@${params.parent_author}/${params.parent_permlink}`);
     notifications.push([params.parent_author, notification]);
