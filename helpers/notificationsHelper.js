@@ -105,7 +105,7 @@ const fromActivationCampaign = async (operation, params) => {
     };
     notifications.push([user, notification]);
     await shareMessageBySubscribers(user,
-      `${params.guide} rejected ${params.creator} launched a new campaign for ${params.object_name}`,
+      `${params.guide} launched a new campaign for ${params.object_name}`,
       `https://www.waivio.com/object/${params.author_permlink}`);
   }
   return notifications;
