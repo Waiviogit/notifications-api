@@ -3,7 +3,7 @@ const notificationTypes = require('../../constants/notificationTypes');
 
 exports.operationsSchema = Joi.object().keys({
   id: Joi.string().valid(...notificationTypes).required(),
-  block: Joi.number().required(),
+  block: Joi.number(),
   data: Joi.when('id', [{
     is: 'comment',
     then: Joi.object().keys({
