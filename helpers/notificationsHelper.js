@@ -153,6 +153,12 @@ const getNotifications = async (operation) => {
   const type = operation.id;
   const params = operation.data;
   switch (type) {
+    case 'suspendedStatus':
+      notifications.push([params.sponsor, params]);
+      await shareMessageBySubscribers(params.sponsor,
+        `After ${params.days} days ${params.sponsor} campaigns will be blocked, please pay the debt for the review https://www.waivio.com/@${params.reviewAuthor}/${params.reviewPermlink}`,
+        'https://www.waivio.com/rewards/payables');
+      break;
     case 'rejectUpdate':
       notifications.push([params.creator, {
         type,

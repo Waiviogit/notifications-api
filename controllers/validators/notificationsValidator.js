@@ -16,6 +16,14 @@ exports.operationsSchema = Joi.object().keys({
       reply: Joi.boolean().default(false),
     }).required(),
   }, {
+    is: 'suspendedStatus',
+    then: Joi.object().keys({
+      sponsor: Joi.string().required(),
+      reviewAuthor: Joi.string().required(),
+      reviewPermlink: Joi.string().required(),
+      days: Joi.number().required(),
+    }).required(),
+  }, {
     is: 'custom_json',
     then: Joi.object().keys({
       id: Joi.string().valid('follow', 'reblog').required(),

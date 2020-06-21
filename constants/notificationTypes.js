@@ -9,4 +9,5 @@ module.exports = [
   'fillOrder',
   'rejectUpdate',
   'activateCampaign',
+  'suspendedStatus',
 ];
