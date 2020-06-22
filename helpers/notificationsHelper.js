@@ -153,6 +153,18 @@ const getNotifications = async (operation) => {
   const type = operation.id;
   const params = operation.data;
   switch (type) {
+    case 'transfer_from_savings':
+      notifications.push([params.from, Object.assign(params, { type: 'transfer_from_savings' })]);
+      await shareMessageBySubscribers(params.from,
+        `Account ${params.from} initiated a power down on the Saving account to ${params.to}`,
+        `https://www.waivio.com/@${params.from}`);
+      break;
+    case 'change_recovery_account':
+      notifications.push([params.account_to_recover, Object.assign(params, { type: 'change_recovery_account' })]);
+      await shareMessageBySubscribers(params.account_to_recover,
+        `Account ${params.account_to_recover} changed recovery address to ${params.new_recovery_account}`,
+        `https://www.waivio.com/@${params.account_to_recover}`);
+      break;
     case 'transfer_to_vesting':
       notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting' })]);
       await shareMessageBySubscribers(params.from,

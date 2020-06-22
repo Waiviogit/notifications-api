@@ -5,6 +5,19 @@ exports.operationsSchema = Joi.object().keys({
   id: Joi.string().valid(...notificationTypes).required(),
   block: Joi.number(),
   data: Joi.when('id', [{
+    is: 'transfer_from_savings',
+    then: Joi.object().keys({
+      from: Joi.string().required(),
+      to: Joi.string().required(),
+      amount: Joi.string().required(),
+    }).required(),
+  }, {
+    is: 'change_recovery_account',
+    then: Joi.object().keys({
+      account_to_recover: Joi.string().required(),
+      new_recovery_account: Joi.string().required(),
+    }).required(),
+  }, {
     is: 'transfer_to_vesting',
     then: Joi.object().keys({
       from: Joi.string().required(),
