@@ -153,8 +153,14 @@ const getNotifications = async (operation) => {
   const type = operation.id;
   const params = operation.data;
   switch (type) {
+    case 'withdraw_route':
+      notifications.push([params.from_account, Object.assign(params, { type: 'withdraw_route' })]);
+      await shareMessageBySubscribers(params.from_account,
+        `Account ${params.to_account} registered withdraw route for ${params.from_account} account`,
+        `https://www.waivio.com/@${params.from_account}`);
+      break;
     case 'suspendedStatus':
-      notifications.push([params.sponsor, params]);
+      notifications.push([params.sponsor, Object.assign(params, { type: 'suspendedStatus' })]);
       await shareMessageBySubscribers(params.sponsor,
         `After ${params.days} days ${params.sponsor} campaigns will be blocked, please pay the debt for the review https://www.waivio.com/@${params.reviewAuthor}/${params.reviewPermlink}`,
         'https://www.waivio.com/rewards/payables');
