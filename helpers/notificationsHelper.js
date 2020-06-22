@@ -153,6 +153,18 @@ const getNotifications = async (operation) => {
   const type = operation.id;
   const params = operation.data;
   switch (type) {
+    case 'transfer_to_vesting':
+      notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting' })]);
+      await shareMessageBySubscribers(params.from,
+        `Account ${params.from} transferred ${params.amount} to ${params.to}`,
+        `https://www.waivio.com/@${params.from}/transfers`);
+      break;
+    case 'changePassword':
+      notifications.push([params.account, Object.assign(params, { type: 'changePassword' })]);
+      await shareMessageBySubscribers(params.account,
+        `Account ${params.account} initiated a password change procedure`,
+        `https://www.waivio.com/@${params.account}`);
+      break;
     case 'withdraw_route':
       notifications.push([params.from_account, Object.assign(params, { type: 'withdraw_route' })]);
       await shareMessageBySubscribers(params.from_account,
@@ -232,6 +244,17 @@ const getNotifications = async (operation) => {
       await shareMessageBySubscribers(params.to,
         `${params.from} transfered ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.to}/transfers`);
+      notifications.push([params.from, {
+        type: 'transferFrom',
+        to: params.to,
+        amount: params.amount,
+        memo: params.memo,
+        timestamp: Math.round(new Date().valueOf() / 1000),
+        block: operation.block,
+      }]);
+      await shareMessageBySubscribers(params.from,
+        `${params.from} transfered ${params.amount} to ${params.to}`,
+        `https://www.waivio.com/@${params.from}/transfers`);
       break;
     case 'withdraw_vesting':
       notifications.push(await withdraw(operation, params));

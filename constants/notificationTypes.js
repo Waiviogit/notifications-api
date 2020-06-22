@@ -9,6 +9,8 @@ module.exports = [
   'withdraw_route',
   'fillOrder',
   'rejectUpdate',
+  'changePassword',
+  'transfer_to_vesting',
   'activateCampaign',
   'suspendedStatus',
 ];
