@@ -154,37 +154,37 @@ const getNotifications = async (operation) => {
   const params = operation.data;
   switch (type) {
     case 'transfer_from_savings':
-      notifications.push([params.from, Object.assign(params, { type: 'transfer_from_savings' })]);
+      notifications.push([params.from, Object.assign(params, { type: 'transfer_from_savings', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from,
         `Account ${params.from} initiated a power down on the Saving account to ${params.to}`,
         `https://www.waivio.com/@${params.from}`);
       break;
     case 'change_recovery_account':
-      notifications.push([params.account_to_recover, Object.assign(params, { type: 'change_recovery_account' })]);
+      notifications.push([params.account_to_recover, Object.assign(params, { type: 'change_recovery_account', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.account_to_recover,
         `Account ${params.account_to_recover} changed recovery address to ${params.new_recovery_account}`,
         `https://www.waivio.com/@${params.account_to_recover}`);
       break;
     case 'transfer_to_vesting':
-      notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting' })]);
+      notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from,
         `Account ${params.from} transferred ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.from}/transfers`);
       break;
     case 'changePassword':
-      notifications.push([params.account, Object.assign(params, { type: 'changePassword' })]);
+      notifications.push([params.account, Object.assign(params, { type: 'changePassword', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.account,
         `Account ${params.account} initiated a password change procedure`,
         `https://www.waivio.com/@${params.account}`);
       break;
     case 'withdraw_route':
-      notifications.push([params.from_account, Object.assign(params, { type: 'withdraw_route' })]);
+      notifications.push([params.from_account, Object.assign(params, { type: 'withdraw_route', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from_account,
         `Account ${params.to_account} registered withdraw route for ${params.from_account} account`,
         `https://www.waivio.com/@${params.from_account}`);
       break;
     case 'suspendedStatus':
-      notifications.push([params.sponsor, Object.assign(params, { type: 'suspendedStatus' })]);
+      notifications.push([params.sponsor, Object.assign(params, { type: 'suspendedStatus', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.sponsor,
         `After ${params.days} days ${params.sponsor} campaigns will be blocked, please pay the debt for the review https://www.waivio.com/@${params.reviewAuthor}/${params.reviewPermlink}`,
         'https://www.waivio.com/rewards/payables');
