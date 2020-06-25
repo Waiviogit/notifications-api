@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { userModel } = require('models');
 const { LIMIT, NOTIFICATION_EXPIRY } = require('./constants');
 const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
@@ -34,7 +35,6 @@ const fromCustomJSON = async (operation, params) => {
   }
   return notifications;
 };
-
 
 const fromComment = async (operation, params) => {
   const notifications = [];
@@ -274,7 +274,6 @@ const getNotifications = async (operation) => {
   return notifications;
 };
 
-
 const prepareDataForRedis = (notifications) => {
   const redisOps = [];
   notifications.forEach((notification) => {
@@ -290,12 +289,19 @@ const prepareDataForRedis = (notifications) => {
   return redisOps;
 };
 
+const checkUserNotifications = async (notifications) => (
+  notifications.filter(async (notification) => {
+    const { user, error } = await userModel.findOne(notification[0]);
+    error && console.error(error);
+    return user.user_metadata.settings.userNotifications[`${notification[1].type}`];
+  }));
 
 const setNotifications = async ({ params }) => {
   const notifications = await getNotifications(params);
-  const redisOps = prepareDataForRedis(notifications);
+  const validNotifications = await checkUserNotifications(notifications);
+  const redisOps = prepareDataForRedis(validNotifications);
   await redisNotifyClient.multi(redisOps).execAsync();
-  clientSend(notifications);
+  clientSend(validNotifications);
 };
 
 module.exports = { getNotifications, prepareDataForRedis, setNotifications };
