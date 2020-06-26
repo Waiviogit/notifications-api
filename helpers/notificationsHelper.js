@@ -256,7 +256,9 @@ const getNotifications = async (operation) => {
       }]);
       break;
     case 'transfer':
-      if (!await checkUserNotifications({ name: params.to, type })) break;
+      /** add condition to checkUserNotifications if amount =>
+       * parse amount (currency, value) value (HIVE or HBD to USD)>= user_metadata.settings.userNotifications.minimalTransfer  */
+      if (!await checkUserNotifications({ name: params.to, type, amount: params.amount })) break;
       /** Find transfer */
       notifications.push([params.to, {
         type: 'transfer',
@@ -269,7 +271,6 @@ const getNotifications = async (operation) => {
       await shareMessageBySubscribers(params.to,
         `${params.from} transfered ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.to}/transfers`);
-      if (!await checkUserNotifications({ name: params.from, type })) break;
       notifications.push([params.from, {
         type: 'transferFrom',
         to: params.to,
@@ -304,7 +305,7 @@ const prepareDataForRedis = (notifications) => {
   return redisOps;
 };
 
-const checkUserNotifications = async ({ name, type }) => {
+const checkUserNotifications = async ({ name, type, amount }) => {
   const { user, error } = await userModel.findOne(name);
   if (error) return console.error(error.message);
   return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
