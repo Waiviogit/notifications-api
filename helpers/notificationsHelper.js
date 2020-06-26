@@ -8,7 +8,7 @@ const { shareMessageBySubscribers } = require('../telegram/broadcasts');
 
 const fromCustomJSON = async (operation, params) => {
   const notifications = [];
-  if (params.id === 'follow') {
+  if (params.id === 'follow' && await checkUserNotifications({ name: params.json.following, type: 'follow' })) {
     const notification = {
       type: 'follow',
       follower: params.json.follower,
@@ -20,7 +20,7 @@ const fromCustomJSON = async (operation, params) => {
       `https://www.waivio.com/@${params.json.following}/followers`);
     notifications.push([params.json.following, notification]);
   }
-  if (params.id === 'reblog') {
+  if (params.id === 'reblog' && await checkUserNotifications({ name: params.json.author, type: 'reblog' })) {
     const notification = {
       type: 'reblog',
       account: params.json.account,
@@ -40,7 +40,7 @@ const fromComment = async (operation, params) => {
   const notifications = [];
   const isRootPost = !params.parent_author;
   /** Find replies */
-  if (!isRootPost) {
+  if (!isRootPost && await checkUserNotifications({ name: params.parent_author, type: 'reply' })) {
     const notification = {
       type: 'reply',
       parent_permlink: params.parent_permlink,
@@ -74,6 +74,7 @@ const fromComment = async (operation, params) => {
     .slice(0, 9); // Handle maximum 10 mentions per post
   if (mentions.length) {
     for (const mention of mentions) {
+      if (!await checkUserNotifications({ name: mention, type: 'mention' })) continue;
       const notification = {
         type: 'mention',
         is_root_post: isRootPost,
@@ -94,6 +95,7 @@ const fromComment = async (operation, params) => {
 const fromActivationCampaign = async (operation, params) => {
   const notifications = [];
   for (const user of params.users) {
+    if (!await checkUserNotifications({ name: user, type: 'activationCampaign' })) continue;
     const notification = {
       type: 'activationCampaign',
       author: params.guide,
@@ -114,6 +116,7 @@ const fromActivationCampaign = async (operation, params) => {
 const fromRestaurantStatus = async (operation, params) => {
   const notifications = [];
   for (const expert of params.experts) {
+    if (!await checkUserNotifications({ name: expert, type: 'status-change' })) continue;
     const notification = {
       type: 'status-change',
       author: _.get(params, 'voter', params.creator),
@@ -154,42 +157,49 @@ const getNotifications = async (operation) => {
   const params = operation.data;
   switch (type) {
     case 'transfer_from_savings':
+      if (!await checkUserNotifications({ name: params.from, type })) break;
       notifications.push([params.from, Object.assign(params, { type: 'transfer_from_savings', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from,
         `Account ${params.from} initiated a power down on the Saving account to ${params.to}`,
         `https://www.waivio.com/@${params.from}`);
       break;
     case 'change_recovery_account':
+      if (!await checkUserNotifications({ name: params.account_to_recover, type })) break;
       notifications.push([params.account_to_recover, Object.assign(params, { type: 'change_recovery_account', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.account_to_recover,
         `Account ${params.account_to_recover} changed recovery address to ${params.new_recovery_account}`,
         `https://www.waivio.com/@${params.account_to_recover}`);
       break;
     case 'transfer_to_vesting':
+      if (!await checkUserNotifications({ name: params.from, type })) break;
       notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from,
         `Account ${params.from} transferred ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.from}/transfers`);
       break;
     case 'changePassword':
+      if (!await checkUserNotifications({ name: params.account, type })) break;
       notifications.push([params.account, Object.assign(params, { type: 'changePassword', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.account,
         `Account ${params.account} initiated a password change procedure`,
         `https://www.waivio.com/@${params.account}`);
       break;
     case 'withdraw_route':
+      if (!await checkUserNotifications({ name: params.from_account, type })) break;
       notifications.push([params.from_account, Object.assign(params, { type: 'withdraw_route', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from_account,
         `Account ${params.to_account} registered withdraw route for ${params.from_account} account`,
         `https://www.waivio.com/@${params.from_account}`);
       break;
     case 'suspendedStatus':
+      if (!await checkUserNotifications({ name: params.sponsor, type })) break;
       notifications.push([params.sponsor, Object.assign(params, { type: 'suspendedStatus', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.sponsor,
         `After ${params.days} days ${params.sponsor} campaigns will be blocked, please pay the debt for the review https://www.waivio.com/@${params.reviewAuthor}/${params.reviewPermlink}`,
         'https://www.waivio.com/rewards/payables');
       break;
     case 'rejectUpdate':
+      if (!await checkUserNotifications({ name: params.creator, type })) break;
       notifications.push([params.creator, {
         type,
         account: params.creator,
@@ -216,6 +226,7 @@ const getNotifications = async (operation) => {
       notifications = _.concat(notifications, await fromComment(operation, params));
       break;
     case 'fillOrder':
+      if (!await checkUserNotifications({ name: params.account, type })) break;
       notifications.push([params.account, {
         type,
         account: params.account,
@@ -234,6 +245,7 @@ const getNotifications = async (operation) => {
       notifications = _.concat(notifications, await fromCustomJSON(operation, params));
       break;
     case 'account_witness_vote':
+      if (!await checkUserNotifications({ name: params.witness, type: 'witness_vote' })) break;
       /** Find witness vote */
       notifications.push([params.witness, {
         type: 'witness_vote',
@@ -244,6 +256,7 @@ const getNotifications = async (operation) => {
       }]);
       break;
     case 'transfer':
+      if (!await checkUserNotifications({ name: params.to, type })) break;
       /** Find transfer */
       notifications.push([params.to, {
         type: 'transfer',
@@ -256,6 +269,7 @@ const getNotifications = async (operation) => {
       await shareMessageBySubscribers(params.to,
         `${params.from} transfered ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.to}/transfers`);
+      if (!await checkUserNotifications({ name: params.from, type })) break;
       notifications.push([params.from, {
         type: 'transferFrom',
         to: params.to,
@@ -269,6 +283,7 @@ const getNotifications = async (operation) => {
         `https://www.waivio.com/@${params.from}/transfers`);
       break;
     case 'withdraw_vesting':
+      if (!await checkUserNotifications({ name: params.account, type: 'power_down' })) break;
       notifications.push(await withdraw(operation, params));
   }
   return notifications;
@@ -289,19 +304,17 @@ const prepareDataForRedis = (notifications) => {
   return redisOps;
 };
 
-const checkUserNotifications = async (notifications) => (
-  notifications.filter(async (notification) => {
-    const { user, error } = await userModel.findOne(notification[0]);
-    error && console.error(error);
-    return user.user_metadata.settings.userNotifications[`${notification[1].type}`];
-  }));
+const checkUserNotifications = async ({ name, type }) => {
+  const { user, error } = await userModel.findOne(name);
+  if (error) return console.error(error.message);
+  return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
+};
 
 const setNotifications = async ({ params }) => {
   const notifications = await getNotifications(params);
-  const validNotifications = await checkUserNotifications(notifications);
-  const redisOps = prepareDataForRedis(validNotifications);
+  const redisOps = prepareDataForRedis(notifications);
   await redisNotifyClient.multi(redisOps).execAsync();
-  clientSend(validNotifications);
+  clientSend(notifications);
 };
 
 module.exports = { getNotifications, prepareDataForRedis, setNotifications };
