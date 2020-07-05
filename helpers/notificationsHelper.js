@@ -168,7 +168,7 @@ const getNotifications = async (operation) => {
     case 'transfer_to_vesting':
       notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from,
-        `Account ${params.from} transferred ${params.amount} to ${params.to}`,
+        `Account ${params.from} powered up ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.from}/transfers`);
       break;
     case 'changePassword':
