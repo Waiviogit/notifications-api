@@ -4,6 +4,7 @@ const { LIMIT, NOTIFICATION_EXPIRY } = require('./constants');
 const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
 const { getAmountFromVests } = require('./dsteemHelper');
+const { getCurrencyFromCoingecko } = require('./requestHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
 
 const fromCustomJSON = async (operation, params) => {
@@ -256,8 +257,6 @@ const getNotifications = async (operation) => {
       }]);
       break;
     case 'transfer':
-      /** add condition to checkUserNotifications if amount =>
-       * parse amount (currency, value) value (HIVE or HBD to USD)>= user_metadata.settings.userNotifications.minimalTransfer  */
       if (!await checkUserNotifications({ name: params.to, type, amount: params.amount })) break;
       /** Find transfer */
       notifications.push([params.to, {
@@ -308,6 +307,15 @@ const prepareDataForRedis = (notifications) => {
 const checkUserNotifications = async ({ name, type, amount }) => {
   const { user, error } = await userModel.findOne(name);
   if (error) return console.error(error.message);
+  if (amount) {
+    const value = amount.split(' ')[0];
+    const cryptoType = amount.split(' ')[1];
+    const { usdCurrency, error: getRateError } = await getCurrencyFromCoingecko(cryptoType);
+    if (getRateError) return true;
+    const minimalTransfer = _.get(user, 'user_metadata.settings.userNotifications.minimalTransfer');
+    if (!minimalTransfer) return true;
+    return value * usdCurrency >= minimalTransfer.toFixed(3);
+  }
   return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
 };
 
