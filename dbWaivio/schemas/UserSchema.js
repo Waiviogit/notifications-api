@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const db = require('../../dbWaivio/waivioDB_connection');
+const db = require('../waivioDB_connection');
 const LANGUAGES = require('../../constants/languages');
 
 const { Schema } = mongoose;

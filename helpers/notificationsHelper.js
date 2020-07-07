@@ -4,6 +4,19 @@ const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
 const { getAmountFromVests } = require('./dsteemHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
+const { App } = require('../models');
+
+const getServiceBots = async () => {
+  const name = process.env.NODE_ENV === 'production' ? 'waivio' : 'waiviodev';
+  const { app: data, error: appError } = await App
+    .getOne({ condition: { name }, select: { service_bots: 1 } });
+  if (appError) return console.error(appError);
+  return _
+    .chain(data.service_bots)
+    .filter((el) => _.includes(el.roles, 'serviceBot'))
+    .map((el) => el.name)
+    .value();
+};
 
 const fromCustomJSON = async (operation, params) => {
   const notifications = [];
@@ -34,7 +47,6 @@ const fromCustomJSON = async (operation, params) => {
   }
   return notifications;
 };
-
 
 const fromComment = async (operation, params) => {
   const notifications = [];
@@ -73,7 +85,9 @@ const fromComment = async (operation, params) => {
     )
     .slice(0, 9); // Handle maximum 10 mentions per post
   if (mentions.length) {
+    const serviceBots = await getServiceBots();
     for (const mention of mentions) {
+      if (_.includes(serviceBots, params.author)) continue;
       const notification = {
         type: 'mention',
         is_root_post: isRootPost,
@@ -274,7 +288,6 @@ const getNotifications = async (operation) => {
   return notifications;
 };
 
-
 const prepareDataForRedis = (notifications) => {
   const redisOps = [];
   notifications.forEach((notification) => {
@@ -289,7 +302,6 @@ const prepareDataForRedis = (notifications) => {
   });
   return redisOps;
 };
-
 
 const setNotifications = async ({ params }) => {
   const notifications = await getNotifications(params);
