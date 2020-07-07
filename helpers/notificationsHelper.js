@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const { userModel } = require('models');
 const { LIMIT, NOTIFICATION_EXPIRY } = require('./constants');
 const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
 const { getAmountFromVests } = require('./dsteemHelper');
-const { getCurrencyFromCoingecko } = require('./requestHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
+const { userModel } = require('../models');
+const { getCurrencyFromCoingecko } = require('./requestHelper');
 
 const fromCustomJSON = async (operation, params) => {
   const notifications = [];
