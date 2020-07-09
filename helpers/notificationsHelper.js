@@ -331,7 +331,9 @@ const getNotifications = async (operation) => {
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       }]);
-      console.log(notifications);
+      await shareMessageBySubscribers(params.account,
+        `${params.account} claimed reward: ${params.reward_steem}, ${params.reward_sbd}`,
+        `https://www.waivio.com/@${params.account}/transfers`);
       break;
   }
   return notifications;
