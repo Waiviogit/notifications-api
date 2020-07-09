@@ -9,30 +9,38 @@ const { getCurrencyFromCoingecko } = require('./requestHelper');
 
 const fromCustomJSON = async (operation, params) => {
   const notifications = [];
-  if (params.id === 'follow' && await checkUserNotifications({ name: params.json.following, type: 'follow' })) {
-    const notification = {
-      type: 'follow',
-      follower: params.json.follower,
-      timestamp: Math.round(new Date().valueOf() / 1000),
-      block: operation.block,
-    };
-    await shareMessageBySubscribers(params.json.following,
-      `${params.json.follower} started following ${params.json.following}`,
-      `https://www.waivio.com/@${params.json.following}/followers`);
-    notifications.push([params.json.following, notification]);
-  }
-  if (params.id === 'reblog' && await checkUserNotifications({ name: params.json.author, type: 'reblog' })) {
-    const notification = {
-      type: 'reblog',
-      account: params.json.account,
-      permlink: params.json.permlink,
-      timestamp: Math.round(new Date().valueOf() / 1000),
-      block: operation.block,
-    };
-    await shareMessageBySubscribers(params.json.author,
-      `${params.json.account} reblogged ${params.json.author} post`,
-      `https://www.waivio.com/@${params.json.author}/${params.json.permlink}`);
-    notifications.push([params.json.author, notification]);
+  switch (params.id) {
+    case 'follow ':
+      const { user, error } = await getUsers({ single: params.json.following });
+      if (error) return console.error(error);
+      if (!await checkUserNotifications({ user, type: 'follow' })) break;
+      const notification = {
+        type: 'follow',
+        follower: params.json.follower,
+        timestamp: Math.round(new Date().valueOf() / 1000),
+        block: operation.block,
+      };
+      await shareMessageBySubscribers(params.json.following,
+        `${params.json.follower} started following ${params.json.following}`,
+        `https://www.waivio.com/@${params.json.following}/followers`);
+      notifications.push([params.json.following, notification]);
+      break;
+    case 'reblog':
+      const { user: uReblog, error: uReblogErr } = await getUsers({ single: params.json.author });
+      if (uReblogErr) return console.error(uReblogErr);
+      if (!await checkUserNotifications({ user: uReblog, type: 'reblog' })) break;
+      const notificationData = {
+        type: 'reblog',
+        account: params.json.account,
+        permlink: params.json.permlink,
+        timestamp: Math.round(new Date().valueOf() / 1000),
+        block: operation.block,
+      };
+      await shareMessageBySubscribers(params.json.author,
+        `${params.json.account} reblogged ${params.json.author} post`,
+        `https://www.waivio.com/@${params.json.author}/${params.json.permlink}`);
+      notifications.push([params.json.author, notificationData]);
+      break;
   }
   return notifications;
 };
@@ -41,20 +49,23 @@ const fromComment = async (operation, params) => {
   const notifications = [];
   const isRootPost = !params.parent_author;
   /** Find replies */
-  if (!isRootPost && await checkUserNotifications({ name: params.parent_author, type: 'reply' })) {
-    const notification = {
-      type: 'reply',
-      parent_permlink: params.parent_permlink,
-      author: params.author,
-      permlink: params.permlink,
-      timestamp: Math.round(new Date().valueOf() / 1000),
-      block: operation.block,
-      reply: params.reply,
-    };
-    await shareMessageBySubscribers(params.parent_author,
-      `${params.author} replied to ${params.parent_author} comment`,
-      `https://www.waivio.com/@${params.parent_author}/${params.parent_permlink}`);
-    notifications.push([params.parent_author, notification]);
+  if (!isRootPost) {
+    const { user } = await getUsers({ single: params.parent_author });
+    if (await checkUserNotifications({ user, type: 'reply' })) {
+      const notification = {
+        type: 'reply',
+        parent_permlink: params.parent_permlink,
+        author: params.author,
+        permlink: params.permlink,
+        timestamp: Math.round(new Date().valueOf() / 1000),
+        block: operation.block,
+        reply: params.reply,
+      };
+      await shareMessageBySubscribers(params.parent_author,
+        `${params.author} replied to ${params.parent_author} comment`,
+        `https://www.waivio.com/@${params.parent_author}/${params.parent_permlink}`);
+      notifications.push([params.parent_author, notification]);
+    }
   }
 
   /** Find mentions */
@@ -74,8 +85,10 @@ const fromComment = async (operation, params) => {
     )
     .slice(0, 9); // Handle maximum 10 mentions per post
   if (mentions.length) {
+    const { users, error } = await getUsers({ arr: mentions });
+    if (error) return console.error(error);
     for (const mention of mentions) {
-      if (!await checkUserNotifications({ name: mention, type: 'mention' })) continue;
+      if (!await checkUserNotifications({ user: _.find(users, { name: mention }), type: 'mention' })) continue;
       const notification = {
         type: 'mention',
         is_root_post: isRootPost,
@@ -95,8 +108,10 @@ const fromComment = async (operation, params) => {
 
 const fromActivationCampaign = async (operation, params) => {
   const notifications = [];
+  const { users, error } = await getUsers({ arr: params.users });
+  if (error) return console.error(error);
   for (const user of params.users) {
-    if (!await checkUserNotifications({ name: user, type: 'activationCampaign' })) continue;
+    if (!await checkUserNotifications({ user: _.find(users, { name: user }), type: 'activationCampaign' })) continue;
     const notification = {
       type: 'activationCampaign',
       author: params.guide,
@@ -116,8 +131,10 @@ const fromActivationCampaign = async (operation, params) => {
 
 const fromRestaurantStatus = async (operation, params) => {
   const notifications = [];
+  const { users, error } = await getUsers({ arr: params.experts });
+  if (error) return console.error(error);
   for (const expert of params.experts) {
-    if (!await checkUserNotifications({ name: expert, type: 'status-change' })) continue;
+    if (!await checkUserNotifications({ user: _.find(users, { name: expert }), type: 'status-change' })) continue;
     const notification = {
       type: 'status-change',
       author: _.get(params, 'voter', params.creator),
@@ -182,7 +199,12 @@ const getNotifications = async (operation) => {
         `https://www.waivio.com/@${params.account}`);
       break;
     case 'withdraw_route':
-      if (!await checkUserNotifications({ name: params.from_account, type })) break;
+      const { user: uWith, error: uWithErr } = await getUsers({ single: params.from_account });
+      if (uWithErr) {
+        console.error(uWithErr);
+        break;
+      }
+      if (!await checkUserNotifications({ user: uWith, type })) break;
       notifications.push([params.from_account, Object.assign(params, { type: 'withdraw_route', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from_account,
         `Account ${params.to_account} registered withdraw route for ${params.from_account} account`,
@@ -221,7 +243,12 @@ const getNotifications = async (operation) => {
       notifications = _.concat(notifications, await fromComment(operation, params));
       break;
     case 'fillOrder':
-      if (!await checkUserNotifications({ name: params.account, type })) break;
+      const { user: uFill, error: uFillErr } = await getUsers({ single: params.account });
+      if (uFillErr) {
+        console.error(uFillErr);
+        break;
+      }
+      if (!await checkUserNotifications({ user: uFill, type })) break;
       notifications.push([params.account, {
         type,
         account: params.account,
@@ -240,7 +267,12 @@ const getNotifications = async (operation) => {
       notifications = _.concat(notifications, await fromCustomJSON(operation, params));
       break;
     case 'account_witness_vote':
-      if (!await checkUserNotifications({ name: params.witness, type: 'witness_vote' })) break;
+      const { user: uWitness, error: uWitnessErr } = await getUsers({ single: params.witness });
+      if (uWitnessErr) {
+        console.error(uWitnessErr);
+        break;
+      }
+      if (!await checkUserNotifications({ user: uWitness, type: 'witness_vote' })) break;
       /** Find witness vote */
       notifications.push([params.witness, {
         type: 'witness_vote',
@@ -251,7 +283,12 @@ const getNotifications = async (operation) => {
       }]);
       break;
     case 'transfer':
-      if (!await checkUserNotifications({ name: params.to, type, amount: params.amount })) break;
+      const { user: uTransfer, error: getUTransferErr } = await getUsers({ single: params.to });
+      if (getUTransferErr) {
+        console.error(getUTransferErr);
+        break;
+      }
+      if (!await checkUserNotifications({ user: uTransfer, type, amount: params.amount })) break;
       /** Find transfer */
       notifications.push([params.to, {
         type: 'transfer',
@@ -297,9 +334,14 @@ const prepareDataForRedis = (notifications) => {
   return redisOps;
 };
 
-const checkUserNotifications = async ({ name, type, amount }) => {
-  const { user, error } = await userModel.findOne(name);
-  if (error) return console.error(error.message);
+const getUsers = async ({ arr, single }) => {
+  const { users, error } = await userModel.findByNames(arr || [single]);
+  if (error) return { error };
+  if (single) return { user: users[0] };
+  return { users };
+};
+
+const checkUserNotifications = async ({ user, type, amount }) => {
   if (amount) {
     const value = amount.split(' ')[0];
     const cryptoType = amount.split(' ')[1];

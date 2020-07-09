@@ -14,7 +14,6 @@ exports.getCurrencyFromCoingecko = async (type) => {
   }
   try {
     const result = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${currency}&vs_currencies=usd`);
-    console.log(result);
     const usdCurrency = result.data[currency].usd;
     return { usdCurrency };
   } catch (error) {
