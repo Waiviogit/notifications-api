@@ -4,7 +4,7 @@ const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
 const { getAmountFromVests } = require('./dsteemHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
-const { userModel } = require('../models');
+const { userModel, App } = require('../models');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
 
 const fromCustomJSON = async (operation, params) => {
@@ -87,8 +87,10 @@ const fromComment = async (operation, params) => {
   if (mentions.length) {
     const { users, error } = await getUsers({ arr: mentions });
     if (error) return console.error(error);
+    const serviceBots = await getServiceBots();
     for (const mention of mentions) {
       if (!await checkUserNotifications({ user: _.find(users, { name: mention }), type: 'mention' })) continue;
+      if (_.includes(serviceBots || [], params.author)) continue;
       const notification = {
         type: 'mention',
         is_root_post: isRootPost,
@@ -332,6 +334,18 @@ const prepareDataForRedis = (notifications) => {
     redisOps.push(['ltrim', key, 0, LIMIT - 1]);
   });
   return redisOps;
+};
+
+const getServiceBots = async () => {
+  const name = process.env.NODE_ENV === 'production' ? 'waivio' : 'waiviodev';
+  const { app, error: appError } = await App
+    .getOne({ condition: { name }, select: { service_bots: 1 } });
+  if (appError) return console.error(appError);
+  return _
+    .chain(app.service_bots)
+    .filter((el) => _.includes(el.roles, 'serviceBot'))
+    .map((el) => el.name)
+    .value();
 };
 
 const getUsers = async ({ arr, single }) => {
