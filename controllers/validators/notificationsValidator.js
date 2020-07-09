@@ -133,5 +133,12 @@ exports.operationsSchema = Joi.object().keys({
       author_permlink: Joi.string().required(),
       object_name: Joi.string().required(),
     }),
+  }, {
+    is: 'claimReward',
+    then: Joi.object().keys({
+      account: Joi.string().required(),
+      reward_steem: Joi.string().required(),
+      reward_sbd: Joi.string().required(),
+    }),
   }]),
 }).options({ allowUnknown: true, stripUnknown: true });
