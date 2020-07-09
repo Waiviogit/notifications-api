@@ -90,7 +90,7 @@ const fromComment = async (operation, params) => {
     const serviceBots = await getServiceBots();
     for (const mention of mentions) {
       if (!await checkUserNotifications({ user: _.find(users, { name: mention }), type: 'mention' })) continue;
-      if (_.includes(serviceBots, params.author)) continue;
+      if (_.includes(serviceBots || [], params.author)) continue;
       const notification = {
         type: 'mention',
         is_root_post: isRootPost,
