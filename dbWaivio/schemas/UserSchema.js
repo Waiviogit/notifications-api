@@ -1,8 +1,22 @@
 const mongoose = require('mongoose');
-const db = require('../../dbWaivio/waivioDB_connection');
+const db = require('../waivioDB_connection');
 const LANGUAGES = require('../../constants/languages');
 
 const { Schema } = mongoose;
+
+const UserNotificationsSchema = new Schema({
+  activationCampaign: { type: Boolean, default: true },
+  follow: { type: Boolean, default: true },
+  fillOrder: { type: Boolean, default: true },
+  mention: { type: Boolean, default: true },
+  minimalTransfer: { type: Number, default: 0 },
+  reblog: { type: Boolean, default: true },
+  reply: { type: Boolean, default: true },
+  'status-change': { type: Boolean, default: true },
+  transfer: { type: Boolean, default: true },
+  withdraw_route: { type: Boolean, default: true },
+  witness_vote: { type: Boolean, default: true },
+}, { _id: false });
 
 const UserMetadataSchema = new Schema({
   notifications_last_timestamp: { type: Number, default: 0 },
@@ -22,6 +36,7 @@ const UserMetadataSchema = new Schema({
       type: Number, min: 1, max: 10000, default: 5000,
     }, // default percent of your upvotes
     votingPower: { type: Boolean, default: false }, // dynamic toggle of vote power on each vote
+    userNotifications: { type: UserNotificationsSchema, default: () => ({}) },
   },
   bookmarks: { type: [String], default: [] },
   drafts: {
