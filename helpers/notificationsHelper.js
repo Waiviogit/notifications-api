@@ -315,6 +315,24 @@ const getNotifications = async (operation) => {
       break;
     case 'withdraw_vesting':
       notifications.push(await withdraw(operation, params));
+      break;
+    case 'claimReward':
+      const { user: uClaim, error: uClaimErr } = await getUsers({ single: params.account });
+      if (uClaimErr) {
+        console.error(uClaimErr);
+        break;
+      }
+      if (!await checkUserNotifications({ user: uClaim, type })) break;
+      notifications.push([params.account, {
+        type: 'claimReward',
+        account: params.account,
+        rewardHive: params.reward_steem,
+        rewardHBD: params.reward_sbd,
+        timestamp: Math.round(new Date().valueOf() / 1000),
+        block: operation.block,
+      }]);
+      console.log(notifications);
+      break;
   }
   return notifications;
 };

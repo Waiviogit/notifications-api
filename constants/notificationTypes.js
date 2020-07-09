@@ -15,4 +15,5 @@ module.exports = [
   'transfer_from_savings',
   'activateCampaign',
   'suspendedStatus',
+  'claimReward',
 ];
