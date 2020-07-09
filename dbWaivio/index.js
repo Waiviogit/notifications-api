@@ -7,5 +7,6 @@ module.exports = {
   Mongoose: db,
   models: {
     User: require('./schemas/UserSchema'),
+    App: require('./schemas/AppSchema'),
   },
 };
