@@ -10,32 +10,32 @@ exports.operationsSchema = Joi.object().keys({
       from: Joi.string().required(),
       to: Joi.string().required(),
       amount: Joi.string().required(),
-    }).required(),
+    }),
   }, {
     is: 'change_recovery_account',
     then: Joi.object().keys({
       account_to_recover: Joi.string().required(),
       new_recovery_account: Joi.string().required(),
-    }).required(),
+    }),
   }, {
     is: 'transfer_to_vesting',
     then: Joi.object().keys({
       from: Joi.string().required(),
       to: Joi.string().required(),
       amount: Joi.string().required(),
-    }).required(),
+    }),
   }, {
     is: 'changePassword',
     then: Joi.object().keys({
       account: Joi.string().required(),
-    }).required(),
+    }),
   }, {
     is: 'withdraw_route',
     then: Joi.object().keys({
       percent: Joi.number().required(),
       from_account: Joi.string().required(),
       to_account: Joi.string().required(),
-    }).required(),
+    }),
   }, {
     is: 'comment',
     then: Joi.object().keys({
@@ -46,7 +46,7 @@ exports.operationsSchema = Joi.object().keys({
       title: Joi.string().allow('').required(),
       body: Joi.string().required(),
       reply: Joi.boolean().default(false),
-    }).required(),
+    }),
   }, {
     is: 'suspendedStatus',
     then: Joi.object().keys({
@@ -54,7 +54,7 @@ exports.operationsSchema = Joi.object().keys({
       reviewAuthor: Joi.string().required(),
       reviewPermlink: Joi.string().required(),
       days: Joi.number().required(),
-    }).required(),
+    }),
   }, {
     is: 'custom_json',
     then: Joi.object().keys({
@@ -71,7 +71,7 @@ exports.operationsSchema = Joi.object().keys({
           following: Joi.string().required(),
         }),
       }),
-    }).required(),
+    }),
   }, {
     is: 'transfer',
     then: Joi.object().keys({
@@ -79,20 +79,20 @@ exports.operationsSchema = Joi.object().keys({
       from: Joi.string().required(),
       amount: Joi.string().required(),
       memo: Joi.string().allow('').required(),
-    }).required(),
+    }),
   }, {
     is: 'withdraw_vesting',
     then: Joi.object().keys({
       account: Joi.string().required(),
       vesting_shares: Joi.string().required(),
-    }).required(),
+    }),
   }, {
     is: 'account_witness_vote',
     then: Joi.object().keys({
       account: Joi.string().required(),
       approve: Joi.boolean().required(),
       witness: Joi.string().required(),
-    }).required(),
+    }),
   }, {
     is: 'restaurantStatus',
     then: Joi.object().keys({
@@ -103,7 +103,7 @@ exports.operationsSchema = Joi.object().keys({
       voter: Joi.string().allow(null).default(null),
       oldStatus: Joi.string().allow('').required(),
       newStatus: Joi.string().allow('').required(),
-    }).required(),
+    }),
   }, {
     is: 'fillOrder',
     then: Joi.object().keys({
@@ -113,7 +113,7 @@ exports.operationsSchema = Joi.object().keys({
       timestamp: Joi.number().required(),
       exchanger: Joi.string().required(),
       orderId: Joi.number().required(),
-    }).required(),
+    }),
   }, {
     is: 'rejectUpdate',
     then: Joi.object().keys({
@@ -140,5 +140,5 @@ exports.operationsSchema = Joi.object().keys({
       reward_steem: Joi.string().required(),
       reward_sbd: Joi.string().required(),
     }),
-  }]),
+  }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });
