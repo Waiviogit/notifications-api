@@ -47,12 +47,13 @@ const fromCustomJSON = async (operation, params) => {
 
 const fromComment = async (operation, params) => {
   const notifications = [];
+  let notification;
   const isRootPost = !params.parent_author;
   /** Find replies */
+  const { users: authors } = await getUsers({ arr: [params.parent_author, params.author] });
   if (!isRootPost) {
-    const { user } = await getUsers({ single: params.parent_author });
-    if (await checkUserNotifications({ user, type: 'reply' })) {
-      const notification = {
+    if (await checkUserNotifications({ user: _.find(authors, { name: params.parent_author }), type: 'reply' })) {
+      notification = {
         type: 'reply',
         parent_permlink: params.parent_permlink,
         author: params.author,
@@ -65,7 +66,29 @@ const fromComment = async (operation, params) => {
         `${params.author} replied to ${params.parent_author} comment`,
         `https://www.waivio.com/@${params.parent_author}/${params.parent_permlink}`);
       notifications.push([params.parent_author, notification]);
+    } else if (await checkUserNotifications({ user: _.find(authors, { name: params.author }), type: 'myComment' })) {
+      notification = {
+        type: 'myComment',
+        permlink: params.permlink,
+        author: params.author,
+        timestamp: Math.round(new Date().valueOf() / 1000),
+        block: operation.block,
+      };
+      await shareMessageBySubscribers(params.author, `${params.author} write a comment`,
+        `https://www.waivio.com/@${params.author}/${params.permlink}`);
+      notifications.push([params.author, notification]);
     }
+  } else if (isRootPost && await checkUserNotifications({ user: _.find(authors, { name: params.author }), type: 'myPost' })) {
+    notification = {
+      type: 'myPost',
+      permlink: params.permlink,
+      author: params.author,
+      timestamp: Math.round(new Date().valueOf() / 1000),
+      block: operation.block,
+    };
+    await shareMessageBySubscribers(params.author, `${params.author} published a post`,
+      `https://www.waivio.com/@${params.author}/${params.permlink}`);
+    notifications.push([params.author, notification]);
   }
 
   /** Find mentions */
@@ -91,7 +114,7 @@ const fromComment = async (operation, params) => {
     for (const mention of mentions) {
       if (!await checkUserNotifications({ user: _.find(users, { name: mention }), type: 'mention' })) continue;
       if (_.includes(serviceBots || [], params.author)) continue;
-      const notification = {
+      notification = {
         type: 'mention',
         is_root_post: isRootPost,
         author: params.author,
