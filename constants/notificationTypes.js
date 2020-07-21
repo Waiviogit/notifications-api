@@ -1,4 +1,3 @@
-
 module.exports = [
   'comment',
   'custom_json',
@@ -16,4 +15,5 @@ module.exports = [
   'activateCampaign',
   'suspendedStatus',
   'claimReward',
+  'like',
 ];

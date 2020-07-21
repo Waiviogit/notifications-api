@@ -1,10 +1,11 @@
 const _ = require('lodash');
+const crypto = require('crypto');
 const { LIMIT, NOTIFICATION_EXPIRY } = require('./constants');
 const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
 const { getAmountFromVests } = require('./dsteemHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
-const { userModel, App } = require('../models');
+const { userModel, App, postModel } = require('../models');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
 
 const fromCustomJSON = async (operation, params) => {
@@ -360,6 +361,62 @@ const getNotifications = async (operation) => {
         `${params.account} claimed reward: ${params.reward_steem}, ${params.reward_sbd}`,
         `https://www.waivio.com/@${params.account}/transfers`);
       break;
+    case 'like':
+      const { users } = await getUsers({ arr: _.map(params.votes, 'author') });
+      const { posts } = await postModel.find({
+        author: { $in: _.map(params.votes, 'author') }, permlink: { $in: _.map(params.votes, 'permlink') },
+      }, {
+        author: 1, permlink: 1, title: 1, active_votes: 1,
+      });
+      for (const vote of params.votes) {
+        if (!await checkUserNotifications({
+          user: _.find(users, { name: vote.author }), type,
+        })) continue;
+        const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
+        if (!post) continue;
+        const title = _.get(post, 'title', '');
+        const votesLength = _
+          .chain(post.active_votes)
+          .filter((v) => v.weight !== 0)
+          .get('length')
+          .value();
+        const voter = votesLength < 5
+          ? vote.voter
+          : _.sortBy(post.active_votes, 'weight').reverse()[0].voter;
+        const likedYourPost = votesLength
+          ? `and ${votesLength} others liked your post`
+          : 'liked your post';
+        notifications.push([vote.author, {
+          type,
+          voter,
+          title,
+          author: vote.author,
+          permlink: vote.permlink,
+          message: `${voter} ${likedYourPost} "${title}"`,
+          fieldId: `${type}/${vote.author}/${vote.permlink}`,
+          timestamp: Math.round(new Date().valueOf() / 1000),
+          block: operation.block,
+        }]);
+      }
+      for (const vote of params.votes) {
+        if (!await checkUserNotifications({
+          user: _.find(users, { name: vote.voter }), type: 'myLike',
+        })) continue;
+        const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
+        if (!post) continue;
+        const title = _.get(post, 'title', '');
+        notifications.push([vote.voter, {
+          type: 'myLike',
+          voter: vote.voter,
+          title,
+          author: vote.author,
+          permlink: vote.permlink,
+          message: `you liked the post "${title}"`,
+          timestamp: Math.round(new Date().valueOf() / 1000),
+          block: operation.block,
+        }]);
+      }
+      break;
   }
   return notifications;
 };
@@ -368,10 +425,13 @@ const prepareDataForRedis = (notifications) => {
   const redisOps = [];
   notifications.forEach((notification) => {
     const key = `notifications:${notification[0]}`;
+    const hash = notification[1].type === 'like'
+      ? notification[1].fieldId
+      : crypto.randomBytes(20).toString('hex');
     redisOps.push([
-      'lpush',
+      'hmset',
       key,
-      JSON.stringify(notification[1]),
+      [hash, JSON.stringify(notification[1])],
     ]);
     redisOps.push(['expire', key, NOTIFICATION_EXPIRY]);
     redisOps.push(['ltrim', key, 0, LIMIT - 1]);
@@ -415,6 +475,7 @@ const setNotifications = async ({ params }) => {
   const notifications = await getNotifications(params);
   const redisOps = prepareDataForRedis(notifications);
   await redisNotifyClient.multi(redisOps).execAsync();
+  console.log('bla');
   clientSend(notifications);
 };
 
