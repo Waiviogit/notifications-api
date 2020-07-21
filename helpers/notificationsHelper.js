@@ -434,7 +434,6 @@ const prepareDataForRedis = (notifications) => {
       [hash, JSON.stringify(notification[1])],
     ]);
     redisOps.push(['expire', key, NOTIFICATION_EXPIRY]);
-    redisOps.push(['ltrim', key, 0, LIMIT - 1]);
   });
   return redisOps;
 };
@@ -475,7 +474,6 @@ const setNotifications = async ({ params }) => {
   const notifications = await getNotifications(params);
   const redisOps = prepareDataForRedis(notifications);
   await redisNotifyClient.multi(redisOps).execAsync();
-  console.log('bla');
   clientSend(notifications);
 };
 
