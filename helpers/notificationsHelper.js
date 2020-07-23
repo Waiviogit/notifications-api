@@ -370,59 +370,114 @@ const getNotifications = async (operation) => {
         author: 1, permlink: 1, title: 1, active_votes: 1,
       });
 
-      for (const vote of params.votes) {
-        if (!await checkUserNotifications({
-          user: _.find(users, { name: vote.author }), type,
-        })) continue;
-        const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
-        if (!post) continue;
-        const votesLength = _
-          .chain(post.active_votes)
-          .filter((v) => v.weight !== 0)
-          .get('length')
-          .value();
-        const minWeight = votesLength > 10
-          ? _.sortBy(post.active_votes, 'weight').reverse()[4].weight
-          : 0;
-        const { result: followVoter } = await subscriptionModel
-          .find({ follower: vote.author, following: vote.voter });
-        if (votesLength > 10 && vote.weight < minWeight && !followVoter) continue;
-        const likedYourPost = votesLength
-          ? `and ${votesLength} others liked your post`
-          : 'liked your post';
-        notifications.push([vote.author, {
-          type,
-          title: post.title,
-          voter: vote.voter,
-          author: vote.author,
-          permlink: vote.permlink,
-          likesCount: votesLength,
-          message: `${vote.voter} ${likedYourPost} "${post.title}"`,
-          timestamp: Math.round(new Date().valueOf() / 1000),
-          block: operation.block,
-        }]);
-      }
-
-      for (const vote of params.votes) {
-        if (!await checkUserNotifications({
-          user: _.find(users, { name: vote.voter }), type: 'myLike',
-        })) continue;
-        const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
-        if (!post) continue;
-        notifications.push([vote.voter, {
-          type: 'myLike',
-          title: post.title,
-          voter: vote.voter,
-          author: vote.author,
-          permlink: vote.permlink,
-          message: `you liked the post "${post.title}"`,
-          timestamp: Math.round(new Date().valueOf() / 1000),
-          block: operation.block,
-        }]);
-      }
+      await prepareLikeNotifications({
+        params, users, posts, type, operation, notifications,
+      });
+      await prepareMyLikeNotifications({
+        params, users, posts, notifications, operation,
+      });
       break;
   }
   return notifications;
+};
+
+const prepareLikeNotifications = async ({
+  params, users, posts, type, operation, notifications,
+}) => {
+  for (const vote of params.votes) {
+    if (!await checkUserNotifications({
+      user: _.find(users, { name: vote.author }), type,
+    })) continue;
+    const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
+    if (!post) continue;
+    const newTop = [];
+    const likesCount = _
+      .chain(post.active_votes)
+      .filter((v) => v.weight !== 0)
+      .get('length')
+      .value();
+    let minWeight = 0;
+    if (likesCount > 10) {
+      const [top1, top2, top3, top4, top5] = _.sortBy(post.active_votes, 'weight').reverse();
+      minWeight = top5.weight;
+      vote.weight > minWeight
+        ? newTop.push(top1.weight, top2.weight, top3.weight, top4.weight, top5.weight, vote.weight)
+        : newTop.push(top1.weight, top2.weight, top3.weight, top4.weight, top5.weight);
+    }
+    const { result: followVoter } = await subscriptionModel
+      .find({ follower: vote.author, following: vote.voter });
+    if (likesCount > 10 && vote.weight < minWeight && !followVoter) continue;
+
+    const notification = [vote.author, {
+      type,
+      voter: vote.voter,
+      likesCount,
+      title: post.title,
+      newTop,
+      author: vote.author,
+      permlink: vote.permlink,
+      timestamp: Math.round(new Date().valueOf() / 1000),
+      block: operation.block,
+    }];
+    if (notifications.length) {
+      const samePostLike = _.find(
+        notifications,
+        (el) => el[1].author === vote.author && el[1].permlink === vote.permlink,
+        notifications.length - 1,
+      );
+
+      if (samePostLike) {
+        const topArr = samePostLike[1].newTop.sort(((a, b) => b - a));
+        if (followVoter) {
+          changeNotification({
+            notification, topArr, notifications, samePostLike, vote,
+          });
+          continue;
+        }
+        if (vote.weight > topArr[4]) {
+          changeNotification({
+            notification, topArr, notifications, samePostLike, vote,
+          });
+          continue;
+        }
+        continue;
+      } else {
+        notifications.push(notification);
+        continue;
+      }
+    }
+    notifications.push(notification);
+  }
+};
+
+const prepareMyLikeNotifications = async ({
+  params, users, posts, notifications, operation,
+}) => {
+  for (const vote of params.votes) {
+    if (!await checkUserNotifications({
+      user: _.find(users, { name: vote.voter }), type: 'myLike',
+    })) continue;
+    const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
+    if (!post) continue;
+    notifications.push([vote.voter, {
+      type: 'myLike',
+      title: post.title,
+      voter: vote.voter,
+      author: vote.author,
+      permlink: vote.permlink,
+      timestamp: Math.round(new Date().valueOf() / 1000),
+      block: operation.block,
+    }]);
+  }
+};
+
+const changeNotification = ({
+  notification, topArr, notifications, samePostLike, vote,
+}) => {
+  topArr.push(vote.weight);
+  notification[1].newTop = topArr;
+  notification[1].likesCount = samePostLike[1].likesCount + 1;
+  notifications.push(notification);
 };
 
 const prepareDataForRedis = (notifications) => {
