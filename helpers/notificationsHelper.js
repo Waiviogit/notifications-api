@@ -4,8 +4,10 @@ const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
 const { getAmountFromVests } = require('./dsteemHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
-const { userModel, App } = require('../models');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
+const {
+  userModel, App, postModel, subscriptionModel,
+} = require('../models');
 
 const fromCustomJSON = async (operation, params) => {
   const notifications = [];
@@ -359,6 +361,65 @@ const getNotifications = async (operation) => {
       await shareMessageBySubscribers(params.account,
         `${params.account} claimed reward: ${params.reward_steem}, ${params.reward_sbd}`,
         `https://www.waivio.com/@${params.account}/transfers`);
+      break;
+    case 'like':
+      const { users } = await getUsers({ arr: _.map(params.votes, 'author') });
+      const { posts } = await postModel.find({
+        author: { $in: _.map(params.votes, 'author') }, permlink: { $in: _.map(params.votes, 'permlink') },
+      }, {
+        author: 1, permlink: 1, title: 1, active_votes: 1,
+      });
+
+      for (const vote of params.votes) {
+        if (!await checkUserNotifications({
+          user: _.find(users, { name: vote.author }), type,
+        })) continue;
+        const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
+        if (!post) continue;
+        const votesLength = _
+          .chain(post.active_votes)
+          .filter((v) => v.weight !== 0)
+          .get('length')
+          .value();
+        const minWeight = votesLength > 10
+          ? _.sortBy(post.active_votes, 'weight').reverse()[4].weight
+          : 0;
+        const { result: followVoter } = await subscriptionModel
+          .find({ follower: vote.author, following: vote.voter });
+        if (votesLength > 10 && vote.weight < minWeight && !followVoter) continue;
+        const likedYourPost = votesLength
+          ? `and ${votesLength} others liked your post`
+          : 'liked your post';
+        notifications.push([vote.author, {
+          type,
+          title: post.title,
+          voter: vote.voter,
+          author: vote.author,
+          permlink: vote.permlink,
+          likesCount: votesLength,
+          message: `${vote.voter} ${likedYourPost} "${post.title}"`,
+          timestamp: Math.round(new Date().valueOf() / 1000),
+          block: operation.block,
+        }]);
+      }
+
+      for (const vote of params.votes) {
+        if (!await checkUserNotifications({
+          user: _.find(users, { name: vote.voter }), type: 'myLike',
+        })) continue;
+        const post = _.find(posts, { author: vote.author, permlink: vote.permlink });
+        if (!post) continue;
+        notifications.push([vote.voter, {
+          type: 'myLike',
+          title: post.title,
+          voter: vote.voter,
+          author: vote.author,
+          permlink: vote.permlink,
+          message: `you liked the post "${post.title}"`,
+          timestamp: Math.round(new Date().valueOf() / 1000),
+          block: operation.block,
+        }]);
+      }
       break;
   }
   return notifications;
