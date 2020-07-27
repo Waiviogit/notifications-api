@@ -8,5 +8,7 @@ module.exports = {
   models: {
     User: require('./schemas/UserSchema'),
     App: require('./schemas/AppSchema'),
+    Post: require('./schemas/PostSchema'),
+    Subscriptions: require('./schemas/SubscriptionSchema'),
   },
 };

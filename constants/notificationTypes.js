@@ -16,4 +16,5 @@ module.exports = [
   'activateCampaign',
   'suspendedStatus',
   'claimReward',
+  'like',
 ];
