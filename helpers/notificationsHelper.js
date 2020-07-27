@@ -4,7 +4,7 @@ const { clientSend } = require('./wssHelper');
 const { redisNotifyClient } = require('../redis/redis');
 const { getAmountFromVests } = require('./dsteemHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
-const { userModel, App } = require('../models');
+const { userModel, App, subscribeNotifications } = require('../models');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
 
 const fromCustomJSON = async (operation, params) => {
@@ -417,5 +417,21 @@ const setNotifications = async ({ params }) => {
   await redisNotifyClient.multi(redisOps).execAsync();
   clientSend(notifications);
 };
+
+const addNotificationForSubscribers = async ({
+  user, notifications, notificationData, changeType = false,
+}) => {
+  const { users, error } = await subscribeNotifications.getFollowers({ following: user });
+  if (error) console.error(error.message);
+  if (!users.length) return;
+  if (changeType) notificationData.type = changeType;
+  _.forEach(users, (el) => {
+    notifications.push([el, notificationData]);
+  });
+};
+
+(async () => {
+  await addNotificationForSubscribers({user: 'you', changeType: 'yo', notificationData: { type: 'trruudf' }, notifications: []});
+})();
 
 module.exports = { getNotifications, prepareDataForRedis, setNotifications };

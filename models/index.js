@@ -3,4 +3,5 @@ module.exports = {
   notifiersModel: require('./notifiersModel'),
   userModel: require('./usersModel'),
   App: require('./AppModel'),
+  subscribeNotifications: require('./subscribeNotificationsModel'),
 };
