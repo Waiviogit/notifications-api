@@ -161,7 +161,7 @@ const fromRestaurantStatus = async (operation, params) => {
   const { users, error } = await getUsers({ arr: params.experts });
   if (error) return console.error(error);
   for (const expert of params.experts) {
-    if (!await checkUserNotifications({ user: _.find(users, { name: expert }), type: 'status-change' })) continue;
+    if (!await checkUserNotifications({ user: _.find(users, { name: expert }), type: 'statusChange' })) continue;
     const notification = {
       type: 'status-change',
       author: _.get(params, 'voter', params.creator),
@@ -214,6 +214,12 @@ const getNotifications = async (operation) => {
         `https://www.waivio.com/@${params.account_to_recover}`);
       break;
     case 'transfer_to_vesting':
+      const { user: vestingUser, error: vestingError } = await getUsers({ single: params.from });
+      if (vestingError) {
+        console.error(vestingError.message);
+        break;
+      }
+      if (!await checkUserNotifications({ user: vestingUser, type: 'powerUp' })) break;
       notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting', timestamp: Math.round(new Date().valueOf() / 1000) })]);
       await shareMessageBySubscribers(params.from,
         `Account ${params.from} powered up ${params.amount} to ${params.to}`,
