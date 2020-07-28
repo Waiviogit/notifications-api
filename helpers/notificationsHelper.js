@@ -366,7 +366,7 @@ const getNotifications = async (operation) => {
       const usersArr = [...new Set(_.concat(_.map(params.votes, 'author'), _.map(params.votes, 'voter')))];
       const { users } = await getUsers({ arr: usersArr });
       const { posts } = await postModel.find({
-        author: { $in: _.map(params.votes, 'author') }, permlink: { $in: _.map(params.votes, 'permlink') },
+        author: { $in: _.map(params.votes, (el) => el.guest_author || el.author) }, permlink: { $in: _.map(params.votes, 'permlink') },
       }, {
         author: 1, permlink: 1, title: 1, active_votes: 1,
       });
@@ -389,6 +389,7 @@ const prepareLikeNotifications = async ({
     if (!await checkUserNotifications({
       user: _.find(users, { name: vote.author }), type,
     })) continue;
+    if (_.get(vote, 'guest_author', false)) vote.author = vote.guest_author;
     const post = _.find(posts, (el) => el.author === vote.author && el.permlink === vote.permlink);
     if (!post) continue;
 
