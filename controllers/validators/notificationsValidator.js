@@ -140,5 +140,18 @@ exports.operationsSchema = Joi.object().keys({
       reward_steem: Joi.string().required(),
       reward_sbd: Joi.string().required(),
     }),
+  }, {
+    is: 'like',
+    then: Joi.object().keys({
+      votes: Joi.array().items(
+        Joi.object().keys({
+          voter: Joi.string().required(),
+          author: Joi.string().required(),
+          permlink: Joi.string().required(),
+          weight: Joi.number().required(),
+          guest_author: Joi.string(),
+        }),
+      ),
+    }),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });
