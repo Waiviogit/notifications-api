@@ -30,14 +30,19 @@ const fromCustomJSON = async (operation, params) => {
     case 'reblog':
       const { user: uReblog, error: uReblogErr } = await getUsers({ single: params.json.author });
       if (uReblogErr) return console.error(uReblogErr);
-      if (!await checkUserNotifications({ user: uReblog, type: 'reblog' })) break;
       const notificationData = {
         type: 'reblog',
         account: params.json.account,
+        author: params.json.author,
         permlink: params.json.permlink,
+        title: params.json.title,
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       };
+      await addNotificationForSubscribers({
+        user: params.json.account, notifications, notificationData, changeType: 'bellReblog',
+      });
+      if (!await checkUserNotifications({ user: uReblog, type: 'reblog' })) break;
       await shareMessageBySubscribers(params.json.author,
         `${params.json.account} reblogged ${params.json.author} post`,
         `https://www.waivio.com/@${params.json.author}/${params.json.permlink}`);
