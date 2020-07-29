@@ -10,6 +10,6 @@ module.exports = {
     App: require('./schemas/AppSchema'),
     Post: require('./schemas/PostSchema'),
     Subscriptions: require('./schemas/SubscriptionSchema'),
-    SubscribeNotifications: require('./schemas/SubscribeNotificationsSchema'),
+    BellNotifications: require('./schemas/BellNotificationsSchema'),
   },
 };

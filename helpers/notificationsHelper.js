@@ -6,7 +6,7 @@ const { getAmountFromVests } = require('./dsteemHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
 const {
-  userModel, App, postModel, subscriptionModel, subscribeNotifications,
+  userModel, App, postModel, subscriptionModel, bellNotifications,
 } = require('../models');
 
 const fromCustomJSON = async (operation, params) => {
@@ -80,17 +80,23 @@ const fromComment = async (operation, params) => {
         `https://www.waivio.com/@${params.author}/${params.permlink}`);
       notifications.push([params.author, notification]);
     }
-  } else if (isRootPost && await checkUserNotifications({ user: _.find(authors, { name: params.author }), type: 'myPost' })) {
+  } else if (isRootPost) {
     notification = {
       type: 'myPost',
       permlink: params.permlink,
       author: params.author,
+      title: params.title,
       timestamp: Math.round(new Date().valueOf() / 1000),
       block: operation.block,
     };
-    await shareMessageBySubscribers(params.author, `${params.author} published a post`,
-      `https://www.waivio.com/@${params.author}/${params.permlink}`);
-    notifications.push([params.author, notification]);
+    await addNotificationForSubscribers({
+      user: params.author, notifications, notificationData: notification, changeType: 'bellPost',
+    });
+    if (await checkUserNotifications({ user: _.find(authors, { name: params.author }), type: 'myPost' })) {
+      await shareMessageBySubscribers(params.author, `${params.author} published a post`,
+        `https://www.waivio.com/@${params.author}/${params.permlink}`);
+      notifications.push([params.author, notification]);
+    }
   }
 
   /** Find mentions */
@@ -473,6 +479,19 @@ const prepareMyLikeNotifications = async ({
   }
 };
 
+const addNotificationForSubscribers = async ({
+  user, notifications, notificationData, changeType,
+}) => {
+  const { users, error } = await bellNotifications.getFollowers({ following: user });
+  if (error) console.error(error.message);
+  if (!users.length) return;
+  const notificationCopy = { ...notificationData };
+  notificationCopy.type = changeType;
+  _.forEach(users, (el) => {
+    notifications.push([el, notificationCopy]);
+  });
+};
+
 const prepareDataForRedis = (notifications) => {
   const redisOps = [];
   notifications.forEach((notification) => {
@@ -525,18 +544,6 @@ const setNotifications = async ({ params }) => {
   const redisOps = prepareDataForRedis(notifications);
   await redisNotifyClient.multi(redisOps).execAsync();
   clientSend(notifications);
-};
-
-const addNotificationForSubscribers = async ({
-  user, notifications, notificationData, changeType = false,
-}) => {
-  const { users, error } = await subscribeNotifications.getFollowers({ following: user });
-  if (error) console.error(error.message);
-  if (!users.length) return;
-  if (changeType) notificationData.type = changeType;
-  _.forEach(users, (el) => {
-    notifications.push([el, notificationData]);
-  });
 };
 
 module.exports = { getNotifications, prepareDataForRedis, setNotifications };

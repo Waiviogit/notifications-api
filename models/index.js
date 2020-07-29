@@ -5,5 +5,5 @@ module.exports = {
   userModel: require('./usersModel'),
   postModel: require('./postModel'),
   App: require('./AppModel'),
-  subscribeNotifications: require('./subscribeNotificationsModel'),
+  bellNotifications: require('./bellNotificationsModel'),
 };
