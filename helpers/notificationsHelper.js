@@ -430,8 +430,4 @@ const addNotificationForSubscribers = async ({
   });
 };
 
-(async () => {
-  await addNotificationForSubscribers({user: 'you', changeType: 'yo', notificationData: { type: 'trruudf' }, notifications: []});
-})();
-
 module.exports = { getNotifications, prepareDataForRedis, setNotifications };
