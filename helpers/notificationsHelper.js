@@ -492,7 +492,7 @@ const addNotificationForSubscribers = async ({
   user, notifications, notificationData, changeType,
 }) => {
   const { users, error } = await bellNotifications.getFollowers({ following: user });
-  if (error) console.error(error.message);
+  if (error) return console.error(error.message);
   if (!users.length) return;
   const notificationCopy = { ...notificationData };
   notificationCopy.type = changeType;
