@@ -176,7 +176,7 @@ const fromRestaurantStatus = async (operation, params) => {
   const { users, error } = await getUsers({ arr: params.experts });
   if (error) return console.error(error);
   for (const expert of params.experts) {
-    if (!await checkUserNotifications({ user: _.find(users, { name: expert }), type: 'status-change' })) continue;
+    if (!await checkUserNotifications({ user: _.find(users, { name: expert }), type: 'statusChange' })) continue;
     const notification = {
       type: 'status-change',
       author: _.get(params, 'voter', params.creator),
