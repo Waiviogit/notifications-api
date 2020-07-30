@@ -12,16 +12,20 @@ const {
 const fromCustomJSON = async (operation, params) => {
   const notifications = [];
   switch (params.id) {
-    case 'follow ':
+    case 'follow':
       const { user, error } = await getUsers({ single: params.json.following });
       if (error) return console.error(error);
-      if (!await checkUserNotifications({ user, type: 'follow' })) break;
       const notification = {
         type: 'follow',
         follower: params.json.follower,
+        following: params.json.following,
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       };
+      await addNotificationForSubscribers({
+        user: params.json.follower, notifications, notificationData: notification, changeType: 'bellFollow',
+      });
+      if (!await checkUserNotifications({ user, type: 'follow' })) break;
       await shareMessageBySubscribers(params.json.following,
         `${params.json.follower} started following ${params.json.following}`,
         `https://www.waivio.com/@${params.json.following}/followers`);
