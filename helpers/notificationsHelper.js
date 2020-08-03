@@ -6,22 +6,26 @@ const { getAmountFromVests } = require('./dsteemHelper');
 const { shareMessageBySubscribers } = require('../telegram/broadcasts');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
 const {
-  userModel, App, postModel, subscriptionModel,
+  userModel, App, postModel, subscriptionModel, bellNotifications,
 } = require('../models');
 
 const fromCustomJSON = async (operation, params) => {
   const notifications = [];
   switch (params.id) {
-    case 'follow ':
+    case 'follow':
       const { user, error } = await getUsers({ single: params.json.following });
       if (error) return console.error(error);
-      if (!await checkUserNotifications({ user, type: 'follow' })) break;
       const notification = {
         type: 'follow',
         follower: params.json.follower,
+        following: params.json.following,
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       };
+      await addNotificationForSubscribers({
+        user: params.json.follower, notifications, notificationData: notification, changeType: 'bellFollow',
+      });
+      if (!await checkUserNotifications({ user, type: 'follow' })) break;
       await shareMessageBySubscribers(params.json.following,
         `${params.json.follower} started following ${params.json.following}`,
         `https://www.waivio.com/@${params.json.following}/followers`);
@@ -30,14 +34,19 @@ const fromCustomJSON = async (operation, params) => {
     case 'reblog':
       const { user: uReblog, error: uReblogErr } = await getUsers({ single: params.json.author });
       if (uReblogErr) return console.error(uReblogErr);
-      if (!await checkUserNotifications({ user: uReblog, type: 'reblog' })) break;
       const notificationData = {
         type: 'reblog',
         account: params.json.account,
+        author: params.json.author,
         permlink: params.json.permlink,
+        title: params.json.title,
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       };
+      await addNotificationForSubscribers({
+        user: params.json.account, notifications, notificationData, changeType: 'bellReblog',
+      });
+      if (!await checkUserNotifications({ user: uReblog, type: 'reblog' })) break;
       await shareMessageBySubscribers(params.json.author,
         `${params.json.account} reblogged ${params.json.author} post`,
         `https://www.waivio.com/@${params.json.author}/${params.json.permlink}`);
@@ -80,17 +89,23 @@ const fromComment = async (operation, params) => {
         `https://www.waivio.com/@${params.author}/${params.permlink}`);
       notifications.push([params.author, notification]);
     }
-  } else if (isRootPost && await checkUserNotifications({ user: _.find(authors, { name: params.author }), type: 'myPost' })) {
+  } else if (isRootPost) {
     notification = {
       type: 'myPost',
       permlink: params.permlink,
       author: params.author,
+      title: params.title,
       timestamp: Math.round(new Date().valueOf() / 1000),
       block: operation.block,
     };
-    await shareMessageBySubscribers(params.author, `${params.author} published a post`,
-      `https://www.waivio.com/@${params.author}/${params.permlink}`);
-    notifications.push([params.author, notification]);
+    await addNotificationForSubscribers({
+      user: params.author, notifications, notificationData: notification, changeType: 'bellPost',
+    });
+    if (await checkUserNotifications({ user: _.find(authors, { name: params.author }), type: 'myPost' })) {
+      await shareMessageBySubscribers(params.author, `${params.author} published a post`,
+        `https://www.waivio.com/@${params.author}/${params.permlink}`);
+      notifications.push([params.author, notification]);
+    }
   }
 
   /** Find mentions */
@@ -471,6 +486,22 @@ const prepareMyLikeNotifications = async ({
       block: operation.block,
     }]);
   }
+};
+/*
+  in this method, we check if the user has subscribers who follow him on waivio (bell notifications)
+  and add them to notifications array that will be send on waivio
+ */
+const addNotificationForSubscribers = async ({
+  user, notifications, notificationData, changeType,
+}) => {
+  const { users, error } = await bellNotifications.getFollowers({ following: user });
+  if (error) return console.error(error.message);
+  if (!users.length) return;
+  const notificationCopy = { ...notificationData };
+  notificationCopy.type = changeType;
+  _.forEach(users, (el) => {
+    notifications.push([el, notificationCopy]);
+  });
 };
 
 const prepareDataForRedis = (notifications) => {

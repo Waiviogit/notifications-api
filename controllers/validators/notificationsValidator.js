@@ -65,6 +65,7 @@ exports.operationsSchema = Joi.object().keys({
           account: Joi.string().required(),
           author: Joi.string().required(),
           permlink: Joi.string().required(),
+          title: Joi.string().required(),
         }),
         otherwise: Joi.object().keys({
           follower: Joi.string().required(),
