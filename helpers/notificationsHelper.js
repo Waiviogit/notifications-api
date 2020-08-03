@@ -487,7 +487,10 @@ const prepareMyLikeNotifications = async ({
     }]);
   }
 };
-
+/*
+  in this method, we check if the user has subscribers who follow him on waivio (bell notifications)
+  and add them to notifications array that will be send on waivio
+ */
 const addNotificationForSubscribers = async ({
   user, notifications, notificationData, changeType,
 }) => {

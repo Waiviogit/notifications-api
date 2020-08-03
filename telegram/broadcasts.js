@@ -1,6 +1,9 @@
 const { notifiersModel } = require('../models');
 
-
+/*
+  in this method we check if the user has subscribers in the telegram,
+  and send a notification to the telegram
+ */
 exports.shareMessageBySubscribers = async (user, message, url) => {
   if (process.env.NODE_ENV !== 'production') return;
   const { WaivioBot } = require('./notificationsBot');
