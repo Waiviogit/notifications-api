@@ -331,14 +331,17 @@ const getNotifications = async (operation) => {
       }]);
       break;
     case 'transfer':
-      const { user: uTransfer, error: getUTransferErr } = await getUsers({ single: params.to });
+      const json = parseJson(params.memo);
+      const transferTo = _.get(json, 'id') === 'user_to_guest_transfer' ? json.to : params.to;
+
+      const { user: uTransfer, error: getUTransferErr } = await getUsers({ single: transferTo });
       if (getUTransferErr) {
         console.error(getUTransferErr);
         break;
       }
       if (!await checkUserNotifications({ user: uTransfer, type, amount: params.amount })) break;
       /** Find transfer */
-      notifications.push([params.to, {
+      notifications.push([transferTo, {
         type: 'transfer',
         from: params.from,
         amount: params.amount,
@@ -346,19 +349,19 @@ const getNotifications = async (operation) => {
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       }]);
-      await shareMessageBySubscribers(params.to,
-        `${params.from} transfered ${params.amount} to ${params.to}`,
-        `https://www.waivio.com/@${params.to}/transfers`);
+      await shareMessageBySubscribers(transferTo,
+        `${params.from} transfered ${params.amount} to ${transferTo}`,
+        `https://www.waivio.com/@${transferTo}/transfers`);
       notifications.push([params.from, {
         type: 'transferFrom',
-        to: params.to,
+        to: transferTo,
         amount: params.amount,
         memo: params.memo,
         timestamp: Math.round(new Date().valueOf() / 1000),
         block: operation.block,
       }]);
       await shareMessageBySubscribers(params.from,
-        `${params.from} transfered ${params.amount} to ${params.to}`,
+        `${params.from} transfered ${params.amount} to ${transferTo}`,
         `https://www.waivio.com/@${params.from}/transfers`);
       break;
     case 'withdraw_vesting':
@@ -401,6 +404,15 @@ const getNotifications = async (operation) => {
       break;
   }
   return notifications;
+};
+
+const parseJson = (json) => {
+  try {
+    return JSON.parse(json);
+  } catch (error) {
+    console.error(error.message);
+    return {};
+  }
 };
 
 const prepareLikeNotifications = async ({
@@ -540,8 +552,7 @@ const getUsers = async ({ arr, single }) => {
 
 const checkUserNotifications = async ({ user, type, amount }) => {
   if (amount) {
-    const value = amount.split(' ')[0];
-    const cryptoType = amount.split(' ')[1];
+    const [value, cryptoType] = amount.split(' ');
     const { usdCurrency, error: getRateError } = await getCurrencyFromCoingecko(cryptoType);
     if (getRateError) return true;
     const minimalTransfer = _.get(user, 'user_metadata.settings.userNotifications.minimalTransfer');
