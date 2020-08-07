@@ -211,6 +211,17 @@ const withdraw = async (operation, params) => {
   return [params.account, notification];
 };
 
+const campaignMessage = async ({ operation, params, type }) => ({
+  cMessage: [params.guideName, {
+    type,
+    name: params.name,
+    guideName: params.guideName,
+    requiredObject: params.requiredObject,
+    timestamp: Math.round(new Date().valueOf() / 1000),
+    block: operation.block,
+  }],
+});
+
 const getNotifications = async (operation) => {
   let notifications = [];
   const type = operation.id;
@@ -398,6 +409,10 @@ const getNotifications = async (operation) => {
       await prepareMyLikeNotifications({
         params, users, posts, notifications, operation,
       });
+      break;
+    case 'campaignMessage':
+      const { cMessage } = await campaignMessage({ operation, params, type });
+      notifications.push(cMessage);
       break;
   }
   return notifications;

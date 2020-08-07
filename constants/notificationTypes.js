@@ -17,4 +17,5 @@ module.exports = [
   'suspendedStatus',
   'claimReward',
   'like',
+  'campaignMessage',
 ];
