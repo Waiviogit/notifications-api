@@ -144,9 +144,11 @@ exports.operationsSchema = Joi.object().keys({
   }, {
     is: 'campaignMessage',
     then: Joi.object().keys({
-      name: Joi.string().required(),
+      author: Joi.string().required(),
+      permlink: Joi.string().required(),
       guideName: Joi.string().required(),
-      requiredObject: Joi.string().required(),
+      campaignName: Joi.string().required(),
+      activation_permlink: Joi.string().required(),
     }),
   }, {
     is: 'like',
