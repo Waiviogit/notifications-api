@@ -214,11 +214,12 @@ const withdraw = async (operation, params) => {
 const campaignMessage = async ({ operation, params, type }) => ({
   cMessage: [params.guideName, {
     type,
+    body: params.body,
     author: params.author,
+    json_metadata: params.json_metadata,
+    parent_author: params.parent_author,
+    parent_permlink: params.parent_permlink,
     permlink: params.permlink,
-    guideName: params.guideName,
-    campaignName: params.campaignName,
-    activation_permlink: params.activation_permlink,
     timestamp: Math.round(new Date().valueOf() / 1000),
     block: operation.block,
   }],
