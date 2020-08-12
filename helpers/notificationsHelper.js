@@ -211,8 +211,8 @@ const withdraw = async (operation, params) => {
   return [params.account, notification];
 };
 
-const campaignMessage = async ({ operation, params, type }) => ({
-  cMessage: [params.guideName, {
+const campaignMessage = ({ operation, params, type }) => (
+  [params.guideName, {
     type,
     body: params.body,
     author: params.author,
@@ -222,8 +222,8 @@ const campaignMessage = async ({ operation, params, type }) => ({
     permlink: params.permlink,
     timestamp: Math.round(new Date().valueOf() / 1000),
     block: operation.block,
-  }],
-});
+  }]
+);
 
 const getNotifications = async (operation) => {
   let notifications = [];
@@ -414,8 +414,7 @@ const getNotifications = async (operation) => {
       });
       break;
     case 'campaignMessage':
-      const { cMessage } = await campaignMessage({ operation, params, type });
-      notifications.push(cMessage);
+      notifications.push(campaignMessage({ operation, params, type }));
       break;
   }
   return notifications;
