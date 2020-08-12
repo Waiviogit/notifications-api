@@ -231,53 +231,85 @@ const getNotifications = async (operation) => {
   const params = operation.data;
   switch (type) {
     case 'transfer_from_savings':
-      notifications.push([params.from, Object.assign(params, { type: 'transfer_from_savings', timestamp: Math.round(new Date().valueOf() / 1000) })]);
+      notifications.push([params.from, Object.assign(params, {
+        type: 'transfer_from_savings',
+        timestamp: Math.round(new Date().valueOf() / 1000),
+      })]);
       await shareMessageBySubscribers(params.from,
         `Account ${params.from} initiated a power down on the Saving account to ${params.to}`,
         `https://www.waivio.com/@${params.from}`);
       break;
+
     case 'change_recovery_account':
-      notifications.push([params.account_to_recover, Object.assign(params, { type: 'change_recovery_account', timestamp: Math.round(new Date().valueOf() / 1000) })]);
+      notifications.push([params.account_to_recover, Object.assign(params, {
+        type: 'change_recovery_account',
+        timestamp: Math.round(new Date().valueOf() / 1000),
+      })]);
       await shareMessageBySubscribers(params.account_to_recover,
         `Account ${params.account_to_recover} changed recovery address to ${params.new_recovery_account}`,
         `https://www.waivio.com/@${params.account_to_recover}`);
       break;
+
     case 'transfer_to_vesting':
-      const { user: vestingUser, error: vestingError } = await getUsers({ single: params.from });
+      const { user: vestingUser, error: vestingError } = await getUsers(
+        { single: params.from },
+      );
       if (vestingError) {
         console.error(vestingError.message);
         break;
       }
       if (!await checkUserNotifications({ user: vestingUser, type: 'powerUp' })) break;
-      notifications.push([params.from, Object.assign(params, { type: 'transfer_to_vesting', timestamp: Math.round(new Date().valueOf() / 1000) })]);
+
+      notifications.push([params.from, Object.assign(params, {
+        type: 'transfer_to_vesting',
+        timestamp: Math.round(new Date().valueOf() / 1000),
+      })]);
       await shareMessageBySubscribers(params.from,
         `Account ${params.from} powered up ${params.amount} to ${params.to}`,
         `https://www.waivio.com/@${params.from}/transfers`);
       break;
+
     case 'changePassword':
-      notifications.push([params.account, Object.assign(params, { type: 'changePassword', timestamp: Math.round(new Date().valueOf() / 1000) })]);
+      notifications.push([params.account, Object.assign(params, {
+        type: 'changePassword',
+        timestamp: Math.round(new Date().valueOf() / 1000),
+      })]);
       await shareMessageBySubscribers(params.account,
         `Account ${params.account} initiated a password change procedure`,
         `https://www.waivio.com/@${params.account}`);
       break;
+
     case 'withdraw_route':
-      const { user: uWith, error: uWithErr } = await getUsers({ single: params.from_account });
+      const { user: uWith, error: uWithErr } = await getUsers(
+        { single: params.from_account },
+      );
       if (uWithErr) {
         console.error(uWithErr);
         break;
       }
       if (!await checkUserNotifications({ user: uWith, type })) break;
-      notifications.push([params.from_account, Object.assign(params, { type: 'withdraw_route', timestamp: Math.round(new Date().valueOf() / 1000) })]);
+
+      notifications.push([params.from_account, Object.assign(params, {
+        type: 'withdraw_route',
+        timestamp: Math.round(new Date().valueOf() / 1000),
+      })]);
       await shareMessageBySubscribers(params.from_account,
         `Account ${params.to_account} registered withdraw route for ${params.from_account} account`,
         `https://www.waivio.com/@${params.from_account}`);
       break;
+
     case 'suspendedStatus':
-      notifications.push([params.sponsor, Object.assign(params, { type: 'suspendedStatus', timestamp: Math.round(new Date().valueOf() / 1000) })]);
+      notifications.push([params.sponsor, Object.assign(params, {
+        type: 'suspendedStatus',
+        timestamp: Math.round(new Date().valueOf() / 1000),
+      })]);
       await shareMessageBySubscribers(params.sponsor,
-        `Warning: in ${params.days} days, all ${params.sponsor} campaigns will be suspended because the accounts payable for ${params.reviewAuthor} will exceed 30 days. https://www.waivio.com/@${params.reviewAuthor}/${params.reviewPermlink}`,
+        `Warning: in ${params.days} days, all ${params.sponsor} 
+        campaigns will be suspended because the accounts payable for ${params.reviewAuthor} 
+        will exceed 30 days. https://www.waivio.com/@${params.reviewAuthor}/${params.reviewPermlink}`,
         'https://www.waivio.com/rewards/payables');
       break;
+
     case 'rejectUpdate':
       notifications.push([params.creator, {
         type,
@@ -295,22 +327,29 @@ const getNotifications = async (operation) => {
         `${params.voter} rejected ${params.creator} update for ${params.object_name}`,
         `https://www.waivio.com/object/${params.author_permlink}/updates/${params.fieldName}`);
       break;
+
     case 'activateCampaign':
       notifications = _.concat(notifications, await fromActivationCampaign(operation, params));
       break;
+
     case 'restaurantStatus':
       notifications = _.concat(notifications, await fromRestaurantStatus(operation, params));
       break;
+
     case 'comment':
       notifications = _.concat(notifications, await fromComment(operation, params));
       break;
+
     case 'fillOrder':
-      const { user: uFill, error: uFillErr } = await getUsers({ single: params.account });
+      const { user: uFill, error: uFillErr } = await getUsers(
+        { single: params.account },
+      );
       if (uFillErr) {
         console.error(uFillErr);
         break;
       }
       if (!await checkUserNotifications({ user: uFill, type })) break;
+
       notifications.push([params.account, {
         type,
         account: params.account,
@@ -325,16 +364,21 @@ const getNotifications = async (operation) => {
         `${params.account} bought ${params.current_pays} and get ${params.open_pays} from ${params.exchanger}`,
         `https://www.waivio.com/@${params.account}/transfers`);
       break;
+
     case 'custom_json':
       notifications = _.concat(notifications, await fromCustomJSON(operation, params));
       break;
+
     case 'account_witness_vote':
-      const { user: uWitness, error: uWitnessErr } = await getUsers({ single: params.witness });
+      const { user: uWitness, error: uWitnessErr } = await getUsers(
+        { single: params.witness },
+      );
       if (uWitnessErr) {
         console.error(uWitnessErr);
         break;
       }
       if (!await checkUserNotifications({ user: uWitness, type: 'witness_vote' })) break;
+
       /** Find witness vote */
       notifications.push([params.witness, {
         type: 'witness_vote',
@@ -344,11 +388,14 @@ const getNotifications = async (operation) => {
         block: operation.block,
       }]);
       break;
+
     case 'transfer':
       const json = parseJson(params.memo);
       const transferTo = _.get(json, 'id') === 'user_to_guest_transfer' ? json.to : params.to;
 
-      const { user: uTransfer, error: getUTransferErr } = await getUsers({ single: transferTo });
+      const { user: uTransfer, error: getUTransferErr } = await getUsers(
+        { single: transferTo },
+      );
       if (getUTransferErr) {
         console.error(getUTransferErr);
         break;
@@ -366,6 +413,7 @@ const getNotifications = async (operation) => {
       await shareMessageBySubscribers(transferTo,
         `${params.from} transfered ${params.amount} to ${transferTo}`,
         `https://www.waivio.com/@${transferTo}/transfers`);
+      /** Add self transfer */
       notifications.push([params.from, {
         type: 'transferFrom',
         to: transferTo,
@@ -378,16 +426,20 @@ const getNotifications = async (operation) => {
         `${params.from} transfered ${params.amount} to ${transferTo}`,
         `https://www.waivio.com/@${params.from}/transfers`);
       break;
+
     case 'withdraw_vesting':
       notifications.push(await withdraw(operation, params));
       break;
     case 'claimReward':
-      const { user: uClaim, error: uClaimErr } = await getUsers({ single: params.account });
+      const { user: uClaim, error: uClaimErr } = await getUsers(
+        { single: params.account },
+      );
       if (uClaimErr) {
         console.error(uClaimErr);
         break;
       }
       if (!await checkUserNotifications({ user: uClaim, type })) break;
+
       notifications.push([params.account, {
         type: 'claimReward',
         account: params.account,
@@ -400,11 +452,14 @@ const getNotifications = async (operation) => {
         `${params.account} claimed reward: ${params.reward_steem}, ${params.reward_sbd}`,
         `https://www.waivio.com/@${params.account}/transfers`);
       break;
+
     case 'like':
       const usersArr = [...new Set(_.concat(_.map(params.votes, 'author'), _.map(params.votes, 'voter')))];
       const { users } = await getUsers({ arr: usersArr });
+
       const { posts } = await postModel.find({
-        author: { $in: _.map(params.votes, (el) => el.guest_author || el.author) }, permlink: { $in: _.map(params.votes, 'permlink') },
+        author: { $in: _.map(params.votes, (el) => el.guest_author || el.author) },
+        permlink: { $in: _.map(params.votes, 'permlink') },
       }, {
         author: 1, permlink: 1, title: 1, active_votes: 1,
       });
@@ -416,10 +471,12 @@ const getNotifications = async (operation) => {
         params, users, posts, notifications, operation,
       });
       break;
+
     case 'campaignMessage':
       notifications.push(campaignMessage({ operation, params, type }));
       break;
   }
+
   return notifications;
 };
 

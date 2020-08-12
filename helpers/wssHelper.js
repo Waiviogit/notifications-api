@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { wssConnection } = require('../wssConnector');
 
 const clientSend = (notifications) => {
@@ -16,6 +17,16 @@ const clientSend = (notifications) => {
   });
 };
 
+const sendParsedBlockResponse = async (type, subscribers) => {
+  wssConnection.wss.clients.forEach((client) => {
+    if (client.name && _.includes(subscribers, client.name)) {
+      client.send(
+        JSON.stringify({ type, notification: { blockParsed: true } }),
+      );
+    }
+  });
+};
+
 const heartbeat = () => {
   setInterval(() => {
     wssConnection.wss.clients.forEach((client) => {
@@ -24,4 +35,4 @@ const heartbeat = () => {
   }, 20 * 1000);
 };
 
-module.exports = { clientSend, heartbeat };
+module.exports = { clientSend, heartbeat, sendParsedBlockResponse };

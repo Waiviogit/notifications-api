@@ -1,7 +1,8 @@
+const _ = require('lodash');
 const sdk = require('sc2-sdk');
 const SocketServer = require('ws').Server;
 const { server } = require('./app');
-const { redisNotifyClient } = require('./redis/redis');
+const { redis, redisSetter } = require('./redis');
 const { validateAuthToken } = require('./helpers/waivioAuthHelper');
 
 const sc2 = sdk.Initialize({ app: 'waivio.app' });
@@ -41,7 +42,7 @@ const unSubscribe = (call, result, ws) => {
 
 const getNotifications = async (call, ws) => {
   try {
-    const res = await redisNotifyClient.lrangeAsync(`notifications:${call.params[0]}`, 0, -1);
+    const res = await redis.redisNotifyClient.lrangeAsync(`notifications:${call.params[0]}`, 0, -1);
     console.log('Send notifications', call.params[0], res.length);
     const notifications = res.map((notification) => JSON.parse(notification));
     ws.send(JSON.stringify({ id: call.id, result: notifications }));
@@ -63,38 +64,57 @@ class WebSocket {
         } catch (e) {
           console.error('Error WS parse JSON message', message, e);
         }
-        if (call.method === 'get_notifications' && call.params && call.params[0]) {
-          await getNotifications(call, ws);
-        } else if (call.method === 'login' && call.params && call.params[0]) {
-          sc2.setAccessToken(call.params[0]);
-          try {
-            const result = await sc2.me();
-            sendLoginSuccess(call, result, ws);
-          } catch (error) {
-            sendSomethingWrong(call, ws);
-          }
-        } else if (call.method === 'guest_login' && call.params && call.params[0]) {
-          const { result } = await validateAuthToken(call.params[0]);
-          if (result) sendLoginSuccess(call, result, ws);
-          else sendSomethingWrong(call, ws);
-        } else if (call.method === 'subscribe' && call.params && call.params[0]) {
-          console.log('Subscribe success', call.params[0]);
-          ws.name = call.params[0];
-          ws.send(JSON.stringify(
-            { id: call.id, result: { subscribe: true, username: call.params[0] } },
-          ));
-        } else if (call.method === 'unsubscribe' && call.params && call.params[0]) {
-          try {
+        if (!_.get(call, 'params[0]')) sendSomethingWrong(call, ws);
+        switch (call.method) {
+          case 'get_notifications':
+            await getNotifications(call, ws);
+            break;
+          case 'login':
             sc2.setAccessToken(call.params[0]);
-            const result = await sc2.me();
-            unSubscribe(call, result, ws);
-          } catch (error) {
-            const { result } = await validateAuthToken(call.params[0]);
-            if (result) unSubscribe(call, result, ws);
+            try {
+              const result = await sc2.me();
+              sendLoginSuccess(call, result, ws);
+            } catch (error) {
+              sendSomethingWrong(call, ws);
+            }
+            break;
+          case 'guest_login':
+            const { result: guestResult } = await validateAuthToken(call.params[0]);
+            if (guestResult) sendLoginSuccess(call, guestResult, ws);
             else sendSomethingWrong(call, ws);
-          }
-        } else {
-          sendSomethingWrong(call, ws);
+            break;
+          case 'subscribe':
+            console.log('Subscribe success', call.params[0]);
+            ws.name = call.params[0];
+            ws.send(JSON.stringify(
+              { id: call.id, result: { subscribe: true, username: call.params[0] } },
+            ));
+            break;
+          case 'unsubscribe':
+            try {
+              sc2.setAccessToken(call.params[0]);
+              const hiveAuth = await sc2.me();
+              unSubscribe(call, hiveAuth, ws);
+            } catch (error) {
+              const { result: validateResult } = await validateAuthToken(call.params[0]);
+              if (validateResult) unSubscribe(call, validateResult, ws);
+              else sendSomethingWrong(call, ws);
+            }
+            break;
+          case 'subscribeBlock':
+            if (!_.isNumber(+call.params[1]) || !call.params[2]) {
+              return sendSomethingWrong(call, ws);
+            }
+            const setResult = await redisSetter.setSubscribe(
+              `${call.params[2]}:${call.params[1]}`, call.params[0],
+            );
+            if (setResult) {
+              ws.name = call.params[0];
+              ws.send(JSON.stringify(
+                { id: call.id, result: { subscribeBlock: true, username: call.params[0] } },
+              ));
+            } else sendSomethingWrong(call, ws);
+            break;
         }
       });
       ws.on('error', () => console.log('Error on connection with peer'));

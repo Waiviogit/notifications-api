@@ -11,6 +11,10 @@
       "host": "localhost",
       "port": 27017,
       "database": "waivio"
+    },
+    "redis": {
+      "notifications": 0,
+      "lastBlock": 2
     }
   },
   "staging": {
@@ -25,6 +29,10 @@
       "host": "localhost",
       "port": 27017,
       "database": "waivio"
+    },
+    "redis": {
+      "notifications": 0,
+      "lastBlock": 2
     }
   },
   "development": {
@@ -39,6 +47,10 @@
       "host": "localhost",
       "port": 27017,
       "database": "waivio"
+    },
+    "redis": {
+      "notifications": 0,
+      "lastBlock": 2
     }
   },
   "test": {
@@ -53,6 +65,10 @@
       "host": "localhost",
       "port": 27017,
       "database": "waivio"
+    },
+    "redis": {
+      "notifications": 0,
+      "lastBlock": 2
     }
   }
 }

@@ -1,6 +1,6 @@
 const notificationsHelper = require('../helpers/notificationsHelper');
 const validators = require('./validators');
-const redisHelper = require('../redis/redisHelper');
+const redisGetter = require('../redis/redisGetter');
 
 
 const notifications = async (req, res, next) => {
@@ -14,7 +14,7 @@ const notifications = async (req, res, next) => {
 
 const show = async (req, res, next) => {
   if (!req.user) return next({ status: 422, message: 'No name from token' });
-  const { result, error } = await redisHelper.getUserNotifications(req.user);
+  const { result, error } = await redisGetter.getUserNotifications(req.user);
   if (error) return next({ status: 503, message: error.message });
   res.status(200).json({ result });
 };
