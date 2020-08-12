@@ -142,6 +142,17 @@ exports.operationsSchema = Joi.object().keys({
       reward_sbd: Joi.string().required(),
     }),
   }, {
+    is: 'campaignMessage',
+    then: Joi.object().keys({
+      author: Joi.string().required(),
+      body: Joi.string().required(),
+      json_metadata: Joi.string().required(),
+      parent_author: Joi.string().required(),
+      parent_permlink: Joi.string().required(),
+      permlink: Joi.string().required(),
+      guideName: Joi.string().required(),
+    }),
+  }, {
     is: 'like',
     then: Joi.object().keys({
       votes: Joi.array().items(
