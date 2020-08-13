@@ -1,15 +1,14 @@
 const _ = require('lodash');
-const { wssConnection } = require('../wssConnector');
+const { wssConnection } = require('../../wssConnector');
 
 const clientSend = (notifications) => {
   notifications.forEach((notification) => {
     wssConnection.wss.clients.forEach((client) => {
-      if (client.name && client.name === notification[0]) {
+      if (_.get(client, 'name') === notification[0]) {
         console.log('Send push notification', notification[0]);
         client.send(
           JSON.stringify({
-            type: 'notification',
-            notification: notification[1],
+            type: 'notification', notification: notification[1],
           }),
         );
       }

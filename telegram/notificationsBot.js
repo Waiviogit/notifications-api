@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { notifiersModel } = require('../models');
-const subscribeHelper = require('../helpers/subscribeHelper');
+const subscribeHelper = require('../utilities/helpers/subscribeHelper');
 const keyboards = require('./keyboards');
 
 const TELEGRAM_BOT_TOKEN = '1174166838:AAHCMuKln0WklTnWynZP7WrZ-fWzvWT2yYw';

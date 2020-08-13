@@ -1,4 +1,4 @@
-const { redisNotifyClient } = require('./redis');
+const { redisNotifyClient } = require('./redis.js');
 
 exports.getUserNotifications = async (name) => {
   let result;

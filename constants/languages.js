@@ -1,4 +1,5 @@
-module.exports = ['en-US',
+module.exports = [
+  'en-US',
   'id-ID',
   'ms-MY',
   'ca-ES',

@@ -2,8 +2,8 @@ const _ = require('lodash');
 const sdk = require('sc2-sdk');
 const SocketServer = require('ws').Server;
 const { server } = require('./app');
-const { redis, redisSetter } = require('./redis');
-const { validateAuthToken } = require('./helpers/waivioAuthHelper');
+const { redis, redisSetter } = require('./utilities/redis');
+const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
 
 const sc2 = sdk.Initialize({ app: 'waivio.app' });
 const wss = new SocketServer({ server, path: '/notifications-api' });

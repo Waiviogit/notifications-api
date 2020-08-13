@@ -1,4 +1,5 @@
-const { userModel, notifiersModel } = require('../models');
+const { PRODUCTION_HOST } = require('../../constants');
+const { userModel, notifiersModel } = require('../../models');
 
 exports.checkAndSubscribe = async (name, chatId, bot) => {
   const { error, user } = await userModel.findOne(name);
@@ -8,7 +9,6 @@ exports.checkAndSubscribe = async (name, chatId, bot) => {
   );
   return this.showSubscriptions(chatId, bot);
 };
-
 
 exports.showSubscriptions = async (chatId, bot) => {
   const { notifier } = await notifiersModel.getOne({ chatId });
@@ -20,7 +20,7 @@ exports.showSubscriptions = async (chatId, bot) => {
   const successMessage = 'You are subscribed to:';
   const keyboard = [];
   for (const user of notifier.subscribedUsers) {
-    keyboard.push([{ text: user, url: `https://www.waivio.com/@${user}` }, { text: `Unsubscribe ${user}`, callback_data: `unsubscribe:${user}` }]);
+    keyboard.push([{ text: user, url: `${PRODUCTION_HOST}@${user}` }, { text: `Unsubscribe ${user}`, callback_data: `unsubscribe:${user}` }]);
   }
   return bot.sendMessage(chatId, successMessage, {
     reply_markup: {

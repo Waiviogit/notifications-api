@@ -1,7 +1,6 @@
 const _ = require('lodash');
-const { dsteemModel } = require('../models');
-const config = require('../config');
-
+const { dsteemModel } = require('../../models');
+const config = require('../../config');
 
 exports.getAmountFromVests = async (vests) => {
   try {

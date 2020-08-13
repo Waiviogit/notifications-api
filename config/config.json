@@ -15,7 +15,8 @@
     "redis": {
       "notifications": 0,
       "lastBlock": 2
-    }
+    },
+    "swaggerHost": "www.waivio.com"
   },
   "staging": {
     "waivioUrl": "https://waiviodev.com",
@@ -33,7 +34,8 @@
     "redis": {
       "notifications": 0,
       "lastBlock": 2
-    }
+    },
+    "swaggerHost": "waiviodev.com"
   },
   "development": {
     "waivioUrl": "https://waiviodev.com",
@@ -51,7 +53,8 @@
     "redis": {
       "notifications": 0,
       "lastBlock": 2
-    }
+    },
+    "swaggerHost": "localhost:4000"
   },
   "test": {
     "waivioUrl": "https://waiviodev.com",
@@ -69,6 +72,7 @@
     "redis": {
       "notifications": 0,
       "lastBlock": 2
-    }
+    },
+    "swaggerHost": "localhost:4000"
   }
 }

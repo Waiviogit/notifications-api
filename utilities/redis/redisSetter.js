@@ -1,4 +1,4 @@
-const { redisNotifyClient } = require('./redis');
+const { redisNotifyClient } = require('./redis.js');
 
 exports.setSubscribe = async (key, subscriber) => redisNotifyClient.saddAsync(key, subscriber);
 

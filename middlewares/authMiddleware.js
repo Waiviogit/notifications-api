@@ -1,6 +1,6 @@
 const Bluebird = require('bluebird');
 const sc2 = require('sc2-sdk');
-const { validateAuthToken } = require('../helpers/waivioAuthHelper');
+const { validateAuthToken } = require('../utilities/helpers/waivioAuthHelper');
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
