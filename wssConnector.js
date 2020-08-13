@@ -2,7 +2,7 @@ const _ = require('lodash');
 const sdk = require('sc2-sdk');
 const SocketServer = require('ws').Server;
 const { server } = require('./app');
-const { redis, redisSetter } = require('./utilities/redis');
+const { redis, redisSetter, redisGetter } = require('./utilities/redis');
 const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
 
 const sc2 = sdk.Initialize({ app: 'waivio.app' });
@@ -69,6 +69,7 @@ class WebSocket {
           case 'get_notifications':
             await getNotifications(call, ws);
             break;
+
           case 'login':
             sc2.setAccessToken(call.params[0]);
             try {
@@ -78,11 +79,13 @@ class WebSocket {
               sendSomethingWrong(call, ws);
             }
             break;
+
           case 'guest_login':
             const { result: guestResult } = await validateAuthToken(call.params[0]);
             if (guestResult) sendLoginSuccess(call, guestResult, ws);
             else sendSomethingWrong(call, ws);
             break;
+
           case 'subscribe':
             console.log('Subscribe success', call.params[0]);
             ws.name = call.params[0];
@@ -90,6 +93,7 @@ class WebSocket {
               { id: call.id, result: { subscribe: true, username: call.params[0] } },
             ));
             break;
+
           case 'unsubscribe':
             try {
               sc2.setAccessToken(call.params[0]);
@@ -101,10 +105,22 @@ class WebSocket {
               else sendSomethingWrong(call, ws);
             }
             break;
+
           case 'subscribeBlock':
             if (!_.isNumber(+call.params[1]) || !call.params[2]) {
               return sendSomethingWrong(call, ws);
             }
+
+            const lastBlock = await redisGetter.getBlockNum(call.params[2]);
+            if (lastBlock >= +call.params[1]) {
+              return ws.send(
+                JSON.stringify({
+                  type: call.params[2],
+                  notification: { blockParsed: call.params[1] },
+                }),
+              );
+            }
+
             const setResult = await redisSetter.setSubscribe(
               `${call.params[2]}:${call.params[1]}`, call.params[0],
             );

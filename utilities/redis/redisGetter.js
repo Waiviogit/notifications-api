@@ -12,3 +12,5 @@ exports.getUserNotifications = async (name) => {
 };
 
 exports.getBlockSubscribers = async (key) => redisNotifyClient.smembersAsync(key);
+
+exports.getBlockNum = async (key) => redisNotifyClient.getAsync(key);
