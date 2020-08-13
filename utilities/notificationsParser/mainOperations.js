@@ -25,7 +25,7 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.TRANSFER_TO_VESTING:
       notification = await transferToVesting(params);
-      if (notification.length) notification.push(notification);
+      if (notification.length) notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.CHANGE_PASSWORD:
@@ -34,7 +34,7 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.WITHDRAW_ROUTE:
       notification = await withdrawRoute(params);
-      if (notification.length) notification.push(notification);
+      if (notification.length) notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.SUSPENDED_STATUS:
@@ -59,7 +59,7 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.FILL_ORDER:
       notification = await fillOrder(params);
-      if (notification.length) notification.push(notification);
+      if (notification.length) notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.CUSTOM_JSON:
@@ -68,7 +68,7 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.ACCOUNT_WITNESS_VOTE:
       notification = await witnessVote(params);
-      if (notification.length) notification.push(notification);
+      if (notification.length) notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.TRANSFER:
@@ -81,7 +81,7 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.CLAIM_REWARD:
       notification = await claimReward(params);
-      if (notification.length) notification.push(notification);
+      if (notification.length) notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.LIKE:
