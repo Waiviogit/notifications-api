@@ -16,11 +16,11 @@ const clientSend = (notifications) => {
   });
 };
 
-const sendParsedBlockResponse = async (type, subscribers) => {
+const sendParsedBlockResponse = async (type, subscribers, msg) => {
   wssConnection.wss.clients.forEach((client) => {
     if (client.name && _.includes(subscribers, client.name)) {
       client.send(
-        JSON.stringify({ type, notification: { blockParsed: true } }),
+        JSON.stringify({ type, notification: { blockParsed: +msg } }),
       );
     }
   });
