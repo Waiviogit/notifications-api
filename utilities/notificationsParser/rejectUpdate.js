@@ -7,7 +7,7 @@ module.exports = async (params) => {
     `${params.voter} rejected ${params.creator} update for ${params.object_name}`,
     `${PRODUCTION_HOST}object/${params.author_permlink}/updates/${params.fieldName}`);
 
-  return [[params.creator, {
+  return [params.creator, {
     timestamp: Math.round(new Date().valueOf() / 1000),
     type: NOTIFICATIONS_TYPES.REJECT_UPDATE,
     author_permlink: params.author_permlink,
@@ -17,5 +17,5 @@ module.exports = async (params) => {
     fieldName: params.fieldName,
     account: params.creator,
     voter: params.voter,
-  }]];
+  }];
 };
