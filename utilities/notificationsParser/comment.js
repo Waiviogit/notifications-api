@@ -55,7 +55,8 @@ module.exports = async (params) => {
         await shareMessageBySubscribers(params.parent_author,
           `${params.author} replied to ${params.parent_author} comment`,
           `${PRODUCTION_HOST}@${params.parent_author}/${params.parent_permlink}`);
-      } else if (await checkUserNotifications(
+      }
+      if (await checkUserNotifications(
         { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_COMMENT },
       )) {
         notification = {

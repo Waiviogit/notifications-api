@@ -1,6 +1,6 @@
 const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
 
-module.exports = async (params) => [params.guideName, {
+module.exports = (params) => [params.guideName, {
   timestamp: Math.round(new Date().valueOf() / 1000),
   type: NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE,
   parent_permlink: params.parent_permlink,
