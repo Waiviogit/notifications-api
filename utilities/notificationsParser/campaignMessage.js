@@ -6,6 +6,7 @@ module.exports = (params) => [params.guideName, {
   parent_permlink: params.parent_permlink,
   json_metadata: params.json_metadata,
   parent_author: params.parent_author,
+  campaignName: params.campaignName,
   permlink: params.permlink,
   author: params.author,
   body: params.body,
