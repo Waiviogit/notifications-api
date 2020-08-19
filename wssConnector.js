@@ -112,7 +112,7 @@ class WebSocket {
             }
 
             const lastBlock = await redisGetter.getBlockNum(call.params[2]);
-            if (lastBlock >= +call.params[1]) {
+            if (lastBlock + 1 >= +call.params[1]) {
               return ws.send(
                 JSON.stringify({
                   type: call.params[2],
@@ -122,7 +122,7 @@ class WebSocket {
             }
 
             const setResult = await redisSetter.setSubscribe(
-              `${call.params[2]}:${call.params[1]}`, call.params[0],
+              `${call.params[2]}:${+call.params[1]}`, call.params[0],
             );
             if (setResult) {
               ws.name = call.params[0];
