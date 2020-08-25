@@ -1,9 +1,9 @@
-const { PRODUCTION_HOST } = require('../../constants');
-const { CUSTOM_JSON_IDS, BELL_NOTIFICATIONS } = require('../../constants/notificationTypes');
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { CUSTOM_JSON_IDS, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const {
   checkUserNotifications, getUsers, addNotificationForSubscribers,
-} = require('../helpers/notificationsHelper');
+} = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const notifications = [];

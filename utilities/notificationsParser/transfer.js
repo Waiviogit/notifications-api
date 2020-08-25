@@ -4,7 +4,7 @@ const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const {
   checkUserNotifications, getUsers, parseJson,
-} = require('../helpers/notificationsHelper');
+} = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const notifications = [];

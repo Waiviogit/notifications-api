@@ -1,10 +1,10 @@
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
-const { PRODUCTION_HOST } = require('../../constants');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async (params) => {
   await shareMessageBySubscribers(params.account_to_recover,
-    `Account ${params.account_to_recover} changed recovery address to ${params.new_recovery_account}`,
+    `${params.account_to_recover} initiated change recovery account on ${params.new_recovery_account}`,
     `${PRODUCTION_HOST}@${params.account_to_recover}`);
 
   return [params.account_to_recover, Object.assign(params, {

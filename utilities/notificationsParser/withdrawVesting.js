@@ -1,7 +1,7 @@
-const { PRODUCTION_HOST } = require('../../constants');
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
-const { getAmountFromVests } = require('../helpers/dsteemHelper');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { getAmountFromVests } = require('utilities/helpers/dsteemHelper');
 
 module.exports = async (operation, params) => {
   const amount = await getAmountFromVests(params.vesting_shares);

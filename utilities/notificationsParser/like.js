@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const { subscriptionModel, postModel } = require('../../models');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
-const { getUsers, checkUserNotifications } = require('../helpers/notificationsHelper');
+const { subscriptionModel, postModel } = require('models');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { getUsers, checkUserNotifications } = require('utilities/helpers/notificationsHelper');
 
 const prepareMyLikeNotifications = async ({
   params, users, posts, notifications,

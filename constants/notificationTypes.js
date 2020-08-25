@@ -16,7 +16,7 @@ exports.NOTIFICATIONS_TYPES = {
   WITNESS_VOTE: 'witness_vote',
   CLAIM_REWARD: 'claimReward',
   CUSTOM_JSON: 'custom_json',
-  MY_COMMENT: 'myComments',
+  MY_COMMENT: 'myComment',
   POWER_DOWN: 'power_down',
   FILL_ORDER: 'fillOrder',
   TRANSFER: 'transfer',

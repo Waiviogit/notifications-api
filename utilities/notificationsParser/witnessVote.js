@@ -1,5 +1,5 @@
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
-const { checkUserNotifications, getUsers } = require('../helpers/notificationsHelper');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { checkUserNotifications, getUsers } = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const { user, error } = await getUsers({ single: params.witness });

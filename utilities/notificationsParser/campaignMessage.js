@@ -1,4 +1,4 @@
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = (params) => [params.guideName, {
   timestamp: Math.round(new Date().valueOf() / 1000),

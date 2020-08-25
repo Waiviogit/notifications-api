@@ -1,6 +1,6 @@
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts.js');
-const { PRODUCTION_HOST } = require('../../constants');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
+const { PRODUCTION_HOST } = require('constants/index');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { shareMessageBySubscribers } = require('telegram/broadcasts.js');
 
 module.exports = async (params) => {
   await shareMessageBySubscribers(params.from,

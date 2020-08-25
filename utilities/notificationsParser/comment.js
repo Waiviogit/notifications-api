@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const { PRODUCTION_HOST } = require('../../constants');
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
-const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('../../constants/notificationTypes');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const {
   getUsers, checkUserNotifications, getServiceBots,
   addNotificationForSubscribers,
@@ -104,9 +104,9 @@ module.exports = async (params) => {
         author: params.author,
       };
       notifications.push([mention, notification]);
-
+      const commentOrPost = isRootPost ? 'post' : 'comment';
       await shareMessageBySubscribers(mention,
-        `${params.author} mentioned ${mention} in a comment`,
+        `${params.author} mentioned ${mention} in a ${commentOrPost}`,
         `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
     }
   }
