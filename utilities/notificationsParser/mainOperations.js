@@ -89,7 +89,7 @@ const getNotifications = async (operation) => {
       break;
 
     case NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE:
-      notifications.push(campaignMessage(params));
+      notifications.push(await campaignMessage(params));
       break;
   }
   return notifications;
