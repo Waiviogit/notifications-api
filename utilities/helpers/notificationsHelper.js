@@ -1,6 +1,9 @@
 const _ = require('lodash');
+const { PRODUCTION_HOST } = require('constants/index');
+const { userModel, App, bellNotificationsModel } = require('models');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
-const { userModel, App, bellNotificationsModel } = require('../../models');
 
 const parseJson = (json) => {
   try {
@@ -22,9 +25,31 @@ const addNotificationForSubscribers = async ({
   if (!users.length) return;
   const notificationCopy = { ...notificationData };
   notificationCopy.type = changeType;
-  _.forEach(users, (el) => {
+  const telegramData = formTelegramData(notificationCopy);
+  for (const el of users) {
     notifications.push([el, notificationCopy]);
-  });
+    await shareMessageBySubscribers(el, telegramData.message, telegramData.url);
+  }
+};
+
+const formTelegramData = (notification) => {
+  switch (notification.type) {
+    case BELL_NOTIFICATIONS.BELL_FOLLOW:
+      return {
+        message: `${notification.follower} followed ${notification.following}`,
+        url: `${PRODUCTION_HOST}@${notification.following}/followers`,
+      };
+    case BELL_NOTIFICATIONS.BELL_POST:
+      return {
+        message: `${notification.author} published a new post: ${notification.title}`,
+        url: `${PRODUCTION_HOST}@${notification.author}/${notification.permlink}`,
+      };
+    case BELL_NOTIFICATIONS.BELL_REBLOG:
+      return {
+        message: `${notification.account} re-blogged ${notification.author}'s post: ${notification.title}`,
+        url: `${PRODUCTION_HOST}@${notification.author}/${notification.permlink}`,
+      };
+  }
 };
 
 const getServiceBots = async () => {

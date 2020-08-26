@@ -5,7 +5,7 @@ const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificat
 const {
   getUsers, checkUserNotifications, getServiceBots,
   addNotificationForSubscribers,
-} = require('../helpers/notificationsHelper');
+} = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const notifications = [];
