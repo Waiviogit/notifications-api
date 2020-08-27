@@ -1,8 +1,8 @@
 const _ = require('lodash');
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
-const { PRODUCTION_HOST } = require('../../constants');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
-const { getUsers, checkUserNotifications } = require('../helpers/notificationsHelper');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { getUsers, checkUserNotifications } = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const notifications = [];

@@ -1,7 +1,7 @@
-const { checkUserNotifications, getUsers } = require('../helpers/notificationsHelper');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
-const { PRODUCTION_HOST } = require('../../constants');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { checkUserNotifications, getUsers } = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const { user, error } = await getUsers({ single: params.from });
@@ -13,7 +13,7 @@ module.exports = async (params) => {
   if (!await checkUserNotifications({ user, type: 'powerUp' })) return [];
 
   await shareMessageBySubscribers(params.from,
-    `Account ${params.from} powered up ${params.amount} to ${params.to}`,
+    `${params.from} sent to ${params.to} ${params.amount}`,
     `${PRODUCTION_HOST}@${params.from}/transfers`);
 
   return [params.from, Object.assign(params, {

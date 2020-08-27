@@ -1,7 +1,7 @@
-const { PRODUCTION_HOST } = require('../../constants');
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
-const { checkUserNotifications, getUsers } = require('../helpers/notificationsHelper');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { checkUserNotifications, getUsers } = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const { user, error } = await getUsers({ single: params.account });
@@ -13,7 +13,7 @@ module.exports = async (params) => {
   if (!await checkUserNotifications({ user, type: NOTIFICATIONS_TYPES.FILL_ORDER })) return [];
 
   await shareMessageBySubscribers(params.account,
-    `${params.account} bought ${params.current_pays} and get ${params.open_pays} from ${params.exchanger}`,
+    `${params.account} sold ${params.current_pays} and bought ${params.open_pays} from ${params.exchanger}`,
     `${PRODUCTION_HOST}@${params.account}/transfers`);
 
   return [params.account, {

@@ -1,8 +1,8 @@
 const _ = require('lodash');
-const { clientSend } = require('../helpers/wssHelper');
-const { redisNotifyClient } = require('../redis/redis');
-const { LIMIT, NOTIFICATION_EXPIRY } = require('../../constants');
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
+const { redisNotifyClient } = require('utilities/redis/redis');
+const { clientSend } = require('utilities/helpers/wssHelper');
+const { LIMIT, NOTIFICATION_EXPIRY } = require('constants/index');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const {
   changeRecoveryAccount, transferFromSavings, transferToVesting,
   activateCampaign, campaignMessage, changePassword, withdrawRoute,
@@ -89,7 +89,7 @@ const getNotifications = async (operation) => {
       break;
 
     case NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE:
-      notifications.push(campaignMessage(params));
+      notifications.push(await campaignMessage(params));
       break;
   }
   return notifications;

@@ -1,10 +1,10 @@
-const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
-const { shareMessageBySubscribers } = require('../../telegram/broadcasts');
-const { PRODUCTION_HOST } = require('../../constants');
+const { PRODUCTION_HOST } = require('constants/index');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async (params) => {
   await shareMessageBySubscribers(params.creator,
-    `${params.voter} rejected ${params.creator} update for ${params.object_name}`,
+    `${params.creator} update to ${params.object_name} was rejected`,
     `${PRODUCTION_HOST}object/${params.author_permlink}/updates/${params.fieldName}`);
 
   return [params.creator, {
