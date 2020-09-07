@@ -1,5 +1,7 @@
 const _ = require('lodash');
+const { PRODUCTION_HOST } = require('constants/index');
 const { subscriptionModel, postModel } = require('models');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const { getUsers, checkUserNotifications } = require('utilities/helpers/notificationsHelper');
 
@@ -20,6 +22,11 @@ const prepareMyLikeNotifications = async ({
       title: post.title,
       voter: vote.voter,
     }]);
+    await shareMessageBySubscribers(
+      vote.voter,
+      `${vote.voter} liked ${post.title}`,
+      `${PRODUCTION_HOST}@${vote.author}/${vote.permlink}`,
+    );
   }
 };
 
@@ -62,6 +69,10 @@ const prepareLikeNotifications = async ({
       permlink: vote.permlink,
       timestamp: Math.round(new Date().valueOf() / 1000),
     }];
+    const telegramMessage = likesCount
+      ? `${vote.voter} and ${likesCount} others liked your post ${post.title}`
+      : `${vote.voter} liked ${post.title}`;
+    const url = `${PRODUCTION_HOST}@${vote.author}/${vote.permlink}`;
     if (notifications.length) {
       const samePostLike = _.findLast(
         notifications, (el) => el[1].author === vote.author && el[1].permlink === vote.permlink,
@@ -74,15 +85,18 @@ const prepareLikeNotifications = async ({
           notification[1].newTop = topArr;
           notification[1].likesCount = samePostLike[1].likesCount + 1;
           notifications.push(notification);
+          await shareMessageBySubscribers(vote.author, telegramMessage, url);
           continue;
         }
         continue;
       } else {
         notifications.push(notification);
+        await shareMessageBySubscribers(vote.author, telegramMessage, url);
         continue;
       }
     }
     notifications.push(notification);
+    await shareMessageBySubscribers(vote.author, telegramMessage, url);
   }
 };
 
