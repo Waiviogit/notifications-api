@@ -35,37 +35,30 @@ const prepareLikeNotifications = async ({
   })) return;
   if (_.get(params, 'guest_author', false)) params.author = params.guest_author;
 
-  const likesCount = _
+  const votes = _
     .chain(post.active_votes)
     .filter((v) => (v.weight >= 0 && v.percent > 0))
-    .get('length')
+    .orderBy(['weight'], 'desc')
     .value();
-  const topFive = [];
-  if (likesCount > 10) {
-    topFive.push(..._
-      .chain(post.active_votes)
-      .orderBy(['weight'], 'desc')
-      .map('voter')
-      .slice(0, 5)
-      .value());
-  }
+
   const { result: followVoter } = await subscriptionModel
     .find({ follower: params.author, following: params.voter });
-  if (likesCount > 10 && !_.includes(topFive, params.voter) && !followVoter) return;
+  const voteInTop = !!_.find(votes.slice(0, 5), (v) => v.voter === params.voter);
+  if (votes.length > 10 && !voteInTop && !followVoter) return;
 
   const notification = [params.author, {
     type,
     voter: params.voter,
-    likesCount: likesCount - 1,
+    likesCount: votes.length - 1,
     title: post.title,
     author: params.author,
     permlink: params.permlink,
     timestamp: Math.round(new Date().valueOf() / 1000),
   }];
 
-  const telegramMessage = likesCount === 1
+  const telegramMessage = votes.length === 1
     ? `${params.voter} liked ${post.title}`
-    : `${params.voter} and ${likesCount - 1} others liked your post ${post.title}`;
+    : `${params.voter} and ${votes.length - 1} others liked your post ${post.title}`;
   const url = `${PRODUCTION_HOST}@${params.author}/${params.permlink}`;
   notifications.push(notification);
   await shareMessageBySubscribers(params.author, telegramMessage, url);
