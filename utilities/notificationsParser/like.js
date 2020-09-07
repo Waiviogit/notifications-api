@@ -63,9 +63,9 @@ const prepareLikeNotifications = async ({
     timestamp: Math.round(new Date().valueOf() / 1000),
   }];
 
-  const telegramMessage = likesCount
-    ? `${params.voter} and ${likesCount - 1} others liked your post ${post.title}`
-    : `${params.voter} liked ${post.title}`;
+  const telegramMessage = likesCount === 1
+    ? `${params.voter} liked ${post.title}`
+    : `${params.voter} and ${likesCount - 1} others liked your post ${post.title}`;
   const url = `${PRODUCTION_HOST}@${params.author}/${params.permlink}`;
   notifications.push(notification);
   await shareMessageBySubscribers(params.author, telegramMessage, url);
