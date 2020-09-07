@@ -156,15 +156,11 @@ exports.operationsSchema = Joi.object().keys({
   }, {
     is: NOTIFICATIONS_TYPES.LIKE,
     then: Joi.object().keys({
-      votes: Joi.array().items(
-        Joi.object().keys({
-          voter: Joi.string().required(),
-          author: Joi.string().required(),
-          permlink: Joi.string().required(),
-          weight: Joi.number().required(),
-          guest_author: Joi.string(),
-        }),
-      ),
+      voter: Joi.string().required(),
+      author: Joi.string().required(),
+      permlink: Joi.string().required(),
+      weight: Joi.number().required(),
+      guest_author: Joi.string(),
     }),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });
