@@ -53,7 +53,7 @@ module.exports = async (params) => {
         notifications.push([params.parent_author, notification]);
 
         await shareMessageBySubscribers(params.parent_author,
-          `${params.author} replied to ${params.parent_author} comment`,
+          `${params.author} replied to ${params.parent_author} post`,
           `${PRODUCTION_HOST}@${params.parent_author}/${params.parent_permlink}`);
       }
       if (await checkUserNotifications(

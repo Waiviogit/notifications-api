@@ -4,7 +4,7 @@ exports.NOTIFICATIONS_TYPES = {
   ACCOUNT_WITNESS_VOTE: 'account_witness_vote',
   TRANSFER_TO_VESTING: 'transfer_to_vesting',
   RESTAURANT_STATUS: 'restaurantStatus',
-  ACTIVATE_CAMPAIGN: 'activateCampaign',
+  ACTIVATE_CAMPAIGN: 'activationCampaign',
   WITHDRAW_VESTING: 'withdraw_vesting',
   SUSPENDED_STATUS: 'suspendedStatus',
   CAMPAIGN_MESSAGE: 'campaignMessage',

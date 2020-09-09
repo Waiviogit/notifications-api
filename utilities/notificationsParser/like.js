@@ -1,108 +1,85 @@
 const _ = require('lodash');
+const { PRODUCTION_HOST } = require('constants/index');
 const { subscriptionModel, postModel } = require('models');
+const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const { getUsers, checkUserNotifications } = require('utilities/helpers/notificationsHelper');
 
 const prepareMyLikeNotifications = async ({
-  params, users, posts, notifications,
+  params, users, post, notifications,
 }) => {
-  for (const vote of params.votes) {
-    if (!await checkUserNotifications({
-      user: _.find(users, { name: vote.voter }), type: NOTIFICATIONS_TYPES.MY_LIKE,
-    })) continue;
-    const post = _.find(posts, (el) => el.author === vote.author && el.permlink === vote.permlink);
-    if (!post) continue;
-    notifications.push([vote.voter, {
-      timestamp: Math.round(new Date().valueOf() / 1000),
-      type: NOTIFICATIONS_TYPES.MY_LIKE,
-      permlink: vote.permlink,
-      author: vote.author,
-      title: post.title,
-      voter: vote.voter,
-    }]);
-  }
+  if (!await checkUserNotifications({
+    user: _.find(users, { name: params.voter }), type: NOTIFICATIONS_TYPES.MY_LIKE,
+  })) return;
+
+  notifications.push([params.voter, {
+    timestamp: Math.round(new Date().valueOf() / 1000),
+    type: NOTIFICATIONS_TYPES.MY_LIKE,
+    permlink: params.permlink,
+    author: params.author,
+    title: post.title,
+    voter: params.voter,
+  }]);
+  await shareMessageBySubscribers(
+    params.voter,
+    `${params.voter} liked ${post.title}`,
+    `${PRODUCTION_HOST}@${params.author}/${params.permlink}`,
+  );
 };
 
 const prepareLikeNotifications = async ({
-  params, users, posts, type, notifications,
+  params, users, post, type, notifications,
 }) => {
-  for (const vote of params.votes) {
-    if (!await checkUserNotifications({
-      user: _.find(users, { name: vote.author }), type,
-    })) continue;
-    if (_.get(vote, 'guest_author', false)) vote.author = vote.guest_author;
-    const post = _.find(posts, (el) => el.author === vote.author && el.permlink === vote.permlink);
-    if (!post) continue;
+  if (!await checkUserNotifications({
+    user: _.find(users, { name: params.author }), type,
+  })) return;
+  if (_.get(params, 'guest_author', false)) params.author = params.guest_author;
 
-    const likesCount = _
-      .chain(post.active_votes)
-      .filter((v) => v.weight > 0)
-      .get('length')
-      .value();
-    const newTop = [];
-    if (likesCount > 10) {
-      newTop.push(..._
-        .chain(post.active_votes).orderBy(['weight'], 'desc')
-        .map(((el) => el.weight))
-        .slice(0, 5)
-        .value());
-      vote.weight > newTop[4] && newTop.push(vote.weight);
-    }
-    const { result: followVoter } = await subscriptionModel
-      .find({ follower: vote.author, following: vote.voter });
-    if (likesCount > 10 && vote.weight < _.get(newTop, '4', 0) && !followVoter) continue;
+  const votes = _
+    .chain(post.active_votes)
+    .filter((v) => (v.weight >= 0 && v.percent > 0))
+    .orderBy(['weight'], 'desc')
+    .value();
 
-    const notification = [vote.author, {
-      type,
-      voter: vote.voter,
-      likesCount,
-      title: post.title,
-      newTop,
-      author: vote.author,
-      permlink: vote.permlink,
-      timestamp: Math.round(new Date().valueOf() / 1000),
-    }];
-    if (notifications.length) {
-      const samePostLike = _.findLast(
-        notifications, (el) => el[1].author === vote.author && el[1].permlink === vote.permlink,
-      );
+  const { result: followVoter } = await subscriptionModel
+    .find({ follower: params.author, following: params.voter });
+  const voteInTop = !!_.find(votes.slice(0, 5), (v) => v.voter === params.voter);
+  if (votes.length > 10 && !voteInTop && !followVoter) return;
 
-      if (samePostLike) {
-        const topArr = samePostLike[1].newTop.sort(((a, b) => b - a));
-        if (followVoter || vote.weight > _.get(topArr, '4', 0)) {
-          topArr.push(vote.weight);
-          notification[1].newTop = topArr;
-          notification[1].likesCount = samePostLike[1].likesCount + 1;
-          notifications.push(notification);
-          continue;
-        }
-        continue;
-      } else {
-        notifications.push(notification);
-        continue;
-      }
-    }
-    notifications.push(notification);
-  }
+  const notification = [params.author, {
+    type,
+    voter: params.voter,
+    likesCount: votes.length - 1,
+    title: post.title,
+    author: params.author,
+    permlink: params.permlink,
+    timestamp: Math.round(new Date().valueOf() / 1000),
+  }];
+
+  const telegramMessage = votes.length === 1
+    ? `${params.voter} liked ${post.title}`
+    : `${params.voter} and ${votes.length - 1} others liked your post ${post.title}`;
+  const url = `${PRODUCTION_HOST}@${params.author}/${params.permlink}`;
+  notifications.push(notification);
+  await shareMessageBySubscribers(params.author, telegramMessage, url);
 };
 
 module.exports = async (params) => {
   const notifications = [];
-  const usersArr = [...new Set(_.concat(_.map(params.votes, 'author'), _.map(params.votes, 'voter')))];
-  const { users } = await getUsers({ arr: usersArr });
 
-  const { posts } = await postModel.find({
-    author: { $in: _.map(params.votes, (el) => el.guest_author || el.author) },
-    permlink: { $in: _.map(params.votes, 'permlink') },
+  const { users } = await getUsers({ arr: [params.author, params.voter] });
+  const { post } = await postModel.findOne({
+    author: params.author,
+    permlink: params.permlink,
   }, {
     author: 1, permlink: 1, title: 1, active_votes: 1,
   });
-
+  if (!post) return;
   await prepareLikeNotifications({
-    params, users, posts, type: NOTIFICATIONS_TYPES.LIKE, notifications,
+    params, users, post, type: NOTIFICATIONS_TYPES.LIKE, notifications,
   });
   await prepareMyLikeNotifications({
-    params, users, posts, notifications,
+    params, users, post, notifications,
   });
 
   return notifications;

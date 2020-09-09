@@ -152,19 +152,16 @@ exports.operationsSchema = Joi.object().keys({
       permlink: Joi.string().required(),
       guideName: Joi.string().required(),
       campaignName: Joi.string().required(),
+      guestName: Joi.string(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.LIKE,
     then: Joi.object().keys({
-      votes: Joi.array().items(
-        Joi.object().keys({
-          voter: Joi.string().required(),
-          author: Joi.string().required(),
-          permlink: Joi.string().required(),
-          weight: Joi.number().required(),
-          guest_author: Joi.string(),
-        }),
-      ),
+      voter: Joi.string().required(),
+      author: Joi.string().required(),
+      permlink: Joi.string().required(),
+      weight: Joi.number().required(),
+      guest_author: Joi.string(),
     }),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });

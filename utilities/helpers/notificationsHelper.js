@@ -41,7 +41,7 @@ const formTelegramData = (notification) => {
       };
     case BELL_NOTIFICATIONS.BELL_POST:
       return {
-        message: `${notification.author} published a new post: ${notification.title}`,
+        message: `New post by ${notification.author}: ${notification.title}`,
         url: `${PRODUCTION_HOST}@${notification.author}/${notification.permlink}`,
       };
     case BELL_NOTIFICATIONS.BELL_REBLOG:

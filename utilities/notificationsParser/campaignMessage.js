@@ -3,6 +3,7 @@ const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async (params) => {
+  if (params.guestName) params.author = params.guestName;
   await shareMessageBySubscribers(params.guideName,
     `${params.author} asked about ${params.campaignName}`,
     `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
