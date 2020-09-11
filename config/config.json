@@ -16,7 +16,8 @@
       "notifications": 0,
       "lastBlock": 2
     },
-    "swaggerHost": "www.waivio.com"
+    "swaggerHost": "www.waivio.com",
+    "app": "waivio"
   },
   "staging": {
     "waivioUrl": "https://waiviodev.com",
@@ -35,7 +36,8 @@
       "notifications": 0,
       "lastBlock": 2
     },
-    "swaggerHost": "waiviodev.com"
+    "swaggerHost": "waiviodev.com",
+    "app": "waiviodev"
   },
   "development": {
     "waivioUrl": "https://waiviodev.com",
@@ -54,7 +56,8 @@
       "notifications": 0,
       "lastBlock": 2
     },
-    "swaggerHost": "localhost:4000"
+    "swaggerHost": "localhost:4000",
+    "app": "waiviodev"
   },
   "test": {
     "waivioUrl": "https://waiviodev.com",
@@ -73,6 +76,7 @@
       "notifications": 0,
       "lastBlock": 2
     },
-    "swaggerHost": "localhost:4000"
+    "swaggerHost": "localhost:4000",
+    "app": "waiviodev"
   }
 }
