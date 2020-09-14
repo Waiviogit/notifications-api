@@ -4,7 +4,7 @@ const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async (params) => {
   await shareMessageBySubscribers(params.creator,
-    `${params.creator} update to ${params.object_name} was rejected`,
+    `${params.voter} rejected your update for ${params.object_name}`,
     `${PRODUCTION_HOST}object/${params.author_permlink}/updates/${params.fieldName}`);
 
   return [params.creator, {
