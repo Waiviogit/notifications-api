@@ -6,8 +6,6 @@ const {
   getUsers, checkUserNotifications, getServiceBots,
   addNotificationForSubscribers,
 } = require('utilities/helpers/notificationsHelper');
-const { App } = require('models');
-const config = require('config');
 
 module.exports = async (params) => {
   const notifications = [];
@@ -53,29 +51,27 @@ module.exports = async (params) => {
           reply: params.reply,
         };
         notifications.push([params.parent_author, notification]);
+        const replyMessage = params.reply
+          ? `${params.author} replied to ${params.parent_author} comment`
+          : `${params.author} commented on ${params.parent_author} post`;
 
         await shareMessageBySubscribers(params.parent_author,
-          `${params.author} replied to ${params.parent_author} post`,
+          replyMessage,
           `${PRODUCTION_HOST}@${params.parent_author}/${params.parent_permlink}`);
       }
       if (await checkUserNotifications(
         { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_COMMENT },
       )) {
-        const { app } = await App.getOne({ condition: { name: config.app } });
-        const serviceBots = _.includes(_.map(app.service_bots, 'name'), params.parent_author);
-        const replyTo = serviceBots ? 'guest user' : params.parent_author;
-
         notification = {
           timestamp: Math.round(new Date().valueOf() / 1000),
           type: NOTIFICATIONS_TYPES.MY_COMMENT,
           permlink: params.permlink,
           author: params.author,
           parentAuthor: params.parent_author,
-          guestUser: serviceBots,
         };
         notifications.push([params.author, notification]);
 
-        await shareMessageBySubscribers(params.author, `${params.author} reply to ${replyTo}`,
+        await shareMessageBySubscribers(params.author, `${params.author} reply to ${params.parent_author}`,
           `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
       }
       break;
