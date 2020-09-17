@@ -86,21 +86,22 @@ const checkUserNotifications = async ({ user, type, amount }) => {
 };
 
 const addNotificationsWobjectSubscribers = async ({ wobjects, notification }) => {
-  const notificationCopy = { ...notification };
-  notificationCopy.type = BELL_NOTIFICATIONS.BELL_WOBJ_POST;
   const wobjNotifications = [];
 
   for (const wobject of wobjects) {
     const { users } = await bellWobjectModel.getFollowers({ following: wobject.author_permlink });
     if (_.isEmpty(users)) continue;
+    const notificationCopy = { ...notification };
+    notificationCopy.type = BELL_NOTIFICATIONS.BELL_WOBJ_POST;
     notificationCopy.wobjectName = wobject.name;
+    notificationCopy.wobjectPermlink = wobject.author_permlink;
 
     for (const user of users) {
       wobjNotifications.push([user, notificationCopy]);
       await shareMessageBySubscribers(
         user,
         `${notificationCopy.author} referenced ${notificationCopy.wobjectName}`,
-        `${PRODUCTION_HOST}@${notificationCopy.author}/${notificationCopy.permlink}`,
+        `${PRODUCTION_HOST}object/${notificationCopy.wobjectPermlink}`,
       );
     }
   }
