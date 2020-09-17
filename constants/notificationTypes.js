@@ -37,4 +37,5 @@ exports.BELL_NOTIFICATIONS = {
   BELL_REBLOG: 'bellReblog',
   BELL_FOLLOW: 'bellFollow',
   BELL_POST: 'bellPost',
+  BELL_WOBJ_POST: 'bellWobjectPost',
 };

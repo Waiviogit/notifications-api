@@ -6,4 +6,5 @@ module.exports = {
   postModel: require('./postModel'),
   App: require('./AppModel'),
   bellNotificationsModel: require('./bellNotificationsModel'),
+  bellWobjectModel: require('./bellWobjectModel'),
 };

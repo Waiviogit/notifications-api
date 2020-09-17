@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
-const { userModel, App, bellNotificationsModel } = require('models');
+const {
+  userModel, App, bellNotificationsModel, bellWobjectModel,
+} = require('models');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
@@ -83,7 +85,30 @@ const checkUserNotifications = async ({ user, type, amount }) => {
   return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
 };
 
+const addNotificationsWobjectSubscribers = async ({ wobjects, notification }) => {
+  const notificationCopy = { ...notification };
+  notificationCopy.type = BELL_NOTIFICATIONS.BELL_WOBJ_POST;
+  const wobjNotifications = [];
+
+  for (const wobject of wobjects) {
+    const { users } = await bellWobjectModel.getFollowers({ following: wobject.author_permlink });
+    if (_.isEmpty(users)) continue;
+    notificationCopy.wobjectName = wobject.name;
+
+    for (const user of users) {
+      wobjNotifications.push([user, notificationCopy]);
+      await shareMessageBySubscribers(
+        user,
+        `${notificationCopy.author} referenced ${notificationCopy.wobjectName}`,
+        `${PRODUCTION_HOST}@${notificationCopy.author}/${notificationCopy.permlink}`,
+      );
+    }
+  }
+  return { wobjNotifications };
+};
+
 module.exports = {
+  addNotificationsWobjectSubscribers,
   addNotificationForSubscribers,
   checkUserNotifications,
   getServiceBots,
