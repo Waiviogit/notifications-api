@@ -79,7 +79,7 @@ exports.operationsSchema = Joi.object().keys({
       to: Joi.string().required(),
       from: Joi.string().required(),
       amount: Joi.string().required(),
-      memo: Joi.string().allow('').required(),
+      memo: Joi.string().allow('').default(''),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.WITHDRAW_VESTING,
