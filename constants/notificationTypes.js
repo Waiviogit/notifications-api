@@ -5,6 +5,7 @@ exports.NOTIFICATIONS_TYPES = {
   TRANSFER_TO_VESTING: 'transfer_to_vesting',
   RESTAURANT_STATUS: 'restaurantStatus',
   ACTIVATE_CAMPAIGN: 'activationCampaign',
+  BELL_WOBJ_REWARDS: 'bellWobjectRewards',
   WITHDRAW_VESTING: 'withdraw_vesting',
   SUSPENDED_STATUS: 'suspendedStatus',
   CAMPAIGN_MESSAGE: 'campaignMessage',
@@ -38,4 +39,5 @@ exports.BELL_NOTIFICATIONS = {
   BELL_FOLLOW: 'bellFollow',
   BELL_POST: 'bellPost',
   BELL_WOBJ_POST: 'bellWobjectPost',
+  BELL_WOBJ_REWARDS: 'bellWobjectRewards',
 };

@@ -167,5 +167,14 @@ exports.operationsSchema = Joi.object().keys({
       weight: Joi.number().required(),
       guest_author: Joi.string(),
     }),
+  }, {
+    is: NOTIFICATIONS_TYPES.BELL_WOBJ_REWARDS,
+    then: Joi.object().keys({
+      guideName: Joi.string().required(),
+      objectName: Joi.string().required(),
+      primaryObject: Joi.string().required(),
+      objectPermlink: Joi.string().required(),
+      users: Joi.array().items(String).required(),
+    }),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });
