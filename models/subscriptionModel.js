@@ -12,7 +12,7 @@ exports.getBellFollowers = async ({ following }) => {
   try {
     const result = await Subscriptions.find({ following, bell: true }).select('follower')
       .lean();
-    return { wobjFollowers: result.map((el) => el.follower) };
+    return { users: result.map((el) => el.follower) };
   } catch (error) {
     return { error };
   }
