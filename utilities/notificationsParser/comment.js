@@ -30,10 +30,7 @@ module.exports = async (params) => {
       });
 
       if (!_.isEmpty(params.wobjects)) {
-        const { wobjNotifications } = await addNotificationsWobjectSubscribers({
-          wobjects: params.wobjects,
-          notification,
-        });
+        const { wobjNotifications } = await addNotificationsWobjectSubscribers(params);
         notifications.push(...wobjNotifications);
       }
 

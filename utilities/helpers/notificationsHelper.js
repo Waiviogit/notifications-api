@@ -85,24 +85,31 @@ const checkUserNotifications = async ({ user, type, amount }) => {
   return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
 };
 
-const addNotificationsWobjectSubscribers = async ({ wobjects, notification }) => {
+const addNotificationsWobjectSubscribers = async ({
+  wobjects, permlink, author, title,
+}) => {
   const wobjNotifications = [];
 
   for (const wobject of wobjects) {
     const { users } = await wobjectSubscriptionModel
       .getBellFollowers({ following: wobject.author_permlink });
     if (_.isEmpty(users)) continue;
-    const notificationCopy = { ...notification };
-    notificationCopy.type = BELL_NOTIFICATIONS.BELL_WOBJ_POST;
-    notificationCopy.wobjectName = wobject.name;
-    notificationCopy.wobjectPermlink = wobject.author_permlink;
+    const notification = {
+      timestamp: Math.round(new Date().valueOf() / 1000),
+      wobjectPermlink: wobject.author_permlink,
+      type: BELL_NOTIFICATIONS.BELL_WOBJ_POST,
+      wobjectName: wobject.name,
+      permlink,
+      author,
+      title,
+    };
 
     for (const user of users) {
-      wobjNotifications.push([user, notificationCopy]);
+      wobjNotifications.push([user, notification]);
       await shareMessageBySubscribers(
         user,
-        `${notificationCopy.author} referenced ${notificationCopy.wobjectName}`,
-        `${PRODUCTION_HOST}object/${notificationCopy.wobjectPermlink}`,
+        `${author} referenced ${wobject.name}`,
+        `${PRODUCTION_HOST}object/${wobject.author_permlink}`,
       );
     }
   }
