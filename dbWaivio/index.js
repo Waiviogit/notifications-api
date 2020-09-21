@@ -9,8 +9,7 @@ module.exports = {
     User: require('./schemas/UserSchema'),
     App: require('./schemas/AppSchema'),
     Post: require('./schemas/PostSchema'),
-    BellWobject: require('./schemas/BellWobjectSchema'),
     Subscriptions: require('./schemas/SubscriptionSchema'),
-    BellNotifications: require('./schemas/BellNotificationsSchema'),
+    WobjectSubscriptions: require('./schemas/WobjectSubscriptionSchema'),
   },
 };

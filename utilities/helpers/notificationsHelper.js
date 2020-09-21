@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
 const {
-  userModel, App, bellNotificationsModel, bellWobjectModel,
+  userModel, App, subscriptionModel, wobjectSubscriptionModel,
 } = require('models');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { BELL_NOTIFICATIONS } = require('constants/notificationTypes');
@@ -22,7 +22,7 @@ const parseJson = (json) => {
 const addNotificationForSubscribers = async ({
   user, notifications, notificationData, changeType,
 }) => {
-  const { users, error } = await bellNotificationsModel.getFollowers({ following: user });
+  const { users, error } = await subscriptionModel.getBellFollowers({ following: user });
   if (error) return console.error(error.message);
   if (!users.length) return;
   const notificationCopy = { ...notificationData };
@@ -89,7 +89,8 @@ const addNotificationsWobjectSubscribers = async ({ wobjects, notification }) =>
   const wobjNotifications = [];
 
   for (const wobject of wobjects) {
-    const { users } = await bellWobjectModel.getFollowers({ following: wobject.author_permlink });
+    const { users } = await wobjectSubscriptionModel
+      .getBellFollowers({ following: wobject.author_permlink });
     if (_.isEmpty(users)) continue;
     const notificationCopy = { ...notification };
     notificationCopy.type = BELL_NOTIFICATIONS.BELL_WOBJ_POST;
