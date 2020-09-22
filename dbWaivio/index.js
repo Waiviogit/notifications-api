@@ -10,6 +10,6 @@ module.exports = {
     App: require('./schemas/AppSchema'),
     Post: require('./schemas/PostSchema'),
     Subscriptions: require('./schemas/SubscriptionSchema'),
-    BellNotifications: require('./schemas/BellNotificationsSchema'),
+    WobjectSubscriptions: require('./schemas/WobjectSubscriptionSchema'),
   },
 };

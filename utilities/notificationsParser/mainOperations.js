@@ -8,6 +8,7 @@ const {
   activateCampaign, campaignMessage, changePassword, withdrawRoute,
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
   restaurantStatus, suspendedStatus, transfer, withdrawVesting, witnessVote,
+  wobjectReward,
 } = require('.');
 
 const getNotifications = async (operation) => {
@@ -90,6 +91,9 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE:
       notifications.push(await campaignMessage(params));
+      break;
+    case NOTIFICATIONS_TYPES.BELL_WOBJ_REWARDS:
+      notifications = _.concat(notifications, await wobjectReward(params));
       break;
   }
   return notifications;

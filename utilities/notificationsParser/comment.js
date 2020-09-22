@@ -4,7 +4,7 @@ const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const {
   getUsers, checkUserNotifications, getServiceBots,
-  addNotificationForSubscribers,
+  addNotificationForSubscribers, addNotificationsWobjectSubscribers,
 } = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
@@ -28,6 +28,11 @@ module.exports = async (params) => {
         user: params.author,
         notifications,
       });
+
+      if (!_.isEmpty(params.wobjects)) {
+        const { wobjNotifications } = await addNotificationsWobjectSubscribers(params);
+        notifications.push(...wobjNotifications);
+      }
 
       if (await checkUserNotifications(
         { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_POST },

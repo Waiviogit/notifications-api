@@ -46,6 +46,10 @@ exports.operationsSchema = Joi.object().keys({
       title: Joi.string().allow('').required(),
       body: Joi.string().required(),
       reply: Joi.boolean().default(false),
+      wobjects: Joi.array().items(Joi.object().keys({
+        author_permlink: Joi.string().required(),
+        name: Joi.string().required(),
+      })).default([]),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.SUSPENDED_STATUS,
@@ -162,6 +166,15 @@ exports.operationsSchema = Joi.object().keys({
       permlink: Joi.string().required(),
       weight: Joi.number().required(),
       guest_author: Joi.string(),
+    }),
+  }, {
+    is: NOTIFICATIONS_TYPES.BELL_WOBJ_REWARDS,
+    then: Joi.object().keys({
+      guideName: Joi.string().required(),
+      objectName: Joi.string().required(),
+      primaryObject: Joi.string().required(),
+      objectPermlink: Joi.string().required(),
+      users: Joi.array().items(String).required(),
     }),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });

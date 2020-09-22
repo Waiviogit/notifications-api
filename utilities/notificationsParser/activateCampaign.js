@@ -26,7 +26,7 @@ module.exports = async (params) => {
 
     await shareMessageBySubscribers(user,
       `${params.guide} launched a new campaign for ${params.object_name}`,
-      `${PRODUCTION_HOST}object/${params.author_permlink}`);
+      `${PRODUCTION_HOST}rewards/all/${params.author_permlink}`);
   }
   return notifications;
 };

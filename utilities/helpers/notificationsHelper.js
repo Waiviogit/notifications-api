@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
-const { userModel, App, bellNotificationsModel } = require('models');
+const {
+  userModel, App, subscriptionModel, wobjectSubscriptionModel,
+} = require('models');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
@@ -20,7 +22,7 @@ const parseJson = (json) => {
 const addNotificationForSubscribers = async ({
   user, notifications, notificationData, changeType,
 }) => {
-  const { users, error } = await bellNotificationsModel.getFollowers({ following: user });
+  const { users, error } = await subscriptionModel.getBellFollowers({ following: user });
   if (error) return console.error(error.message);
   if (!users.length) return;
   const notificationCopy = { ...notificationData };
@@ -83,7 +85,39 @@ const checkUserNotifications = async ({ user, type, amount }) => {
   return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
 };
 
+const addNotificationsWobjectSubscribers = async ({
+  wobjects, permlink, author, title,
+}) => {
+  const wobjNotifications = [];
+
+  for (const wobject of wobjects) {
+    const { users } = await wobjectSubscriptionModel
+      .getBellFollowers({ following: wobject.author_permlink });
+    if (_.isEmpty(users)) continue;
+    const notification = {
+      timestamp: Math.round(new Date().valueOf() / 1000),
+      wobjectPermlink: wobject.author_permlink,
+      type: BELL_NOTIFICATIONS.BELL_WOBJ_POST,
+      wobjectName: wobject.name,
+      permlink,
+      author,
+      title,
+    };
+
+    for (const user of users) {
+      wobjNotifications.push([user, notification]);
+      await shareMessageBySubscribers(
+        user,
+        `${author} referenced ${wobject.name}`,
+        `${PRODUCTION_HOST}object/${wobject.author_permlink}`,
+      );
+    }
+  }
+  return { wobjNotifications };
+};
+
 module.exports = {
+  addNotificationsWobjectSubscribers,
   addNotificationForSubscribers,
   checkUserNotifications,
   getServiceBots,

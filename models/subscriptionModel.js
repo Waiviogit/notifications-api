@@ -7,3 +7,13 @@ exports.find = async (condition, select) => {
     return { error };
   }
 };
+
+exports.getBellFollowers = async ({ following }) => {
+  try {
+    const result = await Subscriptions.find({ following, bell: true }).select('follower')
+      .lean();
+    return { users: result.map((el) => el.follower) };
+  } catch (error) {
+    return { error };
+  }
+};
