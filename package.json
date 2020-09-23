@@ -12,6 +12,8 @@
   "dependencies": {
     "@hapi/joi": "^17.1.0",
     "@hivechain/dsteem": "^0.12.14",
+    "@sentry/node": "^5.24.2",
+    "@sentry/tracing": "^5.24.2",
     "axios": "^0.19.2",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
