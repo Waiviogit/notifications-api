@@ -6,7 +6,7 @@ const notifications = async (req, res, next) => {
     req.body, validators.notifications.operationsSchema,
   );
   if (validationError) return next({ status: 422, message: validationError.message });
-  await mainOperations.setNotifications({ params });
+  await mainOperations.setNotifications({ params, next });
   res.status(200).json({ result: 'OK' });
 };
 
