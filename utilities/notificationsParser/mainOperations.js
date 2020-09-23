@@ -114,6 +114,7 @@ const prepareDataForRedis = (notifications, next) => {
 exports.setNotifications = async ({ params, next }) => {
   const notifications = await getNotifications(params);
   const redisOps = prepareDataForRedis(notifications, next);
+  if (!redisOps) return;
   await redisNotifyClient.multi(redisOps).execAsync();
   clientSend(notifications);
 };
