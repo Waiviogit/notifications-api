@@ -24,6 +24,7 @@
     "lodash": "^4.17.5",
     "moment": "^2.23.0",
     "mongoose": "^5.9.18",
+    "mongoose-float": "^1.0.4",
     "morgan": "^1.9.1",
     "node-telegram-bot-api": "^0.50.0",
     "redis": "^2.8.0",

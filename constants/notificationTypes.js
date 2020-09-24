@@ -9,6 +9,7 @@ exports.NOTIFICATIONS_TYPES = {
   WITHDRAW_VESTING: 'withdraw_vesting',
   SUSPENDED_STATUS: 'suspendedStatus',
   CAMPAIGN_MESSAGE: 'campaignMessage',
+  CAMPAIGN_RESERVATION: 'campaignReservation',
   CHANGE_PASSWORD: 'changePassword',
   WITHDRAW_ROUTE: 'withdraw_route',
   TRANSFER_FROM: 'transferFrom',
