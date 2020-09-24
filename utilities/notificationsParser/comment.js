@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
+const { campaignsModel } = require('models');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const {
@@ -44,6 +45,34 @@ module.exports = async (params) => {
       break;
 
     case false:
+      const { result: campaign } = await campaignsModel.findOne(
+        { activation_permlink: params.parent_author },
+      );
+      if (await checkUserNotifications(
+        { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_COMMENT },
+      )) {
+        notification = {
+          timestamp: Math.round(new Date().valueOf() / 1000),
+          type: NOTIFICATIONS_TYPES.MY_COMMENT,
+          permlink: params.permlink,
+          author: params.author,
+          parentAuthor: params.parent_author,
+        };
+        notifications.push([params.author, notification]);
+
+        await shareMessageBySubscribers(params.author, `${params.author} reply to ${params.parent_author}`,
+          `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
+      }
+      if (campaign) {
+        notification = {
+          timestamp: Math.round(new Date().valueOf() / 1000),
+          type: NOTIFICATIONS_TYPES.CAMPAIGN_RESERVATION,
+          campaignName: campaign.name,
+          author: params.author,
+        };
+        notifications.push([params.parent_author, notification]);
+        return notifications;
+      }
       if (await checkUserNotifications(
         { user: _.find(authors, { name: params.parent_author }), type: NOTIFICATIONS_TYPES.REPLY },
       )) {
@@ -64,21 +93,7 @@ module.exports = async (params) => {
           replyMessage,
           `${PRODUCTION_HOST}@${params.parent_author}/${params.parent_permlink}`);
       }
-      if (await checkUserNotifications(
-        { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_COMMENT },
-      )) {
-        notification = {
-          timestamp: Math.round(new Date().valueOf() / 1000),
-          type: NOTIFICATIONS_TYPES.MY_COMMENT,
-          permlink: params.permlink,
-          author: params.author,
-          parentAuthor: params.parent_author,
-        };
-        notifications.push([params.author, notification]);
 
-        await shareMessageBySubscribers(params.author, `${params.author} reply to ${params.parent_author}`,
-          `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
-      }
       break;
   }
 
@@ -98,7 +113,10 @@ module.exports = async (params) => {
 
   if (mentions.length) {
     const { users, error } = await getUsers({ arr: mentions });
-    if (error) return console.error(error);
+    if (error) {
+      console.error(error);
+      return notifications;
+    }
     const serviceBots = await getServiceBots();
     for (const mention of mentions) {
       if (!await checkUserNotifications(

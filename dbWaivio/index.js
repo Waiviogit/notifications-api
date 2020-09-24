@@ -11,5 +11,6 @@ module.exports = {
     Post: require('./schemas/PostSchema'),
     Subscriptions: require('./schemas/SubscriptionSchema'),
     WobjectSubscriptions: require('./schemas/WobjectSubscriptionSchema'),
+    Campaigns: require('./schemas/CampaignsSchema'),
   },
 };
