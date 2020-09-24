@@ -46,7 +46,7 @@ module.exports = async (params) => {
 
     case false:
       const { result: campaign } = await campaignsModel.findOne(
-        { activation_permlink: params.parent_author },
+        { activation_permlink: params.parent_permlink },
       );
       if (await checkUserNotifications(
         { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_COMMENT },
@@ -71,6 +71,8 @@ module.exports = async (params) => {
           author: params.author,
         };
         notifications.push([params.parent_author, notification]);
+        await shareMessageBySubscribers(params.parent_author, `${params.author} made a reservation for ${campaign.name}`,
+          `${PRODUCTION_HOST}/rewards/guideHistory`);
         return notifications;
       }
       if (await checkUserNotifications(
