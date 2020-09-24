@@ -156,7 +156,7 @@ exports.operationsSchema = Joi.object().keys({
       permlink: Joi.string().required(),
       guideName: Joi.string().required(),
       campaignName: Joi.string().required(),
-      guestName: Joi.string(),
+      reservedUser: Joi.string().required(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.LIKE,
