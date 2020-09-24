@@ -33,7 +33,6 @@ const prepareLikeNotifications = async ({
   if (!await checkUserNotifications({
     user: _.find(users, { name: params.author }), type,
   })) return;
-  if (_.get(params, 'guest_author', false)) params.author = params.guest_author;
 
   const votes = _
     .chain(post.active_votes)
@@ -66,7 +65,7 @@ const prepareLikeNotifications = async ({
 
 module.exports = async (params) => {
   const notifications = [];
-
+  if (_.get(params, 'guest_author', false)) params.author = params.guest_author;
   const { users } = await getUsers({ arr: [params.author, params.voter] });
   const { post } = await postModel.findOne({
     author: params.author,
@@ -74,7 +73,7 @@ module.exports = async (params) => {
   }, {
     author: 1, permlink: 1, title: 1, active_votes: 1,
   });
-  if (!post) return;
+  if (!post) return notifications;
   await prepareLikeNotifications({
     params, users, post, type: NOTIFICATIONS_TYPES.LIKE, notifications,
   });

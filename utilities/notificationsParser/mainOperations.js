@@ -99,10 +99,10 @@ const getNotifications = async (operation) => {
   return notifications;
 };
 
-const prepareDataForRedis = (notifications, next) => {
+const prepareDataForRedis = (notifications) => {
   const redisOps = [];
   notifications.forEach((notification) => {
-    if (!notification) return next({ status: 500, message: 'Notification not exist' });
+    if (!notification) return;
     const key = `notifications:${notification[0]}`;
     redisOps.push(['lpush', key, JSON.stringify(notification[1])]);
     redisOps.push(['expire', key, NOTIFICATION_EXPIRY]);
@@ -111,10 +111,9 @@ const prepareDataForRedis = (notifications, next) => {
   return redisOps;
 };
 
-exports.setNotifications = async ({ params, next }) => {
+exports.setNotifications = async ({ params }) => {
   const notifications = await getNotifications(params);
-  const redisOps = prepareDataForRedis(notifications, next);
-  if (!redisOps) return;
+  const redisOps = prepareDataForRedis(notifications);
   await redisNotifyClient.multi(redisOps).execAsync();
   clientSend(notifications);
 };
