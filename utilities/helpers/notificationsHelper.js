@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const config = require('config');
 const { PRODUCTION_HOST } = require('constants/index');
 const {
   userModel, App, subscriptionModel, wobjectSubscriptionModel,
@@ -55,9 +56,8 @@ const formTelegramData = (notification) => {
 };
 
 const getServiceBots = async () => {
-  const name = process.env.NODE_ENV === 'production' ? 'waivio' : 'waiviodev';
   const { app, error: appError } = await App
-    .getOne({ condition: { name }, select: { service_bots: 1 } });
+    .getOne({ condition: { host: config.appHost }, select: { service_bots: 1 } });
   if (appError) return console.error(appError);
   return _
     .chain(app.service_bots)
