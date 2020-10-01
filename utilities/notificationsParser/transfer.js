@@ -30,7 +30,7 @@ module.exports = async (params) => {
     `${transferFrom} transfered ${params.amount} to ${transferTo}`,
     `${PRODUCTION_HOST}@${transferFrom}/transfers`);
 
-  if (!await checkUserNotifications({ user, type: NOTIFICATIONS_TYPES.TRANSFER })) {
+  if (!await checkUserNotifications({ user, type: NOTIFICATIONS_TYPES.TRANSFER, amount: params.amount })) {
     return notifications;
   }
 
