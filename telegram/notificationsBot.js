@@ -41,7 +41,7 @@ class WaivioBot {
       const { chat } = query.message;
       switch (query.data) {
         case 'notifications':
-          await this.bot.sendMessage(chat.id, 'Please send me the username whose notifications you want to subscribe to. Or press /showsubscriptions to look at your subscriptions');
+          await this.bot.sendMessage(chat.id, 'Please enter a username to start receiving notifications for that account or click /showsubscriptions to view current subscriptions.');
           break;
         default:
           const data = query.data.split(':');
