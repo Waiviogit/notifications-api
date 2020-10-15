@@ -13,14 +13,14 @@ module.exports = async (params) => {
   }
 
   await shareMessageBySubscribers(params.account,
-    `${params.account} claim reward: ${params.reward_steem}, ${params.reward_sbd}`,
+    `${params.account} claim reward: ${params.reward_hive}, ${params.reward_hbd}`,
     `${PRODUCTION_HOST}@${params.account}/transfers`);
 
   return [params.account, {
     type: NOTIFICATIONS_TYPES.CLAIM_REWARD,
     account: params.account,
-    rewardHive: params.reward_steem,
-    rewardHBD: params.reward_sbd,
+    rewardHive: params.reward_hive,
+    rewardHBD: params.reward_hbd,
     timestamp: Math.round(new Date().valueOf() / 1000),
   },
   ];
