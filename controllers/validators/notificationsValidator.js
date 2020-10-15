@@ -142,8 +142,8 @@ exports.operationsSchema = Joi.object().keys({
     is: NOTIFICATIONS_TYPES.CLAIM_REWARD,
     then: Joi.object().keys({
       account: Joi.string().required(),
-      reward_steem: Joi.string().required(),
-      reward_sbd: Joi.string().required(),
+      reward_hive: Joi.string().required(),
+      reward_hbd: Joi.string().required(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE,
