@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
 const { campaignsModel } = require('models');
+const { RESERVATION_TITLES } = require('constants/campaignsData');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const {
@@ -63,7 +64,7 @@ module.exports = async (params) => {
         await shareMessageBySubscribers(params.author, `${params.author} reply to ${params.parent_author}`,
           `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
       }
-      if (campaign) {
+      if (campaign && params.title !== RESERVATION_TITLES.CANCELED) {
         notification = {
           timestamp: Math.round(new Date().valueOf() / 1000),
           type: NOTIFICATIONS_TYPES.CAMPAIGN_RESERVATION,
@@ -72,7 +73,7 @@ module.exports = async (params) => {
         };
         notifications.push([params.parent_author, notification]);
         await shareMessageBySubscribers(params.parent_author, `${params.author} made a reservation for ${campaign.name}`,
-          `${PRODUCTION_HOST}/rewards/guideHistory`);
+          `${PRODUCTION_HOST}rewards/guideHistory`);
         return notifications;
       }
       if (await checkUserNotifications(
