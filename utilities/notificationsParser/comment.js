@@ -64,16 +64,21 @@ module.exports = async (params) => {
         await shareMessageBySubscribers(params.author, `${params.author} reply to ${params.parent_author}`,
           `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
       }
-      if (campaign && params.title !== RESERVATION_TITLES.CANCELED) {
+      if (campaign) {
+        const isReleased = params.title === RESERVATION_TITLES.CANCELED;
         notification = {
           timestamp: Math.round(new Date().valueOf() / 1000),
           type: NOTIFICATIONS_TYPES.CAMPAIGN_RESERVATION,
           campaignName: campaign.name,
           author: params.author,
+          isReleased,
         };
         notifications.push([params.parent_author, notification]);
-        await shareMessageBySubscribers(params.parent_author, `${params.author} made a reservation for ${campaign.name}`,
-          `${PRODUCTION_HOST}rewards/guideHistory`);
+        await shareMessageBySubscribers(
+          params.parent_author,
+          `${params.author} made a ${isReleased ? 'released' : 'reservation'} for ${campaign.name}`,
+          `${PRODUCTION_HOST}rewards/guideHistory`,
+        );
         return notifications;
       }
       if (await checkUserNotifications(
