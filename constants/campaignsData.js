@@ -22,3 +22,7 @@ exports.CAMPAIGN_STATUSES = {
 exports.CAMPAIGN_TYPES = {
   REVIEWS: 'reviews',
 };
+
+exports.RESERVATION_TITLES = {
+  CANCELED: 'Cancelled reservation',
+};

@@ -27,7 +27,7 @@ module.exports = async (params) => {
   }]);
 
   await shareMessageBySubscribers(transferFrom,
-    `${transferFrom} transfered ${params.amount} to ${transferTo}`,
+    `${transferFrom} transferred ${params.amount} to ${transferTo}`,
     `${PRODUCTION_HOST}@${transferFrom}/transfers`);
 
   if (!await checkUserNotifications({ user, type: NOTIFICATIONS_TYPES.TRANSFER, amount: params.amount })) {
@@ -44,7 +44,7 @@ module.exports = async (params) => {
   }]);
 
   await shareMessageBySubscribers(transferTo,
-    `${transferFrom} transfered ${params.amount} to ${transferTo}`,
+    `${transferFrom} transferred ${params.amount} to ${transferTo}`,
     `${PRODUCTION_HOST}@${transferTo}/transfers`);
 
   return notifications;
