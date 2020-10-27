@@ -79,7 +79,7 @@ module.exports = async (params) => {
         notifications.push([params.parent_author, notification]);
         await shareMessageBySubscribers(
           params.parent_author,
-          `${params.author} made a ${isReleased ? 'released a reservation' : 'reservation'} for ${campaign.name}`,
+          `${params.author} ${isReleased ? 'released' : 'made'} a reservation for ${campaign.name}`,
           `${PRODUCTION_HOST}rewards/guideHistory${urlQuery}`,
         );
         return notifications;
