@@ -66,6 +66,9 @@ module.exports = async (params) => {
       }
       if (campaign) {
         const isReleased = params.title === RESERVATION_TITLES.CANCELED;
+        const urlQuery = isReleased
+          ? `?campaign=${campaign.name.replace(/ /g, '%20')}&released=Released`
+          : `?campaign=${campaign.name.replace(/ /g, '%20')}&reserved=Reserved`;
         notification = {
           timestamp: Math.round(new Date().valueOf() / 1000),
           type: NOTIFICATIONS_TYPES.CAMPAIGN_RESERVATION,
@@ -76,8 +79,8 @@ module.exports = async (params) => {
         notifications.push([params.parent_author, notification]);
         await shareMessageBySubscribers(
           params.parent_author,
-          `${params.author} made a ${isReleased ? 'released' : 'reservation'} for ${campaign.name}`,
-          `${PRODUCTION_HOST}rewards/guideHistory`,
+          `${params.author} ${isReleased ? 'released' : 'made'} a reservation for ${campaign.name}`,
+          `${PRODUCTION_HOST}rewards/guideHistory${urlQuery}`,
         );
         return notifications;
       }
