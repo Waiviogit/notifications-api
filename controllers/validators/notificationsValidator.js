@@ -144,6 +144,7 @@ exports.operationsSchema = Joi.object().keys({
       account: Joi.string().required(),
       reward_hive: Joi.string().required(),
       reward_hbd: Joi.string().required(),
+      reward_vests: Joi.string().required(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE,
