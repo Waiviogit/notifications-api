@@ -162,12 +162,14 @@ exports.operationsSchema = Joi.object().keys({
   }, {
     is: NOTIFICATIONS_TYPES.LIKE,
     then: Joi.object().keys({
-      voter: Joi.string().required(),
-      author: Joi.string().required(),
-      permlink: Joi.string().required(),
-      weight: Joi.number().required(),
-      guest_author: Joi.string(),
-    }),
+      likes: Joi.array().items(Joi.object().keys({
+        voter: Joi.string().required(),
+        author: Joi.string().required(),
+        permlink: Joi.string().required(),
+        weight: Joi.number().required(),
+        guest_author: Joi.string(),
+      })),
+    }).required(),
   }, {
     is: NOTIFICATIONS_TYPES.BELL_WOBJ_REWARDS,
     then: Joi.object().keys({

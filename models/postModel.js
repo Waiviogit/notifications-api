@@ -15,3 +15,11 @@ exports.findOne = async (condition, select) => {
     return { error };
   }
 };
+
+exports.getManyPosts = async (postsRefs) => {
+  try {
+    return { posts: await Post.find({ $or: [...postsRefs] }).lean() };
+  } catch (error) {
+    return { error };
+  }
+};
