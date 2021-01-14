@@ -179,5 +179,11 @@ exports.operationsSchema = Joi.object().keys({
       objectPermlink: Joi.string().required(),
       users: Joi.array().items(String).required(),
     }),
+  }, {
+    is: NOTIFICATIONS_TYPES.WEB_SITE_BALANCE,
+    then: Joi.array().items(Joi.object().keys({
+      owner: Joi.string().required(),
+      message: Joi.string().required(),
+    })).required(),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });

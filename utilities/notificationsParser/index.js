@@ -9,6 +9,7 @@ module.exports = {
   campaignMessage: require('./campaignMessage'),
   changePassword: require('./changePassword'),
   mainOperations: require('./mainOperations'),
+  webSiteBalance: require('./webSiteBalance'),
   wobjectReward: require('./wobjectReward'),
   withdrawRoute: require('./withdrawRoute'),
   rejectUpdate: require('./rejectUpdate'),
