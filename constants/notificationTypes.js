@@ -16,6 +16,7 @@ exports.NOTIFICATIONS_TYPES = {
   TRANSFER_FROM: 'transferFrom',
   REJECT_UPDATE: 'rejectUpdate',
   STATUS_CHANGE: 'statusChange',
+  NOTIFICATION: 'notification',
   WITNESS_VOTE: 'witness_vote',
   CLAIM_REWARD: 'claimReward',
   CUSTOM_JSON: 'custom_json',
@@ -27,6 +28,7 @@ exports.NOTIFICATIONS_TYPES = {
   MENTION: 'mention',
   MY_POST: 'myPost',
   MY_LIKE: 'myLike',
+  LOGIN: 'login',
   REPLY: 'reply',
   LIKE: 'like',
 };
