@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const sdk = require('sc2-sdk');
 const SocketServer = require('ws').Server;
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const { server } = require('./app');
 const { redis, redisSetter, redisGetter } = require('./utilities/redis');
 const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
@@ -16,9 +17,9 @@ const sendLoginSuccess = (call, result, ws) => {
   ws.user_metadata = result.user_metadata;
   WebSocket.sendMessage({
     ws,
-    message: JSON.stringify(
-      { id: call.id, result: { login: true, username: result.name } },
-    ),
+    message: JSON.stringify({
+      id: call.id, result: { login: true, username: result.name }, type: NOTIFICATIONS_TYPES.LOGIN,
+    }),
   });
 };
 
@@ -53,7 +54,12 @@ const getNotifications = async (call, ws) => {
     const res = await redis.redisNotifyClient.lrangeAsync(`notifications:${call.params[0]}`, 0, -1);
     console.log('Send notifications', call.params[0], res.length);
     const notifications = res.map((notification) => JSON.parse(notification));
-    WebSocket.sendMessage({ ws, message: JSON.stringify({ id: call.id, result: notifications }) });
+    WebSocket.sendMessage({
+      ws,
+      message: JSON.stringify({
+        id: call.id, result: notifications, type: NOTIFICATIONS_TYPES.NOTIFICATION,
+      }),
+    });
   } catch (error) {
     console.log('Redis get_notifications failed', error);
   }
