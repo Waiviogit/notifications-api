@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const sdk = require('sc2-sdk');
 const SocketServer = require('ws').Server;
-const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { NOTIFICATIONS_TYPES, CALL_METHOD } = require('constants/notificationTypes');
 const { server } = require('./app');
 const { redis, redisSetter, redisGetter } = require('./utilities/redis');
 const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
@@ -57,7 +57,7 @@ const getNotifications = async (call, ws) => {
     WebSocket.sendMessage({
       ws,
       message: JSON.stringify({
-        id: call.id, result: notifications, type: NOTIFICATIONS_TYPES.NOTIFICATION,
+        id: call.id, result: notifications, type: NOTIFICATIONS_TYPES.GET_NOTIFICATIONS,
       }),
     });
   } catch (error) {
@@ -80,11 +80,11 @@ class WebSocket {
         }
         if (!_.get(call, 'params[0]')) sendSomethingWrong(call, ws);
         switch (call.method) {
-          case 'get_notifications':
+          case CALL_METHOD.GET_NOTIFICATIONS:
             await getNotifications(call, ws);
             break;
 
-          case 'login':
+          case CALL_METHOD.LOGIN:
             sc2.setAccessToken(call.params[0]);
             try {
               const result = await sc2.me();
@@ -94,13 +94,13 @@ class WebSocket {
             }
             break;
 
-          case 'guest_login':
+          case CALL_METHOD.GUEST_LOGIN:
             const { result: guestResult } = await validateAuthToken(call.params[0]);
             if (guestResult) sendLoginSuccess(call, guestResult, ws);
             else sendSomethingWrong(call, ws);
             break;
 
-          case 'subscribe':
+          case CALL_METHOD.SUBSCRIBE:
             console.log('Subscribe success', call.params[0]);
             ws.name = call.params[0];
             WebSocket.sendMessage({
@@ -111,7 +111,7 @@ class WebSocket {
             });
             break;
 
-          case 'unsubscribe':
+          case CALL_METHOD.UNSUBSCRIBE:
             try {
               sc2.setAccessToken(call.params[0]);
               const hiveAuth = await sc2.me();
@@ -123,7 +123,7 @@ class WebSocket {
             }
             break;
 
-          case 'subscribeBlock':
+          case CALL_METHOD.SUBSCRIBE_BLOCK:
             if (!_.isNumber(+call.params[1]) || !call.params[2]) {
               return sendSomethingWrong(call, ws);
             }

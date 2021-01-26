@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const { wssConnection } = require('../../wssConnector');
 
 const clientSend = (notifications) => {
@@ -6,11 +7,13 @@ const clientSend = (notifications) => {
     wssConnection.wss.clients.forEach((client) => {
       if (_.get(client, 'name') === notification[0]) {
         console.log('Send push notification', notification[0]);
-        client.send(
-          JSON.stringify({
-            type: 'notification', notification: notification[1],
+        wssConnection.constructor.sendMessage({
+          ws: client,
+          message: JSON.stringify({
+            type: NOTIFICATIONS_TYPES.NOTIFICATION,
+            notification: notification[1],
           }),
-        );
+        });
       }
     });
   });
@@ -19,9 +22,10 @@ const clientSend = (notifications) => {
 const sendParsedBlockResponse = async (type, subscribers, msg) => {
   wssConnection.wss.clients.forEach((client) => {
     if (client.name && _.includes(subscribers, client.name)) {
-      client.send(
-        JSON.stringify({ type, notification: { blockParsed: +msg } }),
-      );
+      wssConnection.constructor.sendMessage({
+        ws: client,
+        message: JSON.stringify({ type, notification: { blockParsed: +msg } }),
+      });
     }
   });
 };
@@ -29,7 +33,10 @@ const sendParsedBlockResponse = async (type, subscribers, msg) => {
 const heartbeat = () => {
   setInterval(() => {
     wssConnection.wss.clients.forEach((client) => {
-      client.send(JSON.stringify({ type: 'heartbeat' }));
+      wssConnection.constructor.sendMessage({
+        ws: client,
+        message: JSON.stringify({ type: NOTIFICATIONS_TYPES.HEARTBEAT }),
+      });
     });
   }, 20 * 1000);
 };
