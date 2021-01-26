@@ -6,6 +6,7 @@ exports.NOTIFICATIONS_TYPES = {
   TRANSFER_TO_VESTING: 'transfer_to_vesting',
   ACTIVATE_CAMPAIGN: 'activationCampaign',
   BELL_WOBJ_REWARDS: 'bellWobjectRewards',
+  GET_NOTIFICATIONS: 'get_notifications',
   RESTAURANT_STATUS: 'restaurantStatus',
   WITHDRAW_VESTING: 'withdraw_vesting',
   SUSPENDED_STATUS: 'suspendedStatus',
@@ -39,9 +40,18 @@ exports.CUSTOM_JSON_IDS = {
 };
 
 exports.BELL_NOTIFICATIONS = {
+  BELL_WOBJ_REWARDS: 'bellWobjectRewards',
+  BELL_WOBJ_POST: 'bellWobjectPost',
   BELL_REBLOG: 'bellReblog',
   BELL_FOLLOW: 'bellFollow',
   BELL_POST: 'bellPost',
-  BELL_WOBJ_POST: 'bellWobjectPost',
-  BELL_WOBJ_REWARDS: 'bellWobjectRewards',
+};
+
+exports.CALL_METHOD = {
+  GET_NOTIFICATIONS: 'get_notifications',
+  SUBSCRIBE_BLOCK: 'subscribeBlock',
+  GUEST_LOGIN: 'guest_login',
+  UNSUBSCRIBE: 'unsubscribe',
+  SUBSCRIBE: 'subscribe',
+  LOGIN: 'login',
 };
