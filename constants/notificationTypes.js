@@ -24,6 +24,7 @@ exports.NOTIFICATIONS_TYPES = {
   MY_COMMENT: 'myComment',
   POWER_DOWN: 'power_down',
   FILL_ORDER: 'fillOrder',
+  HEARTBEAT: 'heartbeat',
   TRANSFER: 'transfer',
   COMMENT: 'comment',
   MENTION: 'mention',
