@@ -46,17 +46,17 @@ const prepareLikeNotifications = async ({
       .get('length')
       .value();
     const newTop = [];
-    if (likesCount > 10) {
+    if (likesCount > 5) {
       newTop.push(..._
         .chain(post.active_votes).orderBy(['weight'], 'desc')
         .map(((el) => el.weight))
-        .slice(0, 5)
+        .slice(0, 3)
         .value());
-      vote.weight > newTop[4] && newTop.push(vote.weight);
+      vote.weight > newTop[2] && newTop.push(vote.weight);
     }
     const { result: followVoter } = await subscriptionModel
       .find({ follower: vote.author, following: vote.voter });
-    if (likesCount > 10 && vote.weight < _.get(newTop, '4', 0) && !followVoter) continue;
+    if (likesCount > 5 && vote.weight < _.get(newTop, '2', 0) && !followVoter) continue;
     const notification = [vote.author, {
       type,
       voter: vote.voter,
@@ -77,7 +77,7 @@ const prepareLikeNotifications = async ({
       );
       if (samePostLike) {
         const topArr = samePostLike[1].newTop.sort(((a, b) => b - a));
-        if (followVoter || vote.weight > _.get(topArr, '4', 0) || samePostLike[1].likesCount < 10) {
+        if (followVoter || vote.weight > _.get(topArr, '2', 0) || samePostLike[1].likesCount < 5) {
           topArr.push(vote.weight);
           notification[1].newTop = topArr;
           notification[1].likesCount = samePostLike[1].likesCount + 1;
