@@ -27,7 +27,7 @@ const botSchema = new Schema({
 }, { _id: false });
 
 const AppSchema = new Schema({
-  name: { type: String, index: true, unique: true },
+  name: { type: String, index: true },
   admins: { type: [String], required: true },
   moderators: {
     type: [moderatorsSchema],
