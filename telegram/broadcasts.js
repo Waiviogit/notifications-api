@@ -17,7 +17,7 @@ exports.shareMessageBySubscribers = async (user, message, url) => {
         },
       });
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   }
 };
