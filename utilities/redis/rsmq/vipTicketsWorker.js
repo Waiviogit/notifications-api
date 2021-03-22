@@ -2,9 +2,7 @@ const vipTicketsHelper = require('utilities/helpers/vipTicketsHelper');
 const jsonHelper = require('utilities/helpers/jsonHelper');
 const { QUEUES } = require('constants/common');
 const RedisSMQWorker = require('rsmq-worker');
-
 const config = require('config');
-const _ = require('lodash');
 
 exports.ticketsWorker = new RedisSMQWorker(
   QUEUES.TICKETS,
