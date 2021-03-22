@@ -41,4 +41,20 @@ const heartbeat = () => {
   }, 20 * 1000);
 };
 
-module.exports = { clientSend, heartbeat, sendParsedBlockResponse };
+const sendVipTicketResponse = async (userName) => {
+  const ws = _.find(Array.from(wssConnection.wss.clients), (item) => item.name === userName);
+  if (!ws) return false;
+
+  wssConnection.constructor.sendMessage({
+    ws,
+    message: JSON.stringify({
+      type: NOTIFICATIONS_TYPES.VIP_TICKETS,
+      notification: 'parsed',
+    }),
+  });
+  return true;
+};
+
+module.exports = {
+  clientSend, heartbeat, sendParsedBlockResponse, sendVipTicketResponse,
+};

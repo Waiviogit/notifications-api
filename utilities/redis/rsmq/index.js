@@ -1,3 +1,3 @@
 const { ticketsWorker } = require('./vipTicketsWorker');
 
-ticketsWorker.start();
+module.exports = { ticketsWorker };

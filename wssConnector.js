@@ -152,6 +152,9 @@ class WebSocket {
               });
             } else sendSomethingWrong(call, ws);
             break;
+          case CALL_METHOD.SUBSCRIBE_TICKET:
+            ws.name = call.params[0];
+            break;
         }
       });
       ws.on('error', () => console.log('Error on connection with peer'));

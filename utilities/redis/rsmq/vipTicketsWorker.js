@@ -1,5 +1,6 @@
 const vipTicketsHelper = require('utilities/helpers/vipTicketsHelper');
 const jsonHelper = require('utilities/helpers/jsonHelper');
+const wssHelper = require('utilities/helpers/wssHelper');
 const { QUEUES } = require('constants/common');
 const RedisSMQWorker = require('rsmq-worker');
 const config = require('config');
@@ -16,7 +17,7 @@ this.ticketsWorker.on('message', async (msg, next) => {
   for (let i = 0; i < ticketsAmount; i++) {
     await vipTicketsHelper.createTicket({ userName: from, msg });
   }
-
+  await wssHelper.sendVipTicketResponse(from);
   next();
 });
 
