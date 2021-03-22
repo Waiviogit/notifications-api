@@ -1,6 +1,6 @@
+const { HIVE_ON_BOARD } = require('constants/requestData');
 const axios = require('axios');
 const _ = require('lodash');
-const { HIVE_ON_BOARD } = require('constants/requestData');
 
 exports.getCurrencyFromCoingecko = async (type) => {
   let currency;
