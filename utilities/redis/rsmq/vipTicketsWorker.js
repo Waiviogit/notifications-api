@@ -1,8 +1,10 @@
+const { sendSentryNotification } = require('utilities/helpers/sentryHelper');
 const vipTicketsHelper = require('utilities/helpers/vipTicketsHelper');
 const jsonHelper = require('utilities/helpers/jsonHelper');
 const wssHelper = require('utilities/helpers/wssHelper');
 const { QUEUES } = require('constants/common');
 const RedisSMQWorker = require('rsmq-worker');
+const Sentry = require('@sentry/node');
 const config = require('config');
 
 exports.ticketsWorker = new RedisSMQWorker(
@@ -21,6 +23,7 @@ this.ticketsWorker.on('message', async (msg, next) => {
   next();
 });
 
-this.ticketsWorker.on('error', async (err, msg) => {
-  console.log('error', err, msg.id);
+this.ticketsWorker.on('error', async (error) => {
+  Sentry.captureException(error);
+  await sendSentryNotification();
 });
