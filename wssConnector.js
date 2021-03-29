@@ -6,7 +6,10 @@ const { server } = require('./app');
 const { redis, redisSetter, redisGetter } = require('./utilities/redis');
 const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
 
-const sc2 = sdk.Initialize({ app: 'waivio.app' });
+const sc2 = sdk.Initialize({
+  app: 'waivio.app',
+  baseURL: 'https://hivesigner.com',
+});
 const wss = new SocketServer({ server, path: '/notifications-api' });
 
 const sendLoginSuccess = (call, result, ws) => {
@@ -151,6 +154,9 @@ class WebSocket {
                 ),
               });
             } else sendSomethingWrong(call, ws);
+            break;
+          case CALL_METHOD.SUBSCRIBE_TICKET:
+            ws.name = call.params[0];
             break;
         }
       });

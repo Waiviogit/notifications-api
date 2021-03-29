@@ -12,5 +12,6 @@ module.exports = {
     Subscriptions: require('./schemas/SubscriptionSchema'),
     WobjectSubscriptions: require('./schemas/WobjectSubscriptionSchema'),
     Campaigns: require('./schemas/CampaignsSchema'),
+    VipTicket: require('./schemas/VipTicketSchema'),
   },
 };

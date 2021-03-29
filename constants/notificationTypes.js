@@ -21,8 +21,9 @@ exports.NOTIFICATIONS_TYPES = {
   WITNESS_VOTE: 'witness_vote',
   CLAIM_REWARD: 'claimReward',
   CUSTOM_JSON: 'custom_json',
-  MY_COMMENT: 'myComment',
+  VIP_TICKETS: 'vipTickets',
   POWER_DOWN: 'power_down',
+  MY_COMMENT: 'myComment',
   FILL_ORDER: 'fillOrder',
   HEARTBEAT: 'heartbeat',
   TRANSFER: 'transfer',
@@ -50,6 +51,7 @@ exports.BELL_NOTIFICATIONS = {
 
 exports.CALL_METHOD = {
   GET_NOTIFICATIONS: 'get_notifications',
+  SUBSCRIBE_TICKET: 'subscribeTicket',
   SUBSCRIBE_BLOCK: 'subscribeBlock',
   GUEST_LOGIN: 'guest_login',
   UNSUBSCRIBE: 'unsubscribe',

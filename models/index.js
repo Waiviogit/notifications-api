@@ -7,4 +7,5 @@ module.exports = {
   postModel: require('./postModel'),
   App: require('./AppModel'),
   campaignsModel: require('./campaignsModel'),
+  vipTicketsModel: require('./vipTicketsModel'),
 };
