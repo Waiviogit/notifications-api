@@ -9,6 +9,7 @@ const VipTicketSchema = new Schema({
     type: String, required: true, unique: true, index: true,
   },
   valid: { type: Boolean, default: true },
+  blockNum: { type: Number },
   note: { type: String },
 }, { versionKey: false, timestamps: true });
 
