@@ -8,3 +8,11 @@ exports.create = async (data) => {
     return { error };
   }
 };
+
+exports.countDocuments = async (condition) => {
+  try {
+    return { result: await VipTicket.countDocuments(condition).lean() };
+  } catch (error) {
+    return { error };
+  }
+};

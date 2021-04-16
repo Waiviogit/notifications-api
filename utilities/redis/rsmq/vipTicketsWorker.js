@@ -12,14 +12,20 @@ exports.ticketsWorker = new RedisSMQWorker(
   { options: { db: config.redis.actionsQueue } },
 );
 
-this.ticketsWorker.on('message', async (msg, next) => {
-  const { from, ticketsAmount } = jsonHelper.parseJson(msg);
+this.ticketsWorker.on('message', async (msg, next, id) => {
+  const { from, ticketsAmount, blockNum } = jsonHelper.parseJson(msg);
   if (!from || !ticketsAmount) return next();
 
   for (let i = 0; i < ticketsAmount; i++) {
-    await vipTicketsHelper.createTicket({ userName: from, msg });
+    await vipTicketsHelper.createTicket({
+      userName: from,
+      ticketsAmount,
+      blockNum,
+      msg,
+    });
   }
   await wssHelper.sendVipTicketResponse(from);
+  await this.ticketsWorker.del(id);
   next();
 });
 
