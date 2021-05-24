@@ -13,11 +13,11 @@ module.exports = async (params) => {
   if (!await checkUserNotifications({ user, type: 'powerUp' })) return [];
 
   await shareMessageBySubscribers(params.from,
-    `${params.from} sent to ${params.to} ${params.amount}`,
+    `${params.from} initiated 'Power Up' on ${params.amount}`,
     `${PRODUCTION_HOST}@${params.from}/transfers`);
 
   return [params.from, Object.assign(params, {
     timestamp: Math.round(new Date().valueOf() / 1000),
-    type: NOTIFICATIONS_TYPES.TRANSFER_TO_VESTING,
+    type: NOTIFICATIONS_TYPES.POWER_UP,
   })];
 };
