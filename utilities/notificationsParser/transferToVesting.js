@@ -18,6 +18,6 @@ module.exports = async (params) => {
 
   return [params.from, Object.assign(params, {
     timestamp: Math.round(new Date().valueOf() / 1000),
-    type: NOTIFICATIONS_TYPES.POWER_UP,
+    type: NOTIFICATIONS_TYPES.TRANSFER_TO_VESTING,
   })];
 };

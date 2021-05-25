@@ -23,7 +23,6 @@ exports.NOTIFICATIONS_TYPES = {
   CUSTOM_JSON: 'custom_json',
   VIP_TICKETS: 'vipTickets',
   POWER_DOWN: 'power_down',
-  POWER_UP: 'power_up',
   MY_COMMENT: 'myComment',
   FILL_ORDER: 'fillOrder',
   HEARTBEAT: 'heartbeat',
