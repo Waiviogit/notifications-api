@@ -97,7 +97,7 @@ module.exports = async (params) => {
         };
         notifications.push([params.parent_author, notification]);
         const replyMessage = params.reply
-          ? `${params.author} replied to ${params.parent_author} comment`
+          ? `${params.author} has replied to ${params.parent_author} comment`
           : `${params.author} commented on ${params.parent_author} post`;
 
         await shareMessageBySubscribers(params.parent_author,
