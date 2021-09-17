@@ -11,14 +11,14 @@ module.exports = async (params) => {
 
   for (const user of params.users) {
     if (!await checkUserNotifications(
-      { user: _.find(users, { name: user }), type: NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN },
+      { user: _.find(users, { name: user }), type: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN },
     )) continue;
 
     const { notification } = createNotification(params, user);
     notifications.push([user, notification]);
 
     await shareMessageBySubscribers(user,
-      `${params.guide} launched a new campaign for ${params.object_name}`,
+      `${params.guide} has deactivated the campaign for ${params.object_name}`,
       `${PRODUCTION_HOST}rewards/all/${params.author_permlink}`);
   }
   return notifications;

@@ -5,7 +5,7 @@ const { LIMIT, NOTIFICATION_EXPIRY } = require('constants/index');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const {
   changeRecoveryAccount, transferFromSavings, transferToVesting,
-  activateCampaign, campaignMessage, changePassword, withdrawRoute,
+  activateCampaign, deactivateCampaign, campaignMessage, changePassword, withdrawRoute,
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
   restaurantStatus, suspendedStatus, transfer, withdrawVesting, witnessVote,
   wobjectReward, webSiteBalance,
@@ -48,6 +48,10 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN:
       notifications = _.concat(notifications, await activateCampaign(params));
+      break;
+
+    case NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN:
+      notifications = _.concat(notifications, await deactivateCampaign(params));
       break;
 
     case NOTIFICATIONS_TYPES.RESTAURANT_STATUS:
