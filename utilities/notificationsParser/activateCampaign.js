@@ -2,7 +2,7 @@ const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
-const { getUsers, checkUserNotifications, createNotification } = require('utilities/helpers/notificationsHelper');
+const { getUsers, checkUserNotifications, campaginStatusNotification } = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
   const notifications = [];
@@ -14,8 +14,7 @@ module.exports = async (params) => {
       { user: _.find(users, { name: user }), type: NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN },
     )) continue;
 
-    const { notification } = createNotification(params, user);
-    notifications.push([user, notification]);
+    notifications.push([user, campaginStatusNotification(params, user)]);
 
     await shareMessageBySubscribers(user,
       `${params.guide} launched a new campaign for ${params.object_name}`,

@@ -116,22 +116,20 @@ const addNotificationsWobjectSubscribers = async ({
   return { wobjNotifications };
 };
 
-const createNotification = (notificationParams, user) => ({
-  notification: {
-    timestamp: Math.round(new Date().valueOf() / 1000),
-    type: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,
-    author_permlink: notificationParams.author_permlink,
-    object_name: notificationParams.object_name,
-    author: notificationParams.guide,
-    account: user,
-  },
+const campaginStatusNotification = (notificationParams, user) => ({
+  timestamp: Math.round(new Date().valueOf() / 1000),
+  type: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,
+  author_permlink: notificationParams.author_permlink,
+  object_name: notificationParams.object_name,
+  author: notificationParams.guide,
+  account: user,
 });
 
 module.exports = {
   addNotificationsWobjectSubscribers,
   addNotificationForSubscribers,
+  campaginStatusNotification,
   checkUserNotifications,
-  createNotification,
   getServiceBots,
   parseJson,
   getUsers,
