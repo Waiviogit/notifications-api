@@ -5,6 +5,7 @@ exports.NOTIFICATIONS_TYPES = {
   CAMPAIGN_RESERVATION: 'campaignReservation',
   TRANSFER_TO_VESTING: 'transfer_to_vesting',
   ACTIVATE_CAMPAIGN: 'activationCampaign',
+  DEACTIVATE_CAMPAIGN: 'deactivationCampaign',
   BELL_WOBJ_REWARDS: 'bellWobjectRewards',
   GET_NOTIFICATIONS: 'get_notifications',
   RESTAURANT_STATUS: 'restaurantStatus',

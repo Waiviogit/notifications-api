@@ -1,6 +1,7 @@
 module.exports = {
   changeRecoveryAccount: require('./changeRecoveryAccount'),
   transferFromSavings: require('./transferFromSavings'),
+  deactivateCampaign: require('./deactivateCampaign'),
   transferToVesting: require('./transferToVesting'),
   activateCampaign: require('./activateCampaign'),
   restaurantStatus: require('./restaurantStatus'),

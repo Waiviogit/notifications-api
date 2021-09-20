@@ -139,6 +139,14 @@ exports.operationsSchema = Joi.object().keys({
       object_name: Joi.string().required(),
     }),
   }, {
+    is: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,
+    then: Joi.object().keys({
+      guide: Joi.string().required(),
+      users: Joi.array().items(String).required(),
+      author_permlink: Joi.string().required(),
+      object_name: Joi.string().required(),
+    }),
+  }, {
     is: NOTIFICATIONS_TYPES.CLAIM_REWARD,
     then: Joi.object().keys({
       account: Joi.string().required(),
