@@ -14,7 +14,7 @@ module.exports = async (params) => {
       { user: _.find(users, { name: user }), type: NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN },
     )) continue;
 
-    notifications.push([user, campaginStatusNotification(params, user)]);
+    notifications.push([user, campaginStatusNotification(params, user, true)]);
 
     await shareMessageBySubscribers(user,
       `${params.guide} launched a new campaign for ${params.object_name}`,

@@ -116,9 +116,9 @@ const addNotificationsWobjectSubscribers = async ({
   return { wobjNotifications };
 };
 
-const campaginStatusNotification = (notificationParams, user) => ({
+const campaginStatusNotification = (notificationParams, user, activate = false) => ({
   timestamp: Math.round(new Date().valueOf() / 1000),
-  type: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,
+  type: activate ? NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN : NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,
   author_permlink: notificationParams.author_permlink,
   object_name: notificationParams.object_name,
   author: notificationParams.guide,
