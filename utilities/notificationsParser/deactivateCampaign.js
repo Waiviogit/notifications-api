@@ -14,7 +14,7 @@ module.exports = async (params) => {
       { user: _.find(users, { name: user }), type: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN },
     )) continue;
 
-    notifications.push([user, campaginStatusNotification(params, user)]);
+    notifications.push([user, campaginStatusNotification(params, user, NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN)]);
 
     await shareMessageBySubscribers(user,
       `${params.guide} has deactivated the campaign for ${params.object_name}`,

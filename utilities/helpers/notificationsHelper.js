@@ -4,7 +4,7 @@ const { PRODUCTION_HOST } = require('constants/index');
 const {
   userModel, App, subscriptionModel, wobjectSubscriptionModel,
 } = require('models');
-const { BELL_NOTIFICATIONS, NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
+const { BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
 
@@ -116,9 +116,9 @@ const addNotificationsWobjectSubscribers = async ({
   return { wobjNotifications };
 };
 
-const campaginStatusNotification = (notificationParams, user, activate = false) => ({
+const campaginStatusNotification = (notificationParams, user, type) => ({
   timestamp: Math.round(new Date().valueOf() / 1000),
-  type: activate ? NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN : NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,
+  type,
   author_permlink: notificationParams.author_permlink,
   object_name: notificationParams.object_name,
   author: notificationParams.guide,
