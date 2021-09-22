@@ -16,7 +16,7 @@ module.exports = async (params) => {
   }
 
   await shareMessageBySubscribers(params.from_account,
-    `Account ${params.to_account} registered withdraw route for ${params.from_account} account`,
+    `${params.from_account} canceled withdraw route to ${params.to_account}`,
     `${PRODUCTION_HOST}@${params.from_account}`);
 
   return [params.from_account, Object.assign(params, {
