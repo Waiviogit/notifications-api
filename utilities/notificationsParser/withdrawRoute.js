@@ -15,9 +15,10 @@ module.exports = async (params) => {
     return [];
   }
 
-  await shareMessageBySubscribers(params.from_account,
-    `${params.from_account} canceled withdraw route to ${params.to_account}`,
-    `${PRODUCTION_HOST}@${params.from_account}`);
+  const message = params.percent > 0
+    ? `${params.from_account} set withdraw route to ${params.to_account}`
+    : `${params.from_account} canceled withdraw route to ${params.to_account}`;
+  await shareMessageBySubscribers(params.from_account, message, `${PRODUCTION_HOST}@${params.from_account}`);
 
   return [params.from_account, Object.assign(params, {
     timestamp: Math.round(new Date().valueOf() / 1000),
