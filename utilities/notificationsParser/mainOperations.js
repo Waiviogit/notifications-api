@@ -35,7 +35,7 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.WITHDRAW_ROUTE:
       notification = await withdrawRoute(params);
-      if (notification.length) notifications.push(notification);
+      if (notification.length) notifications.push(...notification);
       break;
 
     case NOTIFICATIONS_TYPES.SUSPENDED_STATUS:
