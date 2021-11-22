@@ -1,3 +1,18 @@
+exports.TYPES = {
+  website_account_suspended: 'Attention! All your websites are now suspended due to the negative balance on your website account',
+  balance_run_out_three_months: 'Warning: website account balance may run out in three months',
+  balance_run_out_two_months: 'Warning: website account balance may run out in two months',
+  balance_run_out_month: 'Warning: website account balance may run out in a month',
+  balance_run_out_three_weeks: 'Warning: website account balance may run out in three weeks',
+  balance_run_out_two_weeks: 'Warning: website account balance may run out in two weeks',
+  balance_run_out_week: 'Warning: website account balance may run out in a week',
+  balance_run_out_six_days: 'Warning: website account balance may run out in six days',
+  balance_run_out_five_days: 'Warning: website account balance may run out in five days',
+  balance_run_out_four_days: 'Warning: website account balance may run out in four days',
+  balance_run_out_three_days: 'Warning: website account balance may run out in three days',
+  balance_run_out_two_days: 'Warning: website account balance may run out in two days',
+  balance_run_out_day: 'Warning: website account balance may run out in a day',
+};
 exports.NOTIFICATIONS_TYPES = {
   CHANGE_RECOVERY_ACCOUNT: 'change_recovery_account',
   TRANSFER_FROM_SAVINGS: 'transfer_from_savings',
