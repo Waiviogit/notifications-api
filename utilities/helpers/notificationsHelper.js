@@ -6,6 +6,7 @@ const {
 } = require('models');
 const { BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
+const { getLastPriceRequest } = require('./getLastPriceRequest');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
 
 const parseJson = (json) => {
@@ -79,7 +80,13 @@ const checkUserNotifications = async ({ user, type, amount }) => {
     const { usdCurrency, error: getRateError } = await getCurrencyFromCoingecko(cryptoType);
     if (getRateError) return true;
     const minimalTransfer = _.get(user, 'user_metadata.settings.userNotifications.minimalTransfer');
+    const { lastPrice, error } = await getLastPriceRequest({ symbol: cryptoType });
+    if (error) return;
     if (!minimalTransfer) return true;
+    if (cryptoType !== 'HIVE' && cryptoType !== 'HBD') {
+      return value * usdCurrency * lastPrice >= minimalTransfer.toFixed(3);
+    }
+
     return value * usdCurrency >= minimalTransfer.toFixed(3);
   }
   return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
