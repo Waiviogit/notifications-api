@@ -4,9 +4,8 @@ const engineQuery = require('utilities/hiveEngine/engineQuery');
 const hiveQuery = require('utilities/hiveApi/hiveQuery');
 const wssHelper = require('utilities/helpers/wssHelper');
 const _ = require('lodash');
-const cron = require('cron');
 
-module.exports = cron.job('*/10 * * * *', async () => {
+module.exports = async () => {
   const hiveEngineBlock = await engineQuery({
     method: 'getLatestBlockInfo',
     endpoint: '/blockchain',
@@ -30,4 +29,4 @@ module.exports = cron.job('*/10 * * * *', async () => {
   wssHelper.sendToAllClients(
     JSON.stringify({ type: NOTIFICATIONS_TYPES.HIVE_ENGINE_DELAY, notification }),
   );
-}, null, false, null, null, false);
+};
