@@ -25,6 +25,7 @@ exports.NOTIFICATIONS_TYPES = {
   GET_NOTIFICATIONS: 'get_notifications',
   RESTAURANT_STATUS: 'restaurantStatus',
   WITHDRAW_VESTING: 'withdraw_vesting',
+  HIVE_ENGINE_DELAY: 'hiveEngineDelay',
   SUSPENDED_STATUS: 'suspendedStatus',
   CAMPAIGN_MESSAGE: 'campaignMessage',
   WEB_SITE_BALANCE: 'webSiteBalance',
@@ -73,4 +74,9 @@ exports.CALL_METHOD = {
   UNSUBSCRIBE: 'unsubscribe',
   SUBSCRIBE: 'subscribe',
   LOGIN: 'login',
+};
+
+exports.ENGINE_CHAIN_STATUSES = {
+  WARNING: 'WARNING',
+  OK: 'OK',
 };
