@@ -73,6 +73,7 @@ app.use((err, req, res, next) => {
 const { heartbeat } = require('./utilities/helpers/wssHelper');
 const { startRedisListener } = require('./utilities/helpers/redisListenerHelper');
 const { ticketsWorker } = require('./utilities/redis/rsmq');
+require('./jobs');
 
 heartbeat();
 startRedisListener();

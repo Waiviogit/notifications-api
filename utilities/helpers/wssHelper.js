@@ -1,6 +1,6 @@
-const _ = require('lodash');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
-const { wssConnection } = require('../../wssConnector');
+const { wssConnection } = require('wssConnector');
+const _ = require('lodash');
 
 const clientSend = (notifications) => {
   notifications.forEach((notification) => {
@@ -30,14 +30,15 @@ const sendParsedBlockResponse = async (type, subscribers, msg) => {
   });
 };
 
+const sendToAllClients = (message) => {
+  wssConnection.wss.clients.forEach((ws) => {
+    wssConnection.constructor.sendMessage({ ws, message });
+  });
+};
+
 const heartbeat = () => {
   setInterval(() => {
-    wssConnection.wss.clients.forEach((client) => {
-      wssConnection.constructor.sendMessage({
-        ws: client,
-        message: JSON.stringify({ type: NOTIFICATIONS_TYPES.HEARTBEAT }),
-      });
-    });
+    sendToAllClients(JSON.stringify({ type: NOTIFICATIONS_TYPES.HEARTBEAT }));
   }, 20 * 1000);
 };
 
@@ -56,5 +57,5 @@ const sendVipTicketResponse = async (userName) => {
 };
 
 module.exports = {
-  clientSend, heartbeat, sendParsedBlockResponse, sendVipTicketResponse,
+  clientSend, heartbeat, sendParsedBlockResponse, sendVipTicketResponse, sendToAllClients,
 };
