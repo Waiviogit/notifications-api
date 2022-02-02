@@ -7,8 +7,8 @@ const {
   changeRecoveryAccount, transferFromSavings, transferToVesting,
   activateCampaign, deactivateCampaign, campaignMessage, changePassword, withdrawRoute,
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
-  restaurantStatus, suspendedStatus, transfer, withdrawVesting, witnessVote,
-  wobjectReward, webSiteBalance,
+  restaurantStatus, suspendedStatus, transfer, delegate, withdrawVesting, witnessVote,
+  wobjectReward, webSiteBalance, stake,
 } = require('.');
 
 const getNotifications = async (operation) => {
@@ -78,6 +78,21 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.TRANSFER:
       notifications = _.concat(notifications, await transfer(params));
+      break;
+
+    case NOTIFICATIONS_TYPES.DELEGATE:
+      notifications = _.concat(notifications, await delegate(params, NOTIFICATIONS_TYPES.DELEGATE, NOTIFICATIONS_TYPES.DELEGATE_FROM));
+      break;
+    case NOTIFICATIONS_TYPES.UNDELEGATE:
+      notifications = _.concat(notifications, await delegate(params, NOTIFICATIONS_TYPES.UNDELEGATE, NOTIFICATIONS_TYPES.UNDELEGATE_FROM));
+      break;
+
+    case NOTIFICATIONS_TYPES.STAKE:
+      notifications = _.concat(notifications, await stake(params, NOTIFICATIONS_TYPES.STAKE));
+      break;
+
+    case NOTIFICATIONS_TYPES.UNSTAKE:
+      notifications = _.concat(notifications, await stake(params, NOTIFICATIONS_TYPES.UNSTAKE));
       break;
 
     case NOTIFICATIONS_TYPES.WITHDRAW_VESTING:

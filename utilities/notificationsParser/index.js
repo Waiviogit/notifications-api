@@ -19,6 +19,8 @@ module.exports = {
   customJson: require('./customJson'),
   fillOrder: require('./fillOrder'),
   transfer: require('./transfer'),
+  delegate: require('./delegate'),
   comment: require('./comment'),
   like: require('./like'),
+  stake: require('./stake'),
 };
