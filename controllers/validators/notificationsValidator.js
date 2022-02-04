@@ -102,10 +102,12 @@ exports.operationsSchema = Joi.object().keys({
       memo: Joi.string().allow('').default(''),
     }),
   }, {
-    is: NOTIFICATIONS_TYPES.STAKE,
+    is: NOTIFICATIONS_TYPES.DELEGATE_VESTING_SHARES,
     then: Joi.object().keys({
+      to: Joi.string().required(),
+      from: Joi.string().required(),
       amount: Joi.string().required(),
-      account: Joi.string().required(),
+      memo: Joi.string().allow('').default(''),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.UNSTAKE,

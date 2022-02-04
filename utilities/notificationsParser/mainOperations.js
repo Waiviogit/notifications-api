@@ -8,7 +8,7 @@ const {
   activateCampaign, deactivateCampaign, campaignMessage, changePassword, withdrawRoute,
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
   restaurantStatus, suspendedStatus, transfer, delegate, withdrawVesting, witnessVote,
-  wobjectReward, webSiteBalance, stake,
+  wobjectReward, webSiteBalance, powerDown, undelegate, delegateVestingShares,
 } = require('.');
 
 const getNotifications = async (operation) => {
@@ -81,18 +81,19 @@ const getNotifications = async (operation) => {
       break;
 
     case NOTIFICATIONS_TYPES.DELEGATE:
-      notifications = _.concat(notifications, await delegate(params, NOTIFICATIONS_TYPES.DELEGATE, NOTIFICATIONS_TYPES.DELEGATE_FROM));
-      break;
-    case NOTIFICATIONS_TYPES.UNDELEGATE:
-      notifications = _.concat(notifications, await delegate(params, NOTIFICATIONS_TYPES.UNDELEGATE, NOTIFICATIONS_TYPES.UNDELEGATE_FROM));
+      notifications = _.concat(notifications, await delegate(params, NOTIFICATIONS_TYPES.DELEGATE));
       break;
 
-    case NOTIFICATIONS_TYPES.STAKE:
-      notifications = _.concat(notifications, await stake(params, NOTIFICATIONS_TYPES.STAKE));
+    case NOTIFICATIONS_TYPES.UNDELEGATE:
+      notifications = _.concat(notifications, await undelegate(params, NOTIFICATIONS_TYPES.UNDELEGATE, NOTIFICATIONS_TYPES.UNDELEGATE_FROM));
+      break;
+
+    case NOTIFICATIONS_TYPES.DELEGATE_VESTING_SHARES:
+      notifications = _.concat(notifications, await delegateVestingShares(params));
       break;
 
     case NOTIFICATIONS_TYPES.UNSTAKE:
-      notifications = _.concat(notifications, await stake(params, NOTIFICATIONS_TYPES.UNSTAKE));
+      notifications = _.concat(notifications, await powerDown(operation, params));
       break;
 
     case NOTIFICATIONS_TYPES.WITHDRAW_VESTING:

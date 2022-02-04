@@ -34,6 +34,8 @@ exports.NOTIFICATIONS_TYPES = {
   TRANSFER_FROM: 'transferFrom',
   DELEGATE_FROM: 'delegateFrom',
   UNDELEGATE_FROM: 'unDelegateFrom',
+  UNDELEGATE: 'undelegate',
+  DELEGATE_VESTING_SHARES: 'delegate_vesting_shares',
   REJECT_UPDATE: 'rejectUpdate',
   STATUS_CHANGE: 'statusChange',
   NOTIFICATION: 'notification',
