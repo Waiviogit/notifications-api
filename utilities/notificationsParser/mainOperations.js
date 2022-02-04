@@ -81,11 +81,11 @@ const getNotifications = async (operation) => {
       break;
 
     case NOTIFICATIONS_TYPES.DELEGATE:
-      notifications = _.concat(notifications, await delegate(params, NOTIFICATIONS_TYPES.DELEGATE));
+      notifications = _.concat(notifications, await delegate(params));
       break;
 
     case NOTIFICATIONS_TYPES.UNDELEGATE:
-      notifications = _.concat(notifications, await undelegate(params, NOTIFICATIONS_TYPES.UNDELEGATE, NOTIFICATIONS_TYPES.UNDELEGATE_FROM));
+      notifications = _.concat(notifications, await undelegate(params));
       break;
 
     case NOTIFICATIONS_TYPES.DELEGATE_VESTING_SHARES:

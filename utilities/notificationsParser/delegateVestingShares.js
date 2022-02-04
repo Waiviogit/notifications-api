@@ -12,7 +12,7 @@ module.exports = async (params) => {
   }]);
 
   await shareMessageBySubscribers(params.from,
-    `${params.from} undelegated ${params.to} `,
+    `${params.from} started undelegation to ${params.to} `,
     `${PRODUCTION_HOST}@${params.from}/transfers `);
 
   notifications.push([params.to, {
@@ -24,7 +24,7 @@ module.exports = async (params) => {
   }]);
 
   await shareMessageBySubscribers(params.to,
-    `${params.from} undelegated ${params.to}`,
+    `${params.from}  started undelegation to ${params.to}`,
     `${PRODUCTION_HOST}@${params.to}/transfers`);
 
   return notifications;
