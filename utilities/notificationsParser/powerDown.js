@@ -4,15 +4,12 @@ const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async (operation, params) => {
-  await shareMessageBySubscribers(params.account,
-    `${params.account} initiated PowerDown on ${params.amount}`,
+  await shareMessageBySubscribers(params.from,
+    `You initiated 'Power Down' on ${params.amount}`,
     `${PRODUCTION_HOST}@${params.account}`);
 
-  return [params.account, {
+  return [params.from, Object.assign(params, {
     timestamp: Math.round(new Date().valueOf() / 1000),
-    type: NOTIFICATIONS_TYPES.POWER_DOWN,
-    account: params.account,
-    block: operation.block,
-    amount: params.amount,
-  }];
+    type: NOTIFICATIONS_TYPES.WITHDRAW_VESTING,
+  })];
 };

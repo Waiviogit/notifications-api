@@ -20,6 +20,7 @@ module.exports = {
   customJson: require('./customJson'),
   undelegate: require('./undelegate'),
   powerDown: require('./powerDown'),
+  powerUp: require('./powerUp'),
   fillOrder: require('./fillOrder'),
   transfer: require('./transfer'),
   delegate: require('./delegate'),
