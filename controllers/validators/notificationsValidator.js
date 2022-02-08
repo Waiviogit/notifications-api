@@ -110,13 +110,15 @@ exports.operationsSchema = Joi.object().keys({
     is: NOTIFICATIONS_TYPES.UNSTAKE,
     then: Joi.object().keys({
       amount: Joi.string().required(),
-      account: Joi.string().required(),
+      to: Joi.string().required(),
+      from: Joi.string().required(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.STAKE,
     then: Joi.object().keys({
       amount: Joi.string().required(),
-      account: Joi.string().required(),
+      to: Joi.string().required(),
+      from: Joi.string().required(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.WITHDRAW_VESTING,
