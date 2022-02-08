@@ -12,8 +12,8 @@ module.exports = async (params) => {
     amount,
     to: params.to,
   }]);
-  await shareMessageBySubscribers(params.from, parseFloat(amount) > 0
-    ? `You updated delegation on ${amount} on ${params.to} ` : `You undelegated to ${params.to}`,
+  await shareMessageBySubscribers(params.from,
+    `${params.from} updated delegation ${amount} to ${params.to}`,
   `${PRODUCTION_HOST}@${params.from}/transfers `);
 
   notifications.push([params.to, {
@@ -23,8 +23,7 @@ module.exports = async (params) => {
     from: params.from,
   }]);
 
-  await shareMessageBySubscribers(params.to, parseFloat(amount) > 0
-    ? `${params.from}  updated delegation on ${amount} to you` : `${params.from} undelegated to you`,
+  await shareMessageBySubscribers(params.to, `${params.from} updated delegation ${amount} to ${params.to}`,
   `${PRODUCTION_HOST}@${params.to}/transfers`);
 
   return notifications;

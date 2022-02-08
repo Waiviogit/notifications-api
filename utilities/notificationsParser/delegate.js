@@ -8,12 +8,11 @@ module.exports = async (params) => {
     timestamp: Math.round(new Date().valueOf() / 1000),
     type: NOTIFICATIONS_TYPES.DELEGATE,
     amount: params.amount,
-    memo: params.memo,
     to: params.to,
   }]);
 
   await shareMessageBySubscribers(params.from,
-    `You delegated ${params.amount} to ${params.to}`,
+    `${params.from} delegated ${params.amount} to ${params.to}`,
     `${PRODUCTION_HOST}@${params.from}/transfers `);
 
   notifications.push([params.to, {
@@ -21,11 +20,10 @@ module.exports = async (params) => {
     timestamp: Math.round(new Date().valueOf() / 1000),
     amount: params.amount,
     from: params.from,
-    memo: params.memo,
   }]);
 
   await shareMessageBySubscribers(params.to,
-    `${params.from} delegated ${params.amount} to you`,
+    `${params.from} delegated ${params.amount} to ${params.to}`,
     `${PRODUCTION_HOST}@${params.to}/transfers`);
 
   return notifications;

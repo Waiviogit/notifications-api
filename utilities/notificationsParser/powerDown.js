@@ -5,7 +5,7 @@ const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async (operation, params) => {
   await shareMessageBySubscribers(params.from,
-    `You initiated 'Power Down' on ${params.amount}`,
+    `${params.from} initiated 'Power Down' on ${params.amount}`,
     `${PRODUCTION_HOST}@${params.account}`);
 
   return [params.from, Object.assign(params, {

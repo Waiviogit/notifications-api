@@ -91,7 +91,6 @@ exports.operationsSchema = Joi.object().keys({
       to: Joi.string().required(),
       from: Joi.string().required(),
       amount: Joi.string().required(),
-      memo: Joi.string().allow('').default(''),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.UNDELEGATE,
@@ -99,7 +98,6 @@ exports.operationsSchema = Joi.object().keys({
       to: Joi.string().required(),
       from: Joi.string().required(),
       amount: Joi.string().required(),
-      memo: Joi.string().allow('').default(''),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.DELEGATE_VESTING_SHARES,
@@ -110,6 +108,12 @@ exports.operationsSchema = Joi.object().keys({
     }),
   }, {
     is: NOTIFICATIONS_TYPES.UNSTAKE,
+    then: Joi.object().keys({
+      amount: Joi.string().required(),
+      account: Joi.string().required(),
+    }),
+  }, {
+    is: NOTIFICATIONS_TYPES.STAKE,
     then: Joi.object().keys({
       amount: Joi.string().required(),
       account: Joi.string().required(),
