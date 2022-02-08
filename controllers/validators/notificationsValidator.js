@@ -116,6 +116,7 @@ exports.operationsSchema = Joi.object().keys({
   }, {
     is: NOTIFICATIONS_TYPES.STAKE,
     then: Joi.object().keys({
+      amount: Joi.string().required(),
       to: Joi.string().required(),
       from: Joi.string().required(),
     }),
