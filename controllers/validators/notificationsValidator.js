@@ -86,6 +86,39 @@ exports.operationsSchema = Joi.object().keys({
       memo: Joi.string().allow('').default(''),
     }),
   }, {
+    is: NOTIFICATIONS_TYPES.DELEGATE,
+    then: Joi.object().keys({
+      to: Joi.string().required(),
+      from: Joi.string().required(),
+      amount: Joi.string().required(),
+    }),
+  }, {
+    is: NOTIFICATIONS_TYPES.UNDELEGATE,
+    then: Joi.object().keys({
+      to: Joi.string().required(),
+      from: Joi.string().required(),
+      amount: Joi.string().required(),
+    }),
+  }, {
+    is: NOTIFICATIONS_TYPES.DELEGATE_VESTING_SHARES,
+    then: Joi.object().keys({
+      to: Joi.string().required(),
+      from: Joi.string().required(),
+      amount: Joi.string().required(),
+    }),
+  }, {
+    is: NOTIFICATIONS_TYPES.UNSTAKE,
+    then: Joi.object().keys({
+      amount: Joi.string().required(),
+      account: Joi.string().required(),
+    }),
+  }, {
+    is: NOTIFICATIONS_TYPES.STAKE,
+    then: Joi.object().keys({
+      amount: Joi.string().required(),
+      account: Joi.string().required(),
+    }),
+  }, {
     is: NOTIFICATIONS_TYPES.WITHDRAW_VESTING,
     then: Joi.object().keys({
       account: Joi.string().required(),

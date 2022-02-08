@@ -1,5 +1,6 @@
 module.exports = {
   changeRecoveryAccount: require('./changeRecoveryAccount'),
+  delegateVestingShares: require('./delegateVestingShares'),
   transferFromSavings: require('./transferFromSavings'),
   deactivateCampaign: require('./deactivateCampaign'),
   transferToVesting: require('./transferToVesting'),
@@ -17,8 +18,12 @@ module.exports = {
   witnessVote: require('./witnessVote'),
   claimReward: require('./claimReward'),
   customJson: require('./customJson'),
+  undelegate: require('./undelegate'),
+  powerDown: require('./powerDown'),
+  powerUp: require('./powerUp'),
   fillOrder: require('./fillOrder'),
   transfer: require('./transfer'),
+  delegate: require('./delegate'),
   comment: require('./comment'),
   like: require('./like'),
 };
