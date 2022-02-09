@@ -93,11 +93,13 @@ const getNotifications = async (operation) => {
       break;
 
     case NOTIFICATIONS_TYPES.STAKE:
-      notifications = _.concat(notifications, await powerUp(params));
+      notification = await powerUp(params);
+      if (notification.length) notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.UNSTAKE:
-      notifications = _.concat(notifications, await powerDown(params));
+      notification = await powerDown(params);
+      if (notification.length) notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.WITHDRAW_VESTING:
