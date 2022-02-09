@@ -121,6 +121,12 @@ exports.operationsSchema = Joi.object().keys({
       from: Joi.string().required(),
     }),
   }, {
+    is: NOTIFICATIONS_TYPES.CANCEL_UNSTAKE,
+    then: Joi.object().keys({
+      amount: Joi.string().required(),
+      account: Joi.string().required(),
+    }),
+  }, {
     is: NOTIFICATIONS_TYPES.WITHDRAW_VESTING,
     then: Joi.object().keys({
       account: Joi.string().required(),
