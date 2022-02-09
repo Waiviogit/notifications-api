@@ -8,7 +8,7 @@ const {
   activateCampaign, deactivateCampaign, campaignMessage, changePassword, withdrawRoute,
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
   restaurantStatus, suspendedStatus, transfer, delegate, withdrawVesting, witnessVote,
-  wobjectReward, webSiteBalance, powerDown, undelegate, delegateVestingShares, powerUp,
+  wobjectReward, webSiteBalance, powerDown, undelegate, delegateVestingShares, powerUp, cancelUnstake,
 } = require('.');
 
 const getNotifications = async (operation) => {
@@ -99,6 +99,10 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.UNSTAKE:
       notification = await powerDown(params);
+      if (notification.length) notifications.push(notification);
+      break;
+    case NOTIFICATIONS_TYPES.CANCEL_UNSTAKE:
+      notification = await cancelUnstake(params);
       if (notification.length) notifications.push(notification);
       break;
 

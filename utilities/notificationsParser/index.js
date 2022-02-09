@@ -14,6 +14,7 @@ module.exports = {
   webSiteBalance: require('./webSiteBalance'),
   wobjectReward: require('./wobjectReward'),
   withdrawRoute: require('./withdrawRoute'),
+  cancelUnstake: require('./cancelUnstake'),
   rejectUpdate: require('./rejectUpdate'),
   witnessVote: require('./witnessVote'),
   claimReward: require('./claimReward'),
