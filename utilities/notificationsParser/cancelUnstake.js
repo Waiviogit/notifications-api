@@ -12,6 +12,6 @@ module.exports = async (params) => {
     timestamp: Math.round(new Date().valueOf() / 1000),
     type: NOTIFICATIONS_TYPES.CANCEL_UNSTAKE,
     account: params.account,
-    amonut: params.amount,
+    amount: params.amount,
   }];
 };
