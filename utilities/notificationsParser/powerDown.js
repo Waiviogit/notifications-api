@@ -13,6 +13,6 @@ module.exports = async (params) => {
     type: NOTIFICATIONS_TYPES.POWER_DOWN,
     account: params.from,
     block: params.block,
-    amonut: params.amount,
+    amount: params.amount,
   }];
 };
