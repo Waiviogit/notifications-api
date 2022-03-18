@@ -13,8 +13,8 @@ module.exports = async (params) => {
     to: params.to,
   }]);
   await shareMessageBySubscribers(params.from,
-    `${params.from} updated delegation ${amount} to ${params.to}`,
-  `${PRODUCTION_HOST}@${params.from}/transfers `);
+    `${params.from} delegated ${amount} to ${params.to}`,
+    `${PRODUCTION_HOST}@${params.from}/transfers `);
 
   notifications.push([params.to, {
     timestamp: Math.round(new Date().valueOf() / 1000),
@@ -23,8 +23,8 @@ module.exports = async (params) => {
     from: params.from,
   }]);
 
-  await shareMessageBySubscribers(params.to, `${params.from} updated delegation ${amount} to ${params.to}`,
-  `${PRODUCTION_HOST}@${params.to}/transfers`);
+  await shareMessageBySubscribers(params.to, `${params.from} delegated ${amount} to ${params.to}`,
+    `${PRODUCTION_HOST}@${params.to}/transfers`);
 
   return notifications;
 };
