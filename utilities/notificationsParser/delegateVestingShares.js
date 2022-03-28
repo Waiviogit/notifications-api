@@ -27,8 +27,8 @@ module.exports = async (params) => {
 };
 
 const constructMessage = (params) => {
-  const tokenAmount = params.amount.split(' ');
+  const [amount, token] = params.amount.split(' ');
 
-  return tokenAmount[0] ? `${params.from} delegated ${tokenAmount.join(' ')} to ${params.to}`
-    : `${params.from} undelegated ${tokenAmount[1]} from ${params.to}`;
+  return +amount ? `${params.from} delegated ${params.amount} to ${params.to}`
+    : `${params.from} undelegated ${token} from ${params.to}`;
 };
