@@ -27,8 +27,8 @@ module.exports = async (params) => {
 };
 
 const constructMessage = (params) => {
-  const [amount, token] = params.amount.split(' ');
+  const [amount] = params.amount.split(' ');
 
   return +amount ? `${params.from} delegated ${params.amount} to ${params.to}`
-    : `${params.from} undelegated ${token} from ${params.to}`;
+    : `${params.from} undelegated HIVE from ${params.to}`;
 };
