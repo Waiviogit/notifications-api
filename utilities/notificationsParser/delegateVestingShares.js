@@ -2,6 +2,7 @@ const { PRODUCTION_HOST } = require('constants/index');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const { getAmountFromVests } = require('utilities/helpers/dsteemHelper');
+const _ = require('lodash');
 
 module.exports = async (params) => {
   const amount = await getAmountFromVests(params.amount);
@@ -29,6 +30,6 @@ module.exports = async (params) => {
 const constructMessage = (params) => {
   const [amount] = params.amount.split(' ');
 
-  return +amount ? `${params.from} delegated ${params.amount} to ${params.to}`
+  return +amount ? `${params.from} delegated ${_.replace(params.amount, 'VESTS', 'HIVE')} to ${params.to}`
     : `${params.from} undelegated HIVE from ${params.to}`;
 };
