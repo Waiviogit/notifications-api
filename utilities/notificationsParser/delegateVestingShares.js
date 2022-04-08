@@ -2,7 +2,6 @@ const { PRODUCTION_HOST } = require('constants/index');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const { getAmountFromVests } = require('utilities/helpers/dsteemHelper');
-const _ = require('lodash');
 
 module.exports = async (params) => {
   const amount = await getAmountFromVests(params.amount);
@@ -13,7 +12,7 @@ module.exports = async (params) => {
     amount,
     to: params.to,
   }]);
-  await shareMessageBySubscribers(params.from, constructMessage(params), `${PRODUCTION_HOST}@${params.from}/transfers `);
+  await shareMessageBySubscribers(params.from, constructMessage(params, amount), `${PRODUCTION_HOST}@${params.from}/transfers `);
 
   notifications.push([params.to, {
     timestamp: Math.round(new Date().valueOf() / 1000),
@@ -22,14 +21,14 @@ module.exports = async (params) => {
     from: params.from,
   }]);
 
-  await shareMessageBySubscribers(params.to, constructMessage(params), `${PRODUCTION_HOST}@${params.to}/transfers`);
+  await shareMessageBySubscribers(params.to, constructMessage(params, amount), `${PRODUCTION_HOST}@${params.to}/transfers`);
 
   return notifications;
 };
 
-const constructMessage = (params) => {
-  const [amount] = params.amount.split(' ');
+const constructMessage = (params, amount) => {
+  const [sum] = params.amount.split(' ');
 
-  return +amount ? `${params.from} delegated ${_.replace(params.amount, 'VESTS', 'HIVE')} to ${params.to}`
+  return +sum ? `${params.from} delegated ${amount} to ${params.to}`
     : `${params.from} undelegated HIVE from ${params.to}`;
 };
