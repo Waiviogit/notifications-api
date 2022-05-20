@@ -15,7 +15,8 @@
     "redis": {
       "notifications": 0,
       "lastBlock": 2,
-      "actionsQueue": 3
+      "actionsQueue": 3,
+      "campaign": 6
     },
     "swaggerHost": "www.waivio.com",
     "app": "waivio",
@@ -37,7 +38,8 @@
     "redis": {
       "notifications": 0,
       "lastBlock": 2,
-      "actionsQueue": 3
+      "actionsQueue": 3,
+      "campaign": 6
     },
     "swaggerHost": "waiviodev.com",
     "app": "waiviodev",
@@ -59,7 +61,8 @@
     "redis": {
       "notifications": 0,
       "lastBlock": 2,
-      "actionsQueue": 3
+      "actionsQueue": 3,
+      "campaign": 6
     },
     "swaggerHost": "localhost:4000",
     "app": "waiviodev",
@@ -81,7 +84,8 @@
     "redis": {
       "notifications": 7,
       "lastBlock": 7,
-      "actionsQueue": 7
+      "actionsQueue": 7,
+      "campaign": 7
     },
     "swaggerHost": "localhost:4000",
     "app": "waiviodev",

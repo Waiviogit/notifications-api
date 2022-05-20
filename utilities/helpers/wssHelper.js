@@ -30,6 +30,14 @@ const sendParsedBlockResponse = async (type, subscribers, msg) => {
   });
 };
 
+const sendToSubscriber = async (subscriber, message) => {
+  wssConnection.wss.clients.forEach((ws) => {
+    if (ws.name === subscriber) {
+      wssConnection.constructor.sendMessage({ ws, message });
+    }
+  });
+};
+
 const sendToAllClients = (message) => {
   wssConnection.wss.clients.forEach((ws) => {
     wssConnection.constructor.sendMessage({ ws, message });
@@ -57,5 +65,5 @@ const sendVipTicketResponse = async (userName) => {
 };
 
 module.exports = {
-  clientSend, heartbeat, sendParsedBlockResponse, sendVipTicketResponse, sendToAllClients,
+  clientSend, heartbeat, sendParsedBlockResponse, sendVipTicketResponse, sendToAllClients, sendToSubscriber,
 };

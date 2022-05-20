@@ -11,6 +11,7 @@ module.exports = async ({ params, method, hostUrl = 'https://blocks.waivio.com' 
         params,
         id: 1,
       },
+      { timeout: 8000 },
     );
     return _.get(resp, 'data.result');
   } catch (error) {
