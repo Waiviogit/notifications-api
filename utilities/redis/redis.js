@@ -26,7 +26,7 @@ const messageListener = (onMessageCallBack) => {
 const campaignMessageListener = (onMessageCallBack) => {
   const subscribeMessage = () => {
     const subscriber = redis.createClient({ db: 6 });
-    const publisherKeys = ['expire:assign'];
+    const publisherKeys = ['expire:assign', 'expire:assign:false'];
     redisSubHelper.subscribe(subscriber, publisherKeys, onMessageCallBack);
   };
 

@@ -13,12 +13,15 @@ const messageDataListener = async (channel, msg) => {
 const campaignDataListener = async (channel, msg) => {
   switch (channel) {
     case 'expire:assign':
+    case 'expire:assign:false':
       const subscriber = await redisGetter.getSubscriber(msg);
+      if (!subscriber) return;
+      const assigned = !new RegExp('false').test(channel);
       await wssHelper.sendToSubscriber(
         subscriber,
         JSON.stringify({
           type: CALL_METHOD.SUBSCRIBE_CAMPAIGN_ASSIGN,
-          assigned: true,
+          assigned,
           permlink: msg,
         }),
       );
