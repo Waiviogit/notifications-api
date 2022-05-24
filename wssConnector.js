@@ -155,6 +155,23 @@ class WebSocket {
               });
             } else sendSomethingWrong(call, ws);
             break;
+          case CALL_METHOD.SUBSCRIBE_CAMPAIGN_ASSIGN:
+            if (!call.params[0] || !call.params[1]) {
+              return sendSomethingWrong(call, ws);
+            }
+            const assignSub = await redisSetter.setSubscribeSingle(
+              `${call.params[1]}`, call.params[0],
+            );
+            if (assignSub) {
+              ws.name = call.params[0];
+              WebSocket.sendMessage({
+                ws,
+                message: JSON.stringify(
+                  { id: call.id, result: { subscribeAssign: true, username: call.params[0] } },
+                ),
+              });
+            } else sendSomethingWrong(call, ws);
+            break;
           case CALL_METHOD.SUBSCRIBE_TICKET:
             ws.name = call.params[0];
             break;

@@ -76,6 +76,7 @@ exports.CALL_METHOD = {
   GET_NOTIFICATIONS: 'get_notifications',
   SUBSCRIBE_TICKET: 'subscribeTicket',
   SUBSCRIBE_BLOCK: 'subscribeBlock',
+  SUBSCRIBE_CAMPAIGN_ASSIGN: 'subscribeCampaignAssign',
   GUEST_LOGIN: 'guest_login',
   UNSUBSCRIBE: 'unsubscribe',
   SUBSCRIBE: 'subscribe',

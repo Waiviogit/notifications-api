@@ -7,9 +7,11 @@ bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 const redisNotifyClient = redis.createClient(process.env.REDISCLOUD_URL);
 const lastBlockClient = redis.createClient(process.env.REDISCLOUD_URL);
+const campaignClient = redis.createClient(process.env.REDISCLOUD_URL);
 
 lastBlockClient.select(config.redis.lastBlock);
 redisNotifyClient.select(config.redis.notifications);
+campaignClient.select(config.redis.campaign);
 
 const messageListener = (onMessageCallBack) => {
   const subscribeMessage = () => {
@@ -21,6 +23,16 @@ const messageListener = (onMessageCallBack) => {
   lastBlockClient.send_command('config', ['subscribe'], subscribeMessage);
 };
 
+const campaignMessageListener = (onMessageCallBack) => {
+  const subscribeMessage = () => {
+    const subscriber = redis.createClient({ db: 6 });
+    const publisherKeys = ['expire:assign', 'expire:assign:false'];
+    redisSubHelper.subscribe(subscriber, publisherKeys, onMessageCallBack);
+  };
+
+  campaignClient.send_command('config', ['subscribe'], subscribeMessage);
+};
+
 module.exports = {
-  redisNotifyClient, messageListener, lastBlockClient,
+  redisNotifyClient, messageListener, lastBlockClient, campaignMessageListener,
 };
