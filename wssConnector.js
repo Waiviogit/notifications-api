@@ -83,6 +83,7 @@ class WebSocket {
         } catch (e) {
           console.error('Error WS parse JSON message', message, e);
         }
+        if (!_.get(call, 'params[0]') || !call.payload) return sendSomethingWrong(call, ws);
         switch (call.method) {
           case CALL_METHOD.GET_NOTIFICATIONS:
             await getNotifications(call, ws);
