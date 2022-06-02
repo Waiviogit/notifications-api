@@ -81,6 +81,7 @@ exports.CALL_METHOD = {
   UNSUBSCRIBE: 'unsubscribe',
   SUBSCRIBE: 'subscribe',
   LOGIN: 'login',
+  SET_NOTIFICATION: 'setNotification',
 };
 
 exports.ENGINE_CHAIN_STATUSES = {

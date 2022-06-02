@@ -6,6 +6,9 @@ const { server } = require('./app');
 const { redis, redisSetter, redisGetter } = require('./utilities/redis');
 const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
 
+const validators = require('./controllers/validators');
+const mainOperations = require('./utilities/notificationsParser/mainOperations');
+
 const sc2 = sdk.Initialize({
   app: 'waivio.app',
   baseURL: 'https://hivesigner.com',
@@ -85,6 +88,10 @@ class WebSocket {
         switch (call.method) {
           case CALL_METHOD.GET_NOTIFICATIONS:
             await getNotifications(call, ws);
+            break;
+
+          case CALL_METHOD.SET_NOTIFICATION:
+            await this.setNotification(call.payload);
             break;
 
           case CALL_METHOD.LOGIN:
@@ -189,6 +196,14 @@ class WebSocket {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async setNotification(payload) {
+    const { params, validationError } = validators.validate(
+      payload, validators.notifications.operationsSchema,
+    );
+    if (validationError) return;
+    await mainOperations.setNotifications({ params });
   }
 }
 
