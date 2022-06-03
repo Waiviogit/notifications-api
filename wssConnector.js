@@ -74,8 +74,9 @@ const getNotifications = async (call, ws) => {
 class WebSocket {
   constructor() {
     this.wss = wss;
-    this.wss.on('connection', async (ws) => {
+    this.wss.on('connection', async (ws, req) => {
       console.log('Got connection from new peer');
+      ws.key = _.get(req, 'headers.api_key');
       ws.on('message', async (message) => {
         let call = {};
         try {
@@ -83,14 +84,14 @@ class WebSocket {
         } catch (e) {
           console.error('Error WS parse JSON message', message, e);
         }
-        if (!_.get(call, 'params[0]') || !call.payload) return sendSomethingWrong(call, ws);
+        if (!_.get(call, 'params[0]') && !call.payload) return sendSomethingWrong(call, ws);
         switch (call.method) {
           case CALL_METHOD.GET_NOTIFICATIONS:
             await getNotifications(call, ws);
             break;
 
           case CALL_METHOD.SET_NOTIFICATION:
-            await this.setNotification(call.payload);
+            await this.setNotification(call.payload, ws.key);
             break;
 
           case CALL_METHOD.LOGIN:
@@ -197,7 +198,10 @@ class WebSocket {
     }
   }
 
-  async setNotification(payload) {
+  async setNotification(payload, key) {
+    if (key !== process.env.API_KEY) {
+      return;
+    }
     const { params, validationError } = validators.validate(
       payload, validators.notifications.operationsSchema,
     );
