@@ -57,6 +57,7 @@ exports.NOTIFICATIONS_TYPES = {
   REPLY: 'reply',
   STAKE: 'stake',
   LIKE: 'like',
+  ARBITRAGE: 'arbitrage',
 };
 
 exports.CUSTOM_JSON_IDS = {
