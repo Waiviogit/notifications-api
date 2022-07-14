@@ -11,7 +11,8 @@ module.exports = async (params) => {
     notifications.push([el.account, {
       timestamp: Math.round(new Date().valueOf() / 1000),
       type: NOTIFICATIONS_TYPES.ARBITRAGE,
-      message,
+      differencePercent: el.differencePercent,
+      tokenPair: el.tokenPair,
     }]);
   }
 
