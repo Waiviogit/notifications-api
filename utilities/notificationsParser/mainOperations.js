@@ -133,7 +133,7 @@ const getNotifications = async (operation) => {
       break;
 
     case NOTIFICATIONS_TYPES.ARBITRAGE:
-      notifications.push(...await arbitrage(params));
+      notifications.push(await arbitrage(params));
       break;
   }
   return notifications;
