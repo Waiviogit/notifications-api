@@ -27,4 +27,5 @@ module.exports = {
   delegate: require('./delegate'),
   comment: require('./comment'),
   like: require('./like'),
+  arbitrage: require('./arbitrage'),
 };

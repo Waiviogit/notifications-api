@@ -8,7 +8,8 @@ const {
   activateCampaign, deactivateCampaign, campaignMessage, changePassword, withdrawRoute,
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
   restaurantStatus, suspendedStatus, transfer, delegate, withdrawVesting, witnessVote,
-  wobjectReward, webSiteBalance, powerDown, undelegate, delegateVestingShares, powerUp, cancelUnstake,
+  wobjectReward, webSiteBalance, powerDown, undelegate, delegateVestingShares, powerUp,
+  cancelUnstake, arbitrage,
 } = require('.');
 
 const getNotifications = async (operation) => {
@@ -122,11 +123,17 @@ const getNotifications = async (operation) => {
     case NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE:
       notifications.push(await campaignMessage(params));
       break;
+
     case NOTIFICATIONS_TYPES.BELL_WOBJ_REWARDS:
       notifications = _.concat(notifications, await wobjectReward(params));
       break;
+
     case NOTIFICATIONS_TYPES.WEB_SITE_BALANCE:
       notifications = _.concat(notifications, await webSiteBalance(params));
+      break;
+
+    case NOTIFICATIONS_TYPES.ARBITRAGE:
+      notifications = _.concat(notifications, await arbitrage(params));
       break;
   }
   return notifications;

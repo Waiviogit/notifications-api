@@ -234,5 +234,12 @@ exports.operationsSchema = Joi.object().keys({
       owner: Joi.string().required(),
       message: Joi.string().required(),
     })).required(),
+  }, {
+    is: NOTIFICATIONS_TYPES.ARBITRAGE,
+    then: Joi.array().items(Joi.object().keys({
+      account: Joi.string().required(),
+      differencePercent: Joi.string().required(),
+      tokenPair: Joi.string().required(),
+    })).required(),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });
