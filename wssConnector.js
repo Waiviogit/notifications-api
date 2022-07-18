@@ -8,6 +8,7 @@ const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
 
 const validators = require('./controllers/validators');
 const mainOperations = require('./utilities/notificationsParser/mainOperations');
+const { sendToAllClients } = require('./utilities/helpers/wssHelper');
 
 const sc2 = sdk.Initialize({
   app: 'waivio.app',
@@ -84,7 +85,9 @@ class WebSocket {
         } catch (e) {
           console.error('Error WS parse JSON message', message, e);
         }
-        if (!_.get(call, 'params[0]') && !call.payload) return sendSomethingWrong(call, ws);
+        const smthWrong = !_.get(call, 'params[0]') && !call.payload && call.method !== CALL_METHOD.UPDATE_INFO;
+        if (smthWrong) return sendSomethingWrong(call, ws);
+
         switch (call.method) {
           case CALL_METHOD.GET_NOTIFICATIONS:
             await getNotifications(call, ws);
@@ -162,6 +165,7 @@ class WebSocket {
               });
             } else sendSomethingWrong(call, ws);
             break;
+
           case CALL_METHOD.SUBSCRIBE_CAMPAIGN_ASSIGN:
             if (!call.params[0] || !call.params[1]) {
               return sendSomethingWrong(call, ws);
@@ -179,8 +183,15 @@ class WebSocket {
               });
             } else sendSomethingWrong(call, ws);
             break;
+
           case CALL_METHOD.SUBSCRIBE_TICKET:
             ws.name = call.params[0];
+            break;
+
+          case CALL_METHOD.UPDATE_INFO:
+            if (ws.key !== process.env.API_KEY) break;
+
+            await sendToAllClients(JSON.stringify({ type: NOTIFICATIONS_TYPES.UPDATE_INFO }));
             break;
         }
       });
