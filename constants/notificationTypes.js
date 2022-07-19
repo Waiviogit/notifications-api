@@ -58,6 +58,7 @@ exports.NOTIFICATIONS_TYPES = {
   STAKE: 'stake',
   LIKE: 'like',
   ARBITRAGE: 'arbitrage',
+  UPDATE_INFO: 'updateInfo',
 };
 
 exports.CUSTOM_JSON_IDS = {
@@ -83,6 +84,7 @@ exports.CALL_METHOD = {
   SUBSCRIBE: 'subscribe',
   LOGIN: 'login',
   SET_NOTIFICATION: 'setNotification',
+  UPDATE_INFO: 'updateInfo',
 };
 
 exports.ENGINE_CHAIN_STATUSES = {
