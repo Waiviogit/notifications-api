@@ -8,7 +8,6 @@ const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
 
 const validators = require('./controllers/validators');
 const mainOperations = require('./utilities/notificationsParser/mainOperations');
-const { sendToAllClients } = require('./utilities/helpers/wssHelper');
 
 const sc2 = sdk.Initialize({
   app: 'waivio.app',
@@ -191,7 +190,7 @@ class WebSocket {
           case CALL_METHOD.UPDATE_INFO:
             if (ws.key !== process.env.API_KEY) break;
 
-            await sendToAllClients(JSON.stringify({ type: NOTIFICATIONS_TYPES.UPDATE_INFO }));
+            this.sendMessageToAllClient(this.wss.clients);
             break;
         }
       });
@@ -218,6 +217,18 @@ class WebSocket {
     );
     if (validationError) return;
     await mainOperations.setNotifications({ params });
+  }
+
+  sendMessageToAllClient(clients) {
+    clients.forEach((ws) => {
+      WebSocket.sendMessage({
+        ws,
+        message: JSON.stringify({
+          type:
+          NOTIFICATIONS_TYPES.UPDATE_INFO,
+        }),
+      });
+    });
   }
 }
 
