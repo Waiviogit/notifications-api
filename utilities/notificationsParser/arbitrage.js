@@ -6,7 +6,7 @@ module.exports = async (params) => {
   const notifications = [];
   for (const el of params) {
     const link = `${PRODUCTION_HOST}${REBALANCING}${el.account}`;
-    const message = `The profitable difference percent on pair ${el.tokenPair} by account ${el.account} is ${el.differencePercent}% now.`;
+    const message = `Rebalancing alert for ${el.tokenPair}: ${el.differencePercent}% difference`;
     await shareMessageBySubscribers(el.account, message, link);
     notifications.push([el.account, {
       timestamp: Math.round(new Date().valueOf() / 1000),
