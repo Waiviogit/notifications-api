@@ -95,7 +95,8 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.STAKE:
       notification = await powerUp(params);
-      if (notification.length) notifications.push(notification);
+      if (notification.length > 1) notifications.push(...notification);
+      else notifications.push(notification);
       break;
 
     case NOTIFICATIONS_TYPES.UNSTAKE:
