@@ -24,7 +24,7 @@ module.exports = async (params) => {
     return [params.from, payload];
   }
 
-  const message = `${params.from} delegated ${params.amount} to ${params.to}`;
+  const message = `${params.from} initiated 'Power Up' on ${params.amount} to ${params.to}`;
   let url = `${PRODUCTION_HOST}@${params.from}/transfers`;
   await shareMessageBySubscribers(params.from, message, url);
   url = `${PRODUCTION_HOST}@${params.to}/transfers`;
