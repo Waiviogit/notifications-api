@@ -20,10 +20,8 @@ const getUserNotifications = async (params, payload) => {
 
   if (error) {
     console.error(error.message);
-
     return [];
   }
-
   if (!await checkUserNotifications({ user, type: 'powerUp' })) return [];
 
   await shareMessageBySubscribers(params.from,
