@@ -41,7 +41,7 @@ const getUsersNotifications = async (params, payload) => {
     return [];
   }
   for (const user of users) {
-    if (!await checkUserNotifications({ user, type: 'powerUp' })) break;
+    if (!await checkUserNotifications({ user, type: 'powerUp' })) continue;
 
     await shareMessageBySubscribers(user.name,
       `${params.from} initiated 'Power Up' on ${params.amount} to ${params.to}`,
