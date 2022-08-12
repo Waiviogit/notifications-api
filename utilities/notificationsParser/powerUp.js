@@ -4,15 +4,12 @@ const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 const { checkUserNotifications, getUsers } = require('utilities/helpers/notificationsHelper');
 
 module.exports = async (params) => {
-  const notifications = [];
   const payload = Object.assign(params, {
     timestamp: Math.round(new Date().valueOf() / 1000),
     type: NOTIFICATIONS_TYPES.TRANSFER_TO_VESTING,
   });
-  if (params.from === params.to) notifications.push(await getUserNotifications(params, payload));
-  else notifications.push(...await getUsersNotifications(params, payload));
-
-  return notifications;
+  if (params.from === params.to) return getUserNotifications(params, payload);
+  return getUsersNotifications(params, payload);
 };
 
 const getUserNotifications = async (params, payload) => {
@@ -28,7 +25,7 @@ const getUserNotifications = async (params, payload) => {
     `${params.from} initiated 'Power Up' on ${params.amount} `,
     `${PRODUCTION_HOST}@${params.from}/transfers`);
 
-  return [params.from, payload];
+  return [[params.from, payload]];
 };
 
 const getUsersNotifications = async (params, payload) => {
