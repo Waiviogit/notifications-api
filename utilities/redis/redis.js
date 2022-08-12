@@ -1,7 +1,8 @@
 const redis = require('redis');
 const bluebird = require('bluebird');
 const config = require('../../config');
-const redisSubHelper = require('./redisSubHelper.js');
+const { CAMPAIGN_LISTENER } = require('../../constants/redis');
+const redisSubHelper = require('./redisSubHelper');
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
@@ -26,8 +27,7 @@ const messageListener = (onMessageCallBack) => {
 const campaignMessageListener = (onMessageCallBack) => {
   const subscribeMessage = () => {
     const subscriber = redis.createClient({ db: 6 });
-    const publisherKeys = ['expire:assign', 'expire:assign:false'];
-    redisSubHelper.subscribe(subscriber, publisherKeys, onMessageCallBack);
+    redisSubHelper.subscribe(subscriber, Object.keys(CAMPAIGN_LISTENER), onMessageCallBack);
   };
 
   campaignClient.send_command('config', ['subscribe'], subscribeMessage);

@@ -1,6 +1,6 @@
 const { redis, redisGetter, redisSetter } = require('../redis');
 const wssHelper = require('./wssHelper');
-const { CALL_METHOD } = require('../../constants/notificationTypes');
+const { CAMPAIGN_LISTENER } = require('../../constants/redis');
 
 const messageDataListener = async (channel, msg) => {
   const subscribers = await redisGetter.getBlockSubscribers(`${channel}:${+msg - 1}`);
@@ -11,22 +11,18 @@ const messageDataListener = async (channel, msg) => {
 };
 
 const campaignDataListener = async (channel, msg) => {
-  switch (channel) {
-    case 'expire:assign':
-    case 'expire:assign:false':
-      const subscriber = await redisGetter.getSubscriber(msg);
-      if (!subscriber) return;
-      const assigned = !new RegExp('false').test(channel);
-      await wssHelper.sendToSubscriber(
-        subscriber,
-        JSON.stringify({
-          type: CALL_METHOD.SUBSCRIBE_CAMPAIGN_ASSIGN,
-          assigned,
-          permlink: msg,
-        }),
-      );
-      break;
-  }
+  const type = CAMPAIGN_LISTENER[channel];
+  const subscriber = await redisGetter.getSubscriber(msg);
+  if (!subscriber) return;
+  const success = !new RegExp('false').test(channel);
+  await wssHelper.sendToSubscriber(
+    subscriber,
+    JSON.stringify({
+      type,
+      success,
+      permlink: msg,
+    }),
+  );
 };
 
 exports.startRedisListener = () => {
