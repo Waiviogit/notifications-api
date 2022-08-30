@@ -81,6 +81,7 @@ exports.CALL_METHOD = {
   SUBSCRIBE_CAMPAIGN_ASSIGN: 'subscribeCampaignAssign',
   SUBSCRIBE_CAMPAIGN_RELEASE: 'subscribeCampaignRelease',
   SUBSCRIBE_CAMPAIGN_DEACTIVATION: 'subscribeCampaignDeactivation',
+  SUBSCRIBE_TRX_ID: 'subscribeTransactionId',
   GUEST_LOGIN: 'guest_login',
   UNSUBSCRIBE: 'unsubscribe',
   SUBSCRIBE: 'subscribe',
