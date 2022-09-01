@@ -103,7 +103,7 @@ module.exports = async (params) => {
         await shareMessageBySubscribers(
           params.parent_author,
           `${params.author} ${isReleased ? 'released' : 'made'} a reservation for ${campaignV2.name}`,
-          `${PRODUCTION_HOST}rewards/guideHistory${urlQuery}`,
+          `${PRODUCTION_HOST}rewards-new/reservations${urlQuery}`,
         );
         return notifications;
       }
