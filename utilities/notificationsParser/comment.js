@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
-const { campaignsModel } = require('models');
+const { campaignsModel, campaignsV2Model } = require('models');
 const { RESERVATION_TITLES } = require('constants/campaignsData');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
@@ -49,6 +49,9 @@ module.exports = async (params) => {
       const { result: campaign } = await campaignsModel.findOne(
         { activation_permlink: params.parent_permlink },
       );
+      const { result: campaignV2 } = await campaignsV2Model.findOne(
+        { filter: { activation_permlink: params.parent_permlink } },
+      );
       if (await checkUserNotifications(
         { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_COMMENT },
       )) {
@@ -80,6 +83,26 @@ module.exports = async (params) => {
         await shareMessageBySubscribers(
           params.parent_author,
           `${params.author} ${isReleased ? 'released' : 'made'} a reservation for ${campaign.name}`,
+          `${PRODUCTION_HOST}rewards/guideHistory${urlQuery}`,
+        );
+        return notifications;
+      }
+      if (campaignV2) {
+        const isReleased = params.title === RESERVATION_TITLES.CANCELED;
+        const urlQuery = isReleased
+          ? `?campaign=${campaignV2.name.replace(/ /g, '%20')}&released=Released`
+          : `?campaign=${campaignV2.name.replace(/ /g, '%20')}&reserved=Reserved`;
+        notification = {
+          timestamp: Math.round(new Date().valueOf() / 1000),
+          type: NOTIFICATIONS_TYPES.CAMPAIGN_RESERVATION,
+          campaignName: campaignV2.name,
+          author: params.author,
+          isReleased,
+        };
+        notifications.push([params.parent_author, notification]);
+        await shareMessageBySubscribers(
+          params.parent_author,
+          `${params.author} ${isReleased ? 'released' : 'made'} a reservation for ${campaignV2.name}`,
           `${PRODUCTION_HOST}rewards/guideHistory${urlQuery}`,
         );
         return notifications;
