@@ -50,7 +50,7 @@ module.exports = async (params) => {
         { activation_permlink: params.parent_permlink },
       );
       const { result: campaignV2 } = await campaignsV2Model.findOne(
-        { filter: { activation_permlink: params.parent_permlink } },
+        { filter: { activationPermlink: params.parent_permlink } },
       );
       if (await checkUserNotifications(
         { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_COMMENT },
