@@ -98,6 +98,7 @@ module.exports = async (params) => {
           campaignName: campaignV2.name,
           author: params.author,
           isReleased,
+          newCampaigns: true,
         };
         notifications.push([params.parent_author, notification]);
         await shareMessageBySubscribers(
