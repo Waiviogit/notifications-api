@@ -1,4 +1,4 @@
-const { redisNotifyClient, lastBlockClient } = require('./redis.js');
+const { redisNotifyClient, lastBlockClient } = require('./redis');
 
 exports.getUserNotifications = async (name) => {
   let result;
@@ -16,3 +16,11 @@ exports.getBlockSubscribers = async (key) => redisNotifyClient.smembersAsync(key
 exports.getSubscriber = async (key) => redisNotifyClient.getAsync(key);
 
 exports.getBlockNum = async (key) => lastBlockClient.getAsync(key);
+
+exports.getHashAll = async ({ key, client = lastBlockClient }) => {
+  try {
+    return { result: await client.hgetallAsync(key) };
+  } catch (error) {
+    return { error };
+  }
+};

@@ -80,10 +80,10 @@ const checkUserNotifications = async ({ user, type, amount }) => {
     const { usdCurrency, error: getRateError } = await getCurrencyFromCoingecko(cryptoType);
     if (getRateError) return true;
     const minimalTransfer = _.get(user, 'user_metadata.settings.userNotifications.minimalTransfer');
-    const { lastPrice, error } = await getLastPriceRequest({ symbol: cryptoType });
-    if (error) return;
     if (!minimalTransfer) return true;
     if (cryptoType !== 'HIVE' && cryptoType !== 'HBD') {
+      const { lastPrice, error } = await getLastPriceRequest({ symbol: cryptoType });
+      if (error) return;
       return value * usdCurrency * lastPrice >= minimalTransfer.toFixed(3);
     }
 

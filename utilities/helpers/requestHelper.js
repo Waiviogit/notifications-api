@@ -1,6 +1,8 @@
 const { HIVE_ON_BOARD } = require('constants/requestData');
 const axios = require('axios');
 const _ = require('lodash');
+const { redisGetter } = require('utilities/redis');
+const { CACHE_KEYS } = require('constants/redis');
 
 exports.getCurrencyFromCoingecko = async (type) => {
   let currency;
@@ -14,6 +16,11 @@ exports.getCurrencyFromCoingecko = async (type) => {
     default:
       currency = 'hive';
   }
+  const { result: cache } = await redisGetter.getHashAll({ key: CACHE_KEYS.COINGECKO });
+  if (cache) {
+    return { usdCurrency: Number(cache[currency]) };
+  }
+
   try {
     const result = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${currency}&vs_currencies=usd`);
     const usdCurrency = result.data[currency].usd;

@@ -9,3 +9,7 @@ exports.CAMPAIGN_LISTENER = {
   'expire:deactivation:false': CALL_METHOD.SUBSCRIBE_CAMPAIGN_DEACTIVATION,
   'expire:transactionId': CALL_METHOD.SUBSCRIBE_TRX_ID,
 };
+
+exports.CACHE_KEYS = {
+  COINGECKO: 'coingecko_cache',
+};
