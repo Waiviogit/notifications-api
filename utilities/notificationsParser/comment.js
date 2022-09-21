@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { PRODUCTION_HOST } = require('constants/index');
-const { campaignsModel, campaignsV2Model } = require('models');
+const { campaignsModel, campaignsV2Model, blacklistModel } = require('models');
 const { RESERVATION_TITLES } = require('constants/campaignsData');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
@@ -8,6 +8,11 @@ const {
   getUsers, checkUserNotifications, getServiceBots,
   addNotificationForSubscribers, addNotificationsWobjectSubscribers,
 } = require('utilities/helpers/notificationsHelper');
+
+const checkBlacklist = async ({ guideName, user }) => {
+  const blacklist = await blacklistModel.getBlacklist({ user: guideName });
+  return blacklist.includes(user);
+};
 
 module.exports = async (params) => {
   const notifications = [];
@@ -68,6 +73,10 @@ module.exports = async (params) => {
           `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
       }
       if (campaign) {
+        const blacklisted = await checkBlacklist(
+          { guideName: campaign.guideName, user: params.author },
+        );
+        if (blacklisted) return notifications;
         const isReleased = params.title === RESERVATION_TITLES.CANCELED;
         const urlQuery = isReleased
           ? `?campaign=${campaign.name.replace(/ /g, '%20')}&released=Released`
@@ -88,6 +97,10 @@ module.exports = async (params) => {
         return notifications;
       }
       if (campaignV2) {
+        const blacklisted = await checkBlacklist(
+          { guideName: campaignV2.guideName, user: params.author },
+        );
+        if (blacklisted) return notifications;
         const isReleased = params.title === RESERVATION_TITLES.CANCELED;
         const urlQuery = isReleased
           ? `?campaign=${campaignV2.name.replace(/ /g, '%20')}&released=Released`

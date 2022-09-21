@@ -9,4 +9,5 @@ module.exports = {
   campaignsModel: require('./campaignsModel'),
   campaignsV2Model: require('./campaignV2Model'),
   vipTicketsModel: require('./vipTicketsModel'),
+  blacklistModel: require('./blacklistModel'),
 };
