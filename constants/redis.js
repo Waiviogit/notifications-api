@@ -10,6 +10,10 @@ exports.CAMPAIGN_LISTENER = {
   'expire:transactionId': CALL_METHOD.SUBSCRIBE_TRX_ID,
 };
 
+exports.MAIN_PARSER_LISTENER = {
+  main_parser_tx_id: CALL_METHOD.SUBSCRIBE_TRX_ID,
+};
+
 exports.CACHE_KEYS = {
   COINGECKO: 'coingecko_cache',
 };

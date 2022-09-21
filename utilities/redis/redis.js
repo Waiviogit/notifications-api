@@ -1,7 +1,7 @@
 const redis = require('redis');
 const bluebird = require('bluebird');
 const config = require('../../config');
-const { CAMPAIGN_LISTENER } = require('../../constants/redis');
+const { CAMPAIGN_LISTENER, MAIN_PARSER_LISTENER } = require('../../constants/redis');
 const redisSubHelper = require('./redisSubHelper');
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
@@ -17,8 +17,7 @@ campaignClient.select(config.redis.campaign);
 const messageListener = (onMessageCallBack) => {
   const subscribeMessage = () => {
     const subscriber = redis.createClient({ db: config.redis.lastBlock });
-    const publisherKeys = ['last_vote_block_num', 'last_block_num', 'campaign_last_block_num'];
-    redisSubHelper.subscribe(subscriber, publisherKeys, onMessageCallBack);
+    redisSubHelper.subscribe(subscriber, Object.keys(MAIN_PARSER_LISTENER), onMessageCallBack);
   };
 
   lastBlockClient.send_command('config', ['subscribe'], subscribeMessage);
