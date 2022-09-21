@@ -14,5 +14,6 @@ module.exports = {
     Campaigns: require('./schemas/CampaignsSchema'),
     CampaignsV2: require('./schemas/CampaignV2Schema'),
     VipTicket: require('./schemas/VipTicketSchema'),
+    Blacklist: require('./schemas/BlacklistSchema'),
   },
 };
