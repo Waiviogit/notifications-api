@@ -12,6 +12,9 @@ exports.CAMPAIGN_LISTENER = {
 
 exports.MAIN_PARSER_LISTENER = {
   main_parser_tx_id: CALL_METHOD.SUBSCRIBE_TRX_ID,
+  last_vote_block_num: CALL_METHOD.SUBSCRIBE_BLOCK,
+  last_block_num: CALL_METHOD.SUBSCRIBE_BLOCK,
+  campaign_last_block_num: CALL_METHOD.SUBSCRIBE_BLOCK,
 };
 
 exports.CACHE_KEYS = {
