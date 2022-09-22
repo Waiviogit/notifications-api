@@ -134,6 +134,35 @@ class WebSocket {
               else sendSomethingWrong(call, ws);
             }
             break;
+          case CALL_METHOD.SUBSCRIBE_BLOCK:
+            if (!_.isNumber(+call.params[1]) || !call.params[2]) {
+              return sendSomethingWrong(call, ws);
+            }
+
+            const lastBlock = await redisGetter.getBlockNum(call.params[2]);
+            if (+lastBlock - 1 >= +call.params[1]) {
+              return WebSocket.sendMessage({
+                ws,
+                message: JSON.stringify({
+                  type: call.params[2],
+                  notification: { blockParsed: call.params[1] },
+                }),
+              });
+            }
+
+            const setResult = await redisSetter.setSubscribe(
+              `${call.params[2]}:${+call.params[1]}`, call.params[0],
+            );
+            if (setResult) {
+              ws.name = call.params[0];
+              WebSocket.sendMessage({
+                ws,
+                message: JSON.stringify(
+                  { id: call.id, result: { subscribeBlock: true, username: call.params[0] } },
+                ),
+              });
+            } else sendSomethingWrong(call, ws);
+            break;
           case CALL_METHOD.SUBSCRIBE_CAMPAIGN_ASSIGN:
           case CALL_METHOD.SUBSCRIBE_CAMPAIGN_RELEASE:
           case CALL_METHOD.SUBSCRIBE_CAMPAIGN_DEACTIVATION:
