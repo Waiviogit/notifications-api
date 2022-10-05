@@ -5,7 +5,7 @@ const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async ({
   author, guideName, reservedUser, permlink, campaignName,
-  json_metadata, body, parent_author, parent_permlink,
+  json_metadata, body, parent_author, parent_permlink, newCampaigns,
 }) => {
   const notSponsor = author !== guideName;
   const sendTo = notSponsor ? guideName : reservedUser;
@@ -25,5 +25,6 @@ module.exports = async ({
     permlink,
     author,
     body,
+    newCampaigns,
   }];
 };

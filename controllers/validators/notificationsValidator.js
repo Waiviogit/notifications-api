@@ -207,6 +207,7 @@ exports.operationsSchema = Joi.object().keys({
       guideName: Joi.string().required(),
       campaignName: Joi.string().required(),
       reservedUser: Joi.string().required(),
+      newCampaigns: Joi.boolean().default(false),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.LIKE,
