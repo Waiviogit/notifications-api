@@ -16,9 +16,15 @@ module.exports = async (params) => {
 
     notifications.push([user, campaginStatusNotification(params, user, NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN)]);
 
-    await shareMessageBySubscribers(user,
+    const url = params.newCampaigns
+      ? `${PRODUCTION_HOST}rewards-new/all/${params.author_permlink}`
+      : `${PRODUCTION_HOST}rewards/all/${params.author_permlink}`;
+
+    await shareMessageBySubscribers(
+      user,
       `${params.guide} launched a new campaign for ${params.object_name}`,
-      `${PRODUCTION_HOST}rewards/all/${params.author_permlink}`);
+      url,
+    );
   }
   return notifications;
 };
