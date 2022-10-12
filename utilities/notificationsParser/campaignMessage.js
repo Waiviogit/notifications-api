@@ -9,10 +9,15 @@ module.exports = async ({
 }) => {
   const notSponsor = author !== guideName;
   const sendTo = notSponsor ? guideName : reservedUser;
+  const message = notSponsor
+    ? `${author} asked about ${campaignName}`
+    : `${author} replied on your comment`;
 
-  await shareMessageBySubscribers(sendTo,
-    `${author} asked about ${campaignName}`,
-    `${PRODUCTION_HOST}@${author}/${permlink}`);
+  await shareMessageBySubscribers(
+    sendTo,
+    message,
+    `${PRODUCTION_HOST}@${author}/${permlink}`,
+  );
 
   return [sendTo, {
     timestamp: Math.round(new Date().valueOf() / 1000),
