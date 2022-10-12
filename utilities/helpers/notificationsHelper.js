@@ -130,6 +130,7 @@ const campaginStatusNotification = (notificationParams, user, type) => ({
   object_name: notificationParams.object_name,
   author: notificationParams.guide,
   account: user,
+  ...(notificationParams.newCampaigns && { newCampaigns: notificationParams.newCampaigns }),
 });
 
 module.exports = {
