@@ -6,11 +6,14 @@ const {
   checkUserNotifications, getUsers, parseJson,
 } = require('utilities/helpers/notificationsHelper');
 
+const transferToGuestTypes = ['guest_reward', 'user_to_guest_transfer', 'transferToGuest', 'guestCampaignReward'];
+const transferFromGuestTypes = ['demo_user_transfer', 'transferFromGuest'];
+
 module.exports = async (params) => {
   const notifications = [];
   const json = parseJson(params.memo);
-  const transferTo = _.includes(['guest_reward', 'user_to_guest_transfer'], _.get(json, 'id')) ? json.to : params.to;
-  const transferFrom = _.get(json, 'id') === 'demo_user_transfer' ? json.from : params.from;
+  const transferTo = _.includes(transferToGuestTypes, _.get(json, 'id')) ? json.to : params.to;
+  const transferFrom = _.includes(transferFromGuestTypes, _.get(json, 'id')) ? json.from : params.from;
 
   const { user, error } = await getUsers({ single: transferTo });
   if (error) {
