@@ -7,7 +7,7 @@ const {
 } = require('utilities/helpers/notificationsHelper');
 
 const transferToGuestTypes = ['guest_reward', 'user_to_guest_transfer', 'transferToGuest', 'guestCampaignReward'];
-const transferFromGuestTypes = ['demo_user_transfer', 'transferFromGuest'];
+const transferFromGuestTypes = ['demo_user_transfer', 'transferFromGuest', 'waivio_guest_transfer'];
 
 module.exports = async (params) => {
   const notifications = [];
