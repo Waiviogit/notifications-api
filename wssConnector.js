@@ -170,6 +170,7 @@ class WebSocket {
             if (!call.params[0] || !call.params[1]) {
               return sendSomethingWrong(call, ws);
             }
+            ws.name = call.params[0];
             await redisSetter.setSubscribeSingle(
               `${call.params[1]}`, call.params[0],
             );
