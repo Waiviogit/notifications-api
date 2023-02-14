@@ -179,6 +179,7 @@ exports.operationsSchema = Joi.object().keys({
       author_permlink: Joi.string().required(),
       object_name: Joi.string().required(),
       newCampaigns: Joi.boolean().default(false),
+      reach: Joi.string(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,

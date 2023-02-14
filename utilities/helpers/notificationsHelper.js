@@ -131,6 +131,7 @@ const campaginStatusNotification = (notificationParams, user, type) => ({
   author: notificationParams.guide,
   account: user,
   ...(notificationParams.newCampaigns && { newCampaigns: notificationParams.newCampaigns }),
+  ...(notificationParams.reach && { reach: notificationParams.reach }),
 });
 
 module.exports = {

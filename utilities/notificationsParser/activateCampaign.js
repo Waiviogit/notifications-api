@@ -16,9 +16,7 @@ module.exports = async (params) => {
 
     notifications.push([user, campaginStatusNotification(params, user, NOTIFICATIONS_TYPES.ACTIVATE_CAMPAIGN)]);
 
-    const url = params.newCampaigns
-      ? `${PRODUCTION_HOST}rewards-new/all/${params.author_permlink}`
-      : `${PRODUCTION_HOST}rewards/all/${params.author_permlink}`;
+    const url = `${PRODUCTION_HOST}rewards/${params.reach}`;
 
     await shareMessageBySubscribers(
       user,
