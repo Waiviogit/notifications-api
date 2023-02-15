@@ -230,6 +230,7 @@ exports.operationsSchema = Joi.object().keys({
       primaryObject: Joi.string().required(),
       objectPermlink: Joi.string().required(),
       users: Joi.array().items(String).required(),
+      reach: Joi.string().required(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.WEB_SITE_BALANCE,

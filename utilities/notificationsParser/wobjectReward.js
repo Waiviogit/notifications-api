@@ -13,12 +13,13 @@ module.exports = async (params) => {
       objectPermlink: params.objectPermlink,
       primaryObject: params.primaryObject,
       guideName: params.guideName,
+      reach: params.reach,
     };
     notifications.push([user, notification]);
 
     await shareMessageBySubscribers(user,
       `${params.guideName} launched a reward campaign for ${params.objectName}`,
-      `${PRODUCTION_HOST}rewards/all/${params.primaryObject}`);
+      `${PRODUCTION_HOST}rewards/${params.reach}/all/${params.primaryObject}`);
   }
   return notifications;
 };
