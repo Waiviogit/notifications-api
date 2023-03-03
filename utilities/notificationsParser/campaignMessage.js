@@ -13,10 +13,14 @@ module.exports = async ({
     ? `${author} asked about ${campaignName}`
     : `${author} replied on your comment`;
 
+  const url = notSponsor
+    ? `${PRODUCTION_HOST}rewards/messages?reservationPermlink=${parent_permlink}`
+    : `${PRODUCTION_HOST}rewards/history?reservationPermlink=${parent_permlink}&guideNames=${guideName}`;
+
   await shareMessageBySubscribers(
     sendTo,
     message,
-    `${PRODUCTION_HOST}@${author}/${permlink}`,
+    url,
   );
 
   return [sendTo, {
