@@ -7,7 +7,7 @@
     "node": "8.x"
   },
   "scripts": {
-    "start": "node --expose-gc app.js"
+    "start": "node --max-old-space-size=400 app.js"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.0",
