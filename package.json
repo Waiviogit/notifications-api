@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "engines": {
-    "node": "8.x"
-  },
   "scripts": {
     "start": "node --max-old-space-size=400 app.js"
   },
