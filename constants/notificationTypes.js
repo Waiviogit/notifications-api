@@ -61,6 +61,10 @@ exports.NOTIFICATIONS_TYPES = {
   UPDATE_INFO: 'updateInfo',
 };
 
+exports.SERVICE_NOTIFICATION_TYPES = {
+  UPDATE_IMPORT: 'updateImport',
+};
+
 exports.CUSTOM_JSON_IDS = {
   FOLLOW: 'follow',
   REBLOG: 'reblog',
@@ -88,6 +92,7 @@ exports.CALL_METHOD = {
   LOGIN: 'login',
   SET_NOTIFICATION: 'setNotification',
   UPDATE_INFO: 'updateInfo',
+  WS_SET_SERVICE_NOTIFICATION: 'setServiceNotification',
 };
 
 exports.ENGINE_CHAIN_STATUSES = {
