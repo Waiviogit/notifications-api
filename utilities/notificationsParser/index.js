@@ -28,4 +28,6 @@ module.exports = {
   comment: require('./comment'),
   like: require('./like'),
   arbitrage: require('./arbitrage'),
+  updateImport: require('./updateImport'),
+  seviceOperations: require('./seviceOperations'),
 };

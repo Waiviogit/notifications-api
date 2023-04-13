@@ -8,6 +8,7 @@ const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
 
 const validators = require('./controllers/validators');
 const mainOperations = require('./utilities/notificationsParser/mainOperations');
+const seviceOperations = require('./utilities/notificationsParser/seviceOperations');
 
 const sc2 = sdk.Initialize({
   app: 'waivio.app',
@@ -94,6 +95,10 @@ class WebSocket {
 
           case CALL_METHOD.SET_NOTIFICATION:
             await this.setNotification(call.payload, ws.key);
+            break;
+
+          case CALL_METHOD.WS_SET_SERVICE_NOTIFICATION:
+            await this.setServiceNotification(call.payload, ws.key);
             break;
 
           case CALL_METHOD.LOGIN:
@@ -210,6 +215,17 @@ class WebSocket {
     );
     if (validationError) return;
     await mainOperations.setNotifications({ params });
+  }
+
+  async setServiceNotification(payload, key) {
+    if (key !== process.env.API_KEY) {
+      return;
+    }
+    const { params, validationError } = validators.validate(
+      payload, validators.notifications.serviceNotifications,
+    );
+    if (validationError) return;
+    await seviceOperations.sendNotifications({ params });
   }
 
   sendMessageToAllClient(clients) {

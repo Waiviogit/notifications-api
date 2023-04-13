@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi');
-const { NOTIFICATIONS_TYPES, CUSTOM_JSON_IDS } = require('../../constants/notificationTypes');
+const { NOTIFICATIONS_TYPES, CUSTOM_JSON_IDS, SERVICE_NOTIFICATION_TYPES } = require('../../constants/notificationTypes');
 
 exports.operationsSchema = Joi.object().keys({
   id: Joi.string().valid(...Object.values(NOTIFICATIONS_TYPES)).required(),
@@ -247,3 +247,16 @@ exports.operationsSchema = Joi.object().keys({
     })).required(),
   }]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });
+
+exports.serviceNotifications = Joi.object().keys({
+  id: Joi.string().valid(...Object.values(SERVICE_NOTIFICATION_TYPES)).required(),
+  data: Joi.alternatives().conditional('id', [
+    {
+      is: SERVICE_NOTIFICATION_TYPES.UPDATE_IMPORT,
+      then: Joi.object().keys({
+        account: Joi.string().required(),
+      }).required(),
+    },
+    // Add other conditions as needed
+  ]).required(),
+});

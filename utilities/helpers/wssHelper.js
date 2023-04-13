@@ -19,6 +19,20 @@ const clientSend = (notifications) => {
   });
 };
 
+const sendServiceNotification = (notifications) => {
+  notifications.forEach((notification) => {
+    wssConnection.wss.clients.forEach((client) => {
+      if (_.get(client, 'name') === notification[0]) {
+        console.log('Send service notification');
+        wssConnection.constructor.sendMessage({
+          ws: client,
+          message: JSON.stringify(notification[1]),
+        });
+      }
+    });
+  });
+};
+
 const sendParsedBlockResponse = async (type, subscribers, msg) => {
   wssConnection.wss.clients.forEach((client) => {
     if (client.name && _.includes(subscribers, client.name)) {
@@ -65,5 +79,5 @@ const sendVipTicketResponse = async (userName) => {
 };
 
 module.exports = {
-  clientSend, heartbeat, sendParsedBlockResponse, sendVipTicketResponse, sendToAllClients, sendToSubscriber,
+  clientSend, heartbeat, sendParsedBlockResponse, sendVipTicketResponse, sendToAllClients, sendToSubscriber, sendServiceNotification,
 };
