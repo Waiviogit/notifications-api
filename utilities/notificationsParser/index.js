@@ -29,5 +29,5 @@ module.exports = {
   like: require('./like'),
   arbitrage: require('./arbitrage'),
   updateImport: require('./updateImport'),
-  seviceOperations: require('./seviceOperations'),
+  serviceOperations: require('./serviceOperations'),
 };
