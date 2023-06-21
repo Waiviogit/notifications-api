@@ -59,6 +59,10 @@ exports.NOTIFICATIONS_TYPES = {
   LIKE: 'like',
   ARBITRAGE: 'arbitrage',
   UPDATE_INFO: 'updateInfo',
+  OBJECT_UPDATES: 'objectUpdates',
+  OBJECT_UPDATES_REJECT: 'objectUpdatesReject',
+  GROUP_ID_UPDATES: 'groupIdUpdates',
+  GROUP_ID_UPDATES_REJECT: 'groupIdUpdatesReject',
 };
 
 exports.SERVICE_NOTIFICATION_TYPES = {
