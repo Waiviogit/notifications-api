@@ -89,7 +89,7 @@ const checkUserNotifications = async ({ user, type, amount }) => {
 
     return value * usdCurrency >= minimalTransfer.toFixed(3);
   }
-  return _.get(user, `user_metadata.settings.userNotifications[${type}]`, true);
+  return _.get(user, `user_metadata.settings.userNotifications[${type}]`, false);
 };
 
 const addNotificationsWobjectSubscribers = async ({
