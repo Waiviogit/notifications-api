@@ -245,7 +245,47 @@ exports.operationsSchema = Joi.object().keys({
       differencePercent: Joi.string().required(),
       tokenPair: Joi.string().required(),
     })).required(),
-  }]).required(),
+  },
+  {
+    is: NOTIFICATIONS_TYPES.OBJECT_UPDATES,
+    then: Joi.object().keys({
+      fieldName: Joi.string().required(),
+      initiator: Joi.string().required(),
+      objectName: Joi.string().required(),
+      authorPermlink: Joi.string().required(),
+      receivers: Joi.array().items(Joi.string()).min(1).required(),
+    }),
+  },
+  {
+    is: NOTIFICATIONS_TYPES.OBJECT_UPDATES_REJECT,
+    then: Joi.object().keys({
+      fieldName: Joi.string().required(),
+      initiator: Joi.string().required(),
+      objectName: Joi.string().required(),
+      authorPermlink: Joi.string().required(),
+      receivers: Joi.array().items(Joi.string()).min(1).required(),
+    }),
+  },
+  {
+    is: NOTIFICATIONS_TYPES.GROUP_ID_UPDATES,
+    then: Joi.object().keys({
+      objectName: Joi.string().required(),
+      initiator: Joi.string().required(),
+      authorPermlink: Joi.string().required(),
+      receivers: Joi.array().items(Joi.string()).min(1).required(),
+    }),
+  },
+  {
+    is: NOTIFICATIONS_TYPES.GROUP_ID_UPDATES_REJECT,
+    then: Joi.object().keys({
+      objectName: Joi.string().required(),
+      initiator: Joi.string().required(),
+      authorPermlink: Joi.string().required(),
+      receivers: Joi.array().items(Joi.string()).min(1).required(),
+    }),
+  },
+
+  ]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });
 
 exports.serviceNotifications = Joi.object().keys({

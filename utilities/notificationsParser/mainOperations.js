@@ -9,7 +9,7 @@ const {
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
   restaurantStatus, suspendedStatus, transfer, delegate, withdrawVesting, witnessVote,
   wobjectReward, webSiteBalance, powerDown, undelegate, delegateVestingShares, powerUp,
-  cancelUnstake, arbitrage,
+  cancelUnstake, arbitrage, objectUpdates, groupIdUpdates,
 } = require('.');
 
 const getNotifications = async (operation) => {
@@ -134,6 +134,20 @@ const getNotifications = async (operation) => {
 
     case NOTIFICATIONS_TYPES.ARBITRAGE:
       notifications = _.concat(notifications, await arbitrage(params));
+      break;
+    case NOTIFICATIONS_TYPES.OBJECT_UPDATES:
+    case NOTIFICATIONS_TYPES.OBJECT_UPDATES_REJECT:
+      notifications = await objectUpdates({
+        ...params,
+        id: operation.id,
+      });
+      break;
+    case NOTIFICATIONS_TYPES.GROUP_ID_UPDATES:
+    case NOTIFICATIONS_TYPES.GROUP_ID_UPDATES_REJECT:
+      notifications = await groupIdUpdates({
+        ...params,
+        id: operation.id,
+      });
       break;
   }
   return notifications;
