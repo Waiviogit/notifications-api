@@ -26,8 +26,8 @@ const objectUpdates = async ({
     }]);
 
     const message = reject
-      ? `${user} rejected the ${fieldName} for ${objectName}`
-      : `${user} added a new ${fieldName} for ${objectName}`;
+      ? `${initiator} rejected the ${fieldName} for ${objectName}`
+      : `${initiator} added a new ${fieldName} for ${objectName}`;
 
     await shareMessageBySubscribers(
       receiver,
