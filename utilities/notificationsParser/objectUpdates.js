@@ -10,9 +10,7 @@ const objectUpdates = async ({
   const notifications = [];
   const { users } = await getUsers({ arr: receivers });
 
-  const messagePurpose = id === NOTIFICATIONS_TYPES.OBJECT_UPDATES
-    ? 'added new'
-    : 'rejected the';
+  const reject = id !== NOTIFICATIONS_TYPES.OBJECT_UPDATES;
 
   for (const receiver of receivers) {
     const user = users.find((el) => el.name === receiver);
@@ -26,9 +24,14 @@ const objectUpdates = async ({
       fieldName,
       initiator,
     }]);
+
+    const message = reject
+      ? `${user} rejected the ${fieldName} for ${objectName}`
+      : `${user} added a new ${fieldName} for ${objectName}`;
+
     await shareMessageBySubscribers(
       receiver,
-      `${initiator} ${messagePurpose} ${fieldName} for ${objectName}`,
+      message,
       `${PRODUCTION_HOST}object/${authorPermlink}/updates/${fieldName}`,
     );
   }

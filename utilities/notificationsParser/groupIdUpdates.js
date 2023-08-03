@@ -9,9 +9,7 @@ const groupIdUpdates = async ({
   const notifications = [];
   const { users } = await getUsers({ arr: receivers });
 
-  const messagePurpose = id === NOTIFICATIONS_TYPES.GROUP_ID_UPDATES
-    ? 'added new'
-    : 'rejected the';
+  const reject = id !== NOTIFICATIONS_TYPES.GROUP_ID_UPDATES;
 
   for (const receiver of receivers) {
     const user = users.find((el) => el.name === receiver);
@@ -24,9 +22,14 @@ const groupIdUpdates = async ({
       authorPermlink,
       initiator,
     }]);
+
+    const message = reject
+      ? `${initiator} removed the group ID from ${objectName}`
+      : `${initiator} used the group ID for ${objectName}`;
+
     await shareMessageBySubscribers(
       receiver,
-      `${initiator} ${messagePurpose} Group ID for ${objectName}`,
+      message,
       `${PRODUCTION_HOST}object/${authorPermlink}/updates/groupId`,
     );
   }
