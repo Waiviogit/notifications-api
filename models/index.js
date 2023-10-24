@@ -10,4 +10,5 @@ module.exports = {
   campaignsV2Model: require('./campaignV2Model'),
   vipTicketsModel: require('./vipTicketsModel'),
   blacklistModel: require('./blacklistModel'),
+  threadModel: require('./threadModel'),
 };
