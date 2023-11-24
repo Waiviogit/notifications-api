@@ -16,7 +16,7 @@ module.exports = async (params) => {
 
   await shareMessageBySubscribers(params.account,
     `${params.account} claim reward: ${params.reward_hive}, ${params.reward_hbd}, ${hivePower}`,
-    `${PRODUCTION_HOST}@${params.account}/transfers`);
+    `${PRODUCTION_HOST}@${params.account}/transfers?type=HIVE`);
 
   return [params.account, {
     type: NOTIFICATIONS_TYPES.CLAIM_REWARD,
