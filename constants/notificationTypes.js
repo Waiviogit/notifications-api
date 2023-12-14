@@ -80,6 +80,7 @@ exports.BELL_NOTIFICATIONS = {
   BELL_REBLOG: 'bellReblog',
   BELL_FOLLOW: 'bellFollow',
   BELL_POST: 'bellPost',
+  BELL_THREAD: 'bellThread',
 };
 
 exports.CALL_METHOD = {

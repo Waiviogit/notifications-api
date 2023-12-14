@@ -123,6 +123,26 @@ const addNotificationsWobjectSubscribers = async ({
   return { wobjNotifications };
 };
 
+const getThreadBellNotifications = async (thread) => {
+  const notifications = [];
+  for (const wobject of thread.hashtags) {
+    const { users } = await wobjectSubscriptionModel
+      .getBellFollowers({ following: wobject });
+    if (_.isEmpty(users)) continue;
+    const notification = {
+      timestamp: Math.round(new Date().valueOf() / 1000),
+      authorPermlink: wobject,
+      type: BELL_NOTIFICATIONS.BELL_THREAD,
+      permlink: thread.permlink,
+      author: thread.author,
+    };
+    for (const user of users) {
+      notifications.push([user, notification]);
+    }
+  }
+  return notifications;
+};
+
 const campaginStatusNotification = (notificationParams, user, type) => ({
   timestamp: Math.round(new Date().valueOf() / 1000),
   type,
@@ -142,4 +162,5 @@ module.exports = {
   getServiceBots,
   parseJson,
   getUsers,
+  getThreadBellNotifications,
 };
