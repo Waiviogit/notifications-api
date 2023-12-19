@@ -89,7 +89,7 @@ module.exports = async (params) => {
         await shareMessageBySubscribers(
           thUser,
           `${thNotification.author} published thread to ${thNotification.authorPermlink}`,
-          `${PRODUCTION_HOST}object/${thNotification.authorPermlink}`,
+          `${PRODUCTION_HOST}object/${thNotification.authorPermlink}/threads`,
         );
       }
       notifications.push(...threadNotifications);
