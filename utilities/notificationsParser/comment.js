@@ -93,7 +93,6 @@ module.exports = async (params) => {
         );
       }
       notifications.push(...threadNotifications);
-      return notifications;
     }
     if (campaign) {
       const blacklisted = await checkBlacklist(
