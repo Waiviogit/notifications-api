@@ -12,6 +12,7 @@ const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificat
 const {
   getUsers, checkUserNotifications, getServiceBots,
   addNotificationForSubscribers, addNotificationsWobjectSubscribers,
+  getThreadAuthorSubscriptions,
 } = require('utilities/helpers/notificationsHelper');
 const { getThreadBellNotifications } = require('../helpers/notificationsHelper');
 
@@ -83,6 +84,7 @@ module.exports = async (params) => {
     }
     if (thread) {
       const threadNotifications = await getThreadBellNotifications(thread);
+      const threadAuthorNotifications = await getThreadAuthorSubscriptions(thread);
 
       for (const threadN of threadNotifications) {
         const [thUser, thNotification] = threadN;
@@ -92,7 +94,21 @@ module.exports = async (params) => {
           `${PRODUCTION_HOST}object/${thNotification.authorPermlink}/threads`,
         );
       }
+
+      const aboutThread = thread?.hashtags?.length
+          ? thread.hashtags.join(', ')
+          : (thread?.mentions ?? []).join(', ')
+
+      for (const threadAuthorNotification of threadAuthorNotifications) {
+        const [thUser, thNotification] = threadAuthorNotification;
+        await shareMessageBySubscribers(
+          thUser,
+          `${thNotification.author} published thread about ${aboutThread}`,
+          `${PRODUCTION_HOST}@${thread.author}/threads`,
+        );
+      }
       notifications.push(...threadNotifications);
+      notifications.push(...threadAuthorNotifications);
     }
     if (campaign) {
       const blacklisted = await checkBlacklist(

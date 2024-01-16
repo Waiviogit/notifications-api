@@ -22,6 +22,7 @@ const UserNotificationsSchema = new Schema({
   like: { type: Boolean, default: true },
   downvote: { type: Boolean, default: false },
   claimReward: { type: Boolean, default: false },
+  threadAuthorFollower: { type: Boolean, default: false },
 }, { _id: false });
 
 const UserMetadataSchema = new Schema({
