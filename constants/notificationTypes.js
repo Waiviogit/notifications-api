@@ -63,6 +63,7 @@ exports.NOTIFICATIONS_TYPES = {
   OBJECT_UPDATES_REJECT: 'objectUpdatesReject',
   GROUP_ID_UPDATES: 'groupIdUpdates',
   GROUP_ID_UPDATES_REJECT: 'groupIdUpdatesReject',
+  THREAD_AUTHOR_FOLLOWER: 'threadAuthorFollower',
 };
 
 exports.SERVICE_NOTIFICATION_TYPES = {

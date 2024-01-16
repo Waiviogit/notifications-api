@@ -17,3 +17,13 @@ exports.getBellFollowers = async ({ following }) => {
     return { error };
   }
 };
+
+exports.getFollowers = async ({ following }) => {
+  try {
+    const result = await Subscriptions.find({ following }).select('follower')
+      .lean();
+    return { users: result.map((el) => el.follower) };
+  } catch (error) {
+    return { error };
+  }
+};

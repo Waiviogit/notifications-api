@@ -8,6 +8,7 @@ const { BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { getLastPriceRequest } = require('./getLastPriceRequest');
 const { getCurrencyFromCoingecko } = require('./requestHelper');
+const { NOTIFICATIONS_TYPES } = require('../../constants/notificationTypes');
 
 const parseJson = (json) => {
   try {
@@ -143,6 +144,29 @@ const getThreadBellNotifications = async (thread) => {
   return notifications;
 };
 
+const getThreadAuthorSubscriptions = async (thread) => {
+  const notifications = [];
+
+  const { users } = await subscriptionModel.getFollowers({ following: thread.author });
+  const notification = {
+    timestamp: Math.round(new Date().valueOf() / 1000),
+    hashtags: thread.hashtags,
+    type: NOTIFICATIONS_TYPES.THREAD_AUTHOR_FOLLOWER,
+    permlink: thread.permlink,
+    author: thread.author,
+  };
+
+  const { users: fullUsers } = await userModel.findByNames(users);
+  for (const fullUser of fullUsers) {
+    if (!await checkUserNotifications({ user: fullUser, type: NOTIFICATIONS_TYPES.THREAD_AUTHOR_FOLLOWER })) {
+      continue;
+    }
+    notifications.push([fullUser.name, notification]);
+  }
+
+  return notifications;
+};
+
 const campaginStatusNotification = (notificationParams, user, type) => ({
   timestamp: Math.round(new Date().valueOf() / 1000),
   type,
@@ -163,4 +187,5 @@ module.exports = {
   parseJson,
   getUsers,
   getThreadBellNotifications,
+  getThreadAuthorSubscriptions,
 };
