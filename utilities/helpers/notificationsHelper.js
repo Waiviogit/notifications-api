@@ -151,6 +151,7 @@ const getThreadAuthorSubscriptions = async (thread) => {
   const notification = {
     timestamp: Math.round(new Date().valueOf() / 1000),
     hashtags: thread.hashtags,
+    mentions: thread.mentions,
     type: NOTIFICATIONS_TYPES.THREAD_AUTHOR_FOLLOWER,
     permlink: thread.permlink,
     author: thread.author,
