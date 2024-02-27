@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Float = require('mongoose-float').loadType(mongoose, 4);
 const db = require('dbWaivio/waivioDB_connection');
 const { CAMPAIGN_TYPES, CAMPAIGN_STATUSES, RESERVATION_STATUSES } = require('constants/campaignsData');
 const config = require('config');
@@ -57,10 +56,10 @@ const campaignSchema = new Schema({
   compensationAccount: { type: String },
   campaign_server: { type: String, default: config.waivio_app_name },
   budget: {
-    type: Float, required: true, min: 0.001, max: 10000,
+    type: Number, required: true, min: 0.001, max: 10000,
   },
   reward: {
-    type: Float, required: true, min: 0.001, max: 500,
+    type: Number, required: true, min: 0.001, max: 500,
   },
   count_reservation_days: { type: Number, default: 1 },
   agreementObjects: { type: [String] },

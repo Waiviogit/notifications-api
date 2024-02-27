@@ -5,6 +5,7 @@ const { NOTIFICATIONS_TYPES, CALL_METHOD } = require('constants/notificationType
 const { server } = require('./app');
 const { redis, redisSetter, redisGetter } = require('./utilities/redis');
 const { validateAuthToken } = require('./utilities/helpers/waivioAuthHelper');
+const { validateHiveAuthToken } = require('./utilities/helpers/hiveAuthHelper');
 
 const validators = require('./controllers/validators');
 const mainOperations = require('./utilities/notificationsParser/mainOperations');
@@ -114,6 +115,12 @@ class WebSocket {
           case CALL_METHOD.GUEST_LOGIN:
             const { result: guestResult } = await validateAuthToken(call.params[0]);
             if (guestResult) sendLoginSuccess(call, guestResult, ws);
+            else sendSomethingWrong(call, ws);
+            break;
+
+          case CALL_METHOD.HIVE_AUTH_LOGIN:
+            const { result: hiveAuth } = await validateHiveAuthToken(call.params[0]);
+            if (hiveAuth) sendLoginSuccess(call, hiveAuth, ws);
             else sendSomethingWrong(call, ws);
             break;
 

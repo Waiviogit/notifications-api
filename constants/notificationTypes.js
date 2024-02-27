@@ -93,6 +93,7 @@ exports.CALL_METHOD = {
   SUBSCRIBE_CAMPAIGN_DEACTIVATION: 'subscribeCampaignDeactivation',
   SUBSCRIBE_TRX_ID: 'subscribeTransactionId',
   GUEST_LOGIN: 'guest_login',
+  HIVE_AUTH_LOGIN: 'hive_auth_login',
   UNSUBSCRIBE: 'unsubscribe',
   SUBSCRIBE: 'subscribe',
   LOGIN: 'login',

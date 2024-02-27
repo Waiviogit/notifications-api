@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const { NOTIFICATIONS_TYPES, CUSTOM_JSON_IDS, SERVICE_NOTIFICATION_TYPES } = require('../../constants/notificationTypes');
 
 exports.operationsSchema = Joi.object().keys({
