@@ -29,6 +29,7 @@ module.exports = {
   like: require('./like'),
   arbitrage: require('./arbitrage'),
   updateImport: require('./updateImport'),
+  updateReport: require('./updateReport'),
   serviceOperations: require('./serviceOperations'),
   objectUpdates: require('./objectUpdates'),
   groupIdUpdates: require('./groupIdUpdates'),

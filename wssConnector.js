@@ -233,7 +233,6 @@ class WebSocket {
     );
     if (validationError) return;
     const notifications = await serviceOperations.getServiceNotifications(params);
-    console.log()
     this.sendServiceNotification(notifications);
   }
 

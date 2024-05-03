@@ -297,6 +297,12 @@ exports.serviceNotifications = Joi.object().keys({
         account: Joi.string().required(),
       }).required(),
     },
+    {
+      is: SERVICE_NOTIFICATION_TYPES.UPDATE_REPORT,
+      then: Joi.object().keys({
+        account: Joi.string().required(),
+      }).required(),
+    },
     // Add other conditions as needed
   ]).required(),
 });

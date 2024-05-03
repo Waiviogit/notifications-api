@@ -68,6 +68,7 @@ exports.NOTIFICATIONS_TYPES = {
 
 exports.SERVICE_NOTIFICATION_TYPES = {
   UPDATE_IMPORT: 'updateImport',
+  UPDATE_REPORT: 'updateReport',
 };
 
 exports.CUSTOM_JSON_IDS = {
