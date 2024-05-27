@@ -14,11 +14,16 @@ const notifications = async (req, res, next) => {
 
 const serviceNotifications = async (req, res, next) => {
   const { params, validationError } = validators.validate(req.body, validators.notifications.serviceNotifications);
+
   if (validationError) {
     return next({ status: 422, message: validationError.message });
   }
 
-  clientSend(await serviceOperations.getServiceNotifications(params));
+  const notification = await serviceOperations.getServiceNotifications(params);
+
+  clientSend(notification);
+  console.log('params', params);
+  console.log('notification', notification);
 
   res.status(200).json({ result: 'OK' });
 };
