@@ -30,6 +30,7 @@ module.exports = {
   arbitrage: require('./arbitrage'),
   updateImport: require('./updateImport'),
   updateReport: require('./updateReport'),
+  finishReport: require('./finishReport'),
   serviceOperations: require('./serviceOperations'),
   objectUpdates: require('./objectUpdates'),
   groupIdUpdates: require('./groupIdUpdates'),

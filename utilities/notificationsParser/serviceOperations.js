@@ -1,5 +1,5 @@
 const { SERVICE_NOTIFICATION_TYPES } = require('../../constants/notificationTypes');
-const { updateImport, updateReport } = require('.');
+const { updateImport, updateReport, finishReport } = require('.');
 
 exports.getServiceNotifications = async (operation) => {
   const notifications = [];
@@ -10,6 +10,9 @@ exports.getServiceNotifications = async (operation) => {
       break;
     case SERVICE_NOTIFICATION_TYPES.UPDATE_REPORT:
       notifications.push(updateReport(params));
+      break;
+    case SERVICE_NOTIFICATION_TYPES.FINISH_REPORT:
+      notifications.push(finishReport(params));
       break;
     default: break;
   }
