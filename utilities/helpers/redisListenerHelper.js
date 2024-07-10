@@ -28,9 +28,13 @@ const messageDataListener = async (channel, msg) => {
 
 const campaignDataListener = async (channel, msg) => {
   const type = CAMPAIGN_LISTENER[channel];
+
+  console.log('channel', channel);
   const subscriber = await redisGetter.getSubscriber(msg);
+  console.log('subscriber', subscriber);
   if (!subscriber) return;
   const success = !new RegExp('false').test(channel);
+
   await wssHelper.sendToSubscriber(
     subscriber,
     JSON.stringify({
