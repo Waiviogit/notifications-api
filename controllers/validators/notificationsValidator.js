@@ -210,6 +210,7 @@ exports.operationsSchema = Joi.object().keys({
       campaignName: Joi.string().required(),
       reservedUser: Joi.string().required(),
       newCampaigns: Joi.boolean().default(false),
+      reservationPermlink: Joi.string(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.LIKE,
