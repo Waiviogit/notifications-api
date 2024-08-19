@@ -5,7 +5,7 @@ const { NOTIFICATIONS_TYPES } = require('constants/notificationTypes');
 
 module.exports = async ({
   author, guideName, reservedUser, permlink, campaignName,
-  json_metadata, body, parent_author, parent_permlink, newCampaigns,
+  json_metadata, body, parent_author, parent_permlink, newCampaigns, reservationPermlink,
 }) => {
   const notSponsor = author !== guideName;
   const sendTo = notSponsor ? guideName : reservedUser;
@@ -14,8 +14,8 @@ module.exports = async ({
     : `${author} replied on your comment`;
 
   const url = notSponsor
-    ? `${PRODUCTION_HOST}rewards/messages?reservationPermlink=${parent_permlink}`
-    : `${PRODUCTION_HOST}rewards/history?reservationPermlink=${parent_permlink}&guideNames=${guideName}`;
+    ? `${PRODUCTION_HOST}rewards/messages?reservationPermlink=${reservationPermlink || parent_permlink}`
+    : `${PRODUCTION_HOST}rewards/history?reservationPermlink=${reservationPermlink || parent_permlink}&guideNames=${guideName}`;
 
   await shareMessageBySubscribers(
     sendTo,
@@ -35,5 +35,6 @@ module.exports = async ({
     author,
     body,
     newCampaigns,
+    reservationPermlink,
   }];
 };
