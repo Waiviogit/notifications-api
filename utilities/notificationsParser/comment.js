@@ -6,7 +6,7 @@ const {
   blacklistModel,
   threadModel,
 } = require('models');
-const { RESERVATION_TITLES } = require('constants/campaignsData');
+const { RESERVATION_TITLES, CAMPAIGN_TYPES } = require('constants/campaignsData');
 const { shareMessageBySubscribers } = require('telegram/broadcasts');
 const { NOTIFICATIONS_TYPES, BELL_NOTIFICATIONS } = require('constants/notificationTypes');
 const {
@@ -52,8 +52,11 @@ module.exports = async (params) => {
     if (await checkUserNotifications(
       { user: _.find(authors, { name: params.author }), type: NOTIFICATIONS_TYPES.MY_POST },
     )) {
-      await shareMessageBySubscribers(params.author, `${params.author} published a post`,
-        `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
+      await shareMessageBySubscribers(
+        params.author,
+        `${params.author} published a post`,
+        `${PRODUCTION_HOST}@${params.author}/${params.permlink}`,
+      );
       notifications.push([params.author, notification]);
     }
     // comment
@@ -79,8 +82,11 @@ module.exports = async (params) => {
       };
       notifications.push([params.author, notification]);
 
-      await shareMessageBySubscribers(params.author, `${params.author} reply to ${params.parent_author}`,
-        `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
+      await shareMessageBySubscribers(
+        params.author,
+        `${params.author} reply to ${params.parent_author}`,
+        `${PRODUCTION_HOST}@${params.author}/${params.permlink}`,
+      );
     }
     if (thread) {
       const threadNotifications = await getThreadBellNotifications(thread);
@@ -96,8 +102,8 @@ module.exports = async (params) => {
       }
 
       const aboutThread = thread?.hashtags?.length
-          ? thread.hashtags.join(', ')
-          : (thread?.mentions ?? []).join(', ')
+        ? thread.hashtags.join(', ')
+        : (thread?.mentions ?? []).join(', ');
 
       for (const threadAuthorNotification of threadAuthorNotifications) {
         const [thUser, thNotification] = threadAuthorNotification;
@@ -135,6 +141,8 @@ module.exports = async (params) => {
       return notifications;
     }
     if (campaignV2) {
+      if (campaignV2.type !== CAMPAIGN_TYPES.REVIEWS) return notifications;
+
       const blacklisted = await checkBlacklist(
         { guideName: campaignV2.guideName, user: params.author },
       );
@@ -175,24 +183,28 @@ module.exports = async (params) => {
         ? `${params.author} has replied to ${params.parent_author} comment`
         : `${params.author} commented on ${params.parent_author} post`;
 
-      await shareMessageBySubscribers(params.parent_author,
+      await shareMessageBySubscribers(
+        params.parent_author,
         replyMessage,
-        `${PRODUCTION_HOST}@${params.parent_author}/${params.parent_permlink}`);
+        `${PRODUCTION_HOST}@${params.parent_author}/${params.parent_permlink}`,
+      );
     }
   }
 
   /** Find mentions */
   const pattern = /(@[a-z][\_\-.a-z\d]+[a-z\d])/gi;
   const content = `${params.title} ${params.body}`;
-  const mentions = _.without(_
-    .uniq(
-      (content.match(pattern) || [])
-        .join('@')
-        .toLowerCase()
-        .split('@'),
-    )
-    .filter((n) => n),
-  params.author)
+  const mentions = _.without(
+    _
+      .uniq(
+        (content.match(pattern) || [])
+          .join('@')
+          .toLowerCase()
+          .split('@'),
+      )
+      .filter((n) => n),
+    params.author,
+  )
     .slice(0, 9); // Handle maximum 10 mentions per post
 
   if (mentions.length) {
@@ -216,9 +228,11 @@ module.exports = async (params) => {
       };
       notifications.push([mention, notification]);
       const commentOrPost = isRootPost ? 'post' : 'comment';
-      await shareMessageBySubscribers(mention,
+      await shareMessageBySubscribers(
+        mention,
         `${params.author} mentioned ${mention} in a ${commentOrPost}`,
-        `${PRODUCTION_HOST}@${params.author}/${params.permlink}`);
+        `${PRODUCTION_HOST}@${params.author}/${params.permlink}`,
+      );
     }
   }
   return notifications;
