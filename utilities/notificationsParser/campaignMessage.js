@@ -26,7 +26,7 @@ module.exports = async ({
   return [sendTo, {
     timestamp: Math.round(new Date().valueOf() / 1000),
     type: NOTIFICATIONS_TYPES.CAMPAIGN_MESSAGE,
-    parent_permlink,
+    parent_permlink: reservationPermlink || parent_permlink,
     json_metadata,
     parent_author,
     campaignName,
@@ -35,6 +35,5 @@ module.exports = async ({
     author,
     body,
     newCampaigns,
-    reservationPermlink,
   }];
 };
