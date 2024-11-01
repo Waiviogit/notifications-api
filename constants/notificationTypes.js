@@ -102,6 +102,7 @@ exports.CALL_METHOD = {
   SET_NOTIFICATION: 'setNotification',
   UPDATE_INFO: 'updateInfo',
   WS_SET_SERVICE_NOTIFICATION: 'setServiceNotification',
+  CLIENT_ERROR: 'clientError',
 };
 
 exports.ENGINE_CHAIN_STATUSES = {

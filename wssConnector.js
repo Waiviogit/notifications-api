@@ -10,12 +10,24 @@ const { validateHiveAuthToken } = require('./utilities/helpers/hiveAuthHelper');
 const validators = require('./controllers/validators');
 const mainOperations = require('./utilities/notificationsParser/mainOperations');
 const serviceOperations = require('./utilities/notificationsParser/serviceOperations');
+const { checkAndIncrementDailyLimit } = require('./utilities/redis/redisTools');
+const { sendTelegramWarning } = require('./utilities/serviceNotifier/errorNotification');
 
 const sc2 = sdk.Initialize({
   app: 'waivio.app',
   baseURL: 'https://hivesigner.com',
 });
 const wss = new SocketServer({ server, path: '/notifications-api' });
+
+const sendClientError = async ({ userName, message }) => {
+  if (!userName || !message) return;
+  const key = `clientErrorNotification:${userName}`;
+  const dailyLimit = 10;
+  const { limitExceeded } = await checkAndIncrementDailyLimit({ key, limit: dailyLimit });
+  if (limitExceeded) return;
+
+  await sendTelegramWarning({ message: `Client error: ${message}` });
+};
 
 const sendLoginSuccess = (call, result, ws) => {
   console.log('Login success', result.name);
@@ -162,9 +174,7 @@ class WebSocket {
               });
             }
 
-            const setResult = await redisSetter.setSubscribe(
-              `${call.params[2]}:${+call.params[1]}`, call.params[0],
-            );
+            const setResult = await redisSetter.setSubscribe(`${call.params[2]}:${+call.params[1]}`, call.params[0]);
             if (setResult) {
               ws.name = call.params[0];
               WebSocket.sendMessage({
@@ -183,9 +193,7 @@ class WebSocket {
               return sendSomethingWrong(call, ws);
             }
             ws.name = call.params[0];
-            await redisSetter.setSubscribeSingle(
-              `${call.params[1]}`, call.params[0],
-            );
+            await redisSetter.setSubscribeSingle(`${call.params[1]}`, call.params[0]);
             break;
 
           case CALL_METHOD.SUBSCRIBE_TICKET:
@@ -197,6 +205,10 @@ class WebSocket {
 
             this.sendMessageToAllClient(this.wss.clients);
             break;
+          case CALL_METHOD.CLIENT_ERROR: {
+            await sendClientError({ userName: call.params[0], message: call.params[1] });
+            break;
+          }
         }
       });
       ws.on('error', () => console.log('Error on connection with peer'));
@@ -217,9 +229,7 @@ class WebSocket {
     if (key !== process.env.API_KEY) {
       return;
     }
-    const { params, validationError } = validators.validate(
-      payload, validators.notifications.operationsSchema,
-    );
+    const { params, validationError } = validators.validate(payload, validators.notifications.operationsSchema);
     if (validationError) return;
     await mainOperations.setNotifications({ params });
   }
@@ -228,9 +238,7 @@ class WebSocket {
     if (key !== process.env.API_KEY) {
       return;
     }
-    const { params, validationError } = validators.validate(
-      payload, validators.notifications.serviceNotifications,
-    );
+    const { params, validationError } = validators.validate(payload, validators.notifications.serviceNotifications);
     if (validationError) return;
     const notifications = await serviceOperations.getServiceNotifications(params);
     this.sendServiceNotification(notifications);

@@ -24,3 +24,5 @@ exports.getHashAll = async ({ key, client = lastBlockClient }) => {
     return { error };
   }
 };
+
+exports.get = async ({ key, client = redisNotifyClient }) => client.getAsync(key);
