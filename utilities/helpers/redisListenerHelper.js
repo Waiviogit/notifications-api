@@ -22,6 +22,7 @@ const messageDataListener = async (channel, msg) => {
       type,
       success,
       permlink: msg,
+      id: msg,
     }),
   );
   await redisSetter.deleteSubscribers(msg);
