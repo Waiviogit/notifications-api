@@ -23,6 +23,7 @@ const messageDataListener = async (channel, msg) => {
       success,
       permlink: msg,
       id: msg,
+      parser: 'main',
     }),
   );
   await redisSetter.deleteSubscribers(msg);
@@ -39,6 +40,7 @@ const campaignDataListener = async (channel, msg) => {
       type,
       success,
       permlink: msg,
+      parser: 'campaigns',
     }),
   );
   await redisSetter.deleteSubscribers(msg);
