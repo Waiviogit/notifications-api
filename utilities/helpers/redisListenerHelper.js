@@ -15,6 +15,7 @@ const messageDataListener = async (channel, msg) => {
   }
   const subscriber = await redisGetter.getSubscriber(msg);
   if (!subscriber) return;
+  await redisSetter.deleteSubscribers(msg);
   const success = !new RegExp('false').test(channel);
   await wssHelper.sendToSubscriber(
     subscriber,
@@ -26,13 +27,13 @@ const messageDataListener = async (channel, msg) => {
       parser: 'main',
     }),
   );
-  await redisSetter.deleteSubscribers(msg);
 };
 
 const campaignDataListener = async (channel, msg) => {
   const type = CAMPAIGN_LISTENER[channel];
   const subscriber = await redisGetter.getSubscriber(msg);
   if (!subscriber) return;
+  await redisSetter.deleteSubscribers(msg);
   const success = !new RegExp('false').test(channel);
   await wssHelper.sendToSubscriber(
     subscriber,
@@ -43,7 +44,6 @@ const campaignDataListener = async (channel, msg) => {
       parser: 'campaigns',
     }),
   );
-  await redisSetter.deleteSubscribers(msg);
 };
 
 exports.startRedisListener = () => {
