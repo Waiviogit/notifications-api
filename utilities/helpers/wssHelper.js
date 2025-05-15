@@ -31,12 +31,12 @@ const sendParsedBlockResponse = async (type, subscribers, msg) => {
 };
 
 const sendToSubscriber = async (subscriber, message) => {
-  for (const ws of wssConnection.wss.clients) {
+  wssConnection.wss.clients.forEach((ws) => {
     if (ws.name === subscriber) {
+      console.log(`send message to ${subscriber}`);
       wssConnection.constructor.sendMessage({ ws, message });
-      break;
     }
-  }
+  });
 };
 
 const sendToAllClients = (message) => {
