@@ -189,6 +189,7 @@ class WebSocket {
           case CALL_METHOD.SUBSCRIBE_CAMPAIGN_RELEASE:
           case CALL_METHOD.SUBSCRIBE_CAMPAIGN_DEACTIVATION:
           case CALL_METHOD.SUBSCRIBE_TRX_ID:
+          case CALL_METHOD.SUBSCRIBE_SUPPOSED_UPDATE:
             if (!call.params[0] || !call.params[1]) {
               return sendSomethingWrong(call, ws);
             }

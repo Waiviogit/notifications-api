@@ -15,6 +15,7 @@ exports.MAIN_PARSER_LISTENER = {
   last_vote_block_num: CALL_METHOD.SUBSCRIBE_BLOCK,
   last_block_num: CALL_METHOD.SUBSCRIBE_BLOCK,
   campaign_last_block_num: CALL_METHOD.SUBSCRIBE_BLOCK,
+  supposed_field_update: CALL_METHOD.SUBSCRIBE_SUPPOSED_UPDATE,
 };
 
 exports.CACHE_KEYS = {
