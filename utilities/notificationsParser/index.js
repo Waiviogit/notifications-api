@@ -34,4 +34,5 @@ module.exports = {
   serviceOperations: require('./serviceOperations'),
   objectUpdates: require('./objectUpdates'),
   groupIdUpdates: require('./groupIdUpdates'),
+  judgesNotification: require('./judgesNotification'),
 };

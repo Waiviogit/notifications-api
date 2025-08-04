@@ -176,18 +176,20 @@ exports.operationsSchema = Joi.object().keys({
     then: Joi.object().keys({
       guide: Joi.string().required(),
       users: Joi.array().items(String).required(),
-      author_permlink: Joi.string().required(),
-      object_name: Joi.string().required(),
+      author_permlink: Joi.string(),
+      object_name: Joi.string(),
       newCampaigns: Joi.boolean().default(false),
       reach: Joi.string(),
+      campaignWithUser: Joi.string(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.DEACTIVATE_CAMPAIGN,
     then: Joi.object().keys({
       guide: Joi.string().required(),
       users: Joi.array().items(String).required(),
-      author_permlink: Joi.string().required(),
-      object_name: Joi.string().required(),
+      author_permlink: Joi.string(),
+      object_name: Joi.string(),
+      campaignWithUser: Joi.string(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.CLAIM_REWARD,
@@ -228,10 +230,11 @@ exports.operationsSchema = Joi.object().keys({
     then: Joi.object().keys({
       guideName: Joi.string().required(),
       objectName: Joi.string().required(),
-      primaryObject: Joi.string().required(),
-      objectPermlink: Joi.string().required(),
+      primaryObject: Joi.string(),
+      objectPermlink: Joi.string(),
       users: Joi.array().items(String).required(),
       reach: Joi.string().required(),
+      campaignWithUser: Joi.string(),
     }),
   }, {
     is: NOTIFICATIONS_TYPES.WEB_SITE_BALANCE,
@@ -283,6 +286,16 @@ exports.operationsSchema = Joi.object().keys({
       initiator: Joi.string().required(),
       authorPermlink: Joi.string().required(),
       receivers: Joi.array().items(Joi.string()).min(1).required(),
+    }),
+  },
+  {
+    is: NOTIFICATIONS_TYPES.JUDGES_NOTIFICATION,
+    then: Joi.object().keys({
+      guideName: Joi.string().required(),
+      toJudge: Joi.string().required(),
+      author_permlink: Joi.string(),
+      object_name: Joi.string(),
+      campaignWithUser: Joi.string(),
     }),
   },
 
