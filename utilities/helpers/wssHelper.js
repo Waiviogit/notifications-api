@@ -33,7 +33,7 @@ const sendParsedBlockResponse = async (type, subscribers, msg) => {
 const sendToSubscriber = async (subscriber, message) => {
   const Ws = _.find(
     Array.from(wssConnection.wss.clients),
-    (client) => client.name === subscriber,
+    (client) => client.name === subscriber && client.readyState === 1,
   );
   if (Ws) {
     console.log(`send message to ${subscriber} (fallback) message: ${message}`);
