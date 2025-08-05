@@ -36,7 +36,7 @@ const sendToSubscriber = async (subscriber, message) => {
     (client) => client.name === subscriber,
   );
   if (Ws) {
-    console.log(`send message to ${subscriber} (fallback)`);
+    console.log(`send message to ${subscriber} (fallback) message: ${message}`);
     wssConnection.constructor.sendMessage({ ws: Ws, message });
   }
   // wssConnection.wss.clients.forEach((ws) => {
