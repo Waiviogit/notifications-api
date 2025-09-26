@@ -21,7 +21,7 @@ module.exports = async (params) => {
   await shareMessageBySubscribers(
     toJudge,
     ` ${toJudge} was added as a judge to ${objectName || campaignWithUser}.`,
-    `${PRODUCTION_HOST}rewards/all/${authorPermlink || campaignWithUser}`,
+    `${PRODUCTION_HOST}rewards/judges `,
   );
 
   return notifications;
