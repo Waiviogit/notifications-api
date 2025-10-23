@@ -5,7 +5,7 @@ const { notifiersModel } = require('../models');
   and send a notification to the telegram
  */
 exports.shareMessageBySubscribers = async (user, message, url) => {
-  if (process.env.NODE_ENV !== 'production') return;
+  if (!['staging', 'production'].includes(process.env.NODE_ENV)) return;
   const { WaivioBot } = require('./notificationsBot');
   const { notifiers } = await notifiersModel.find({ condition: { subscribedUsers: user } });
   if (!notifiers || !notifiers.length) return;
