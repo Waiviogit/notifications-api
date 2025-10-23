@@ -186,7 +186,7 @@ module.exports = async (params) => {
       await shareMessageBySubscribers(
         params.parent_author,
         replyMessage,
-        `${PRODUCTION_HOST}@${params.parent_author}/${params.parent_permlink}`,
+        `${PRODUCTION_HOST}@${params.author}/${params.permlink}`,
       );
     }
   }
