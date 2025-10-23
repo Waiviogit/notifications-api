@@ -8,7 +8,7 @@ const { sendSentryNotification } = require('utilities/helpers/sentryHelper');
 const swaggerDocument = require('./swagger/swagger.json');
 const authMiddleware = require('./middlewares/authMiddleware');
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
   require('./telegram/notificationsBot');
   console.log('BOT STARTED!');
 }
