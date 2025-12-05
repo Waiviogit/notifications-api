@@ -298,6 +298,14 @@ exports.operationsSchema = Joi.object().keys({
       campaignWithUser: Joi.string(),
     }),
   },
+  {
+    is: NOTIFICATIONS_TYPES.PAYABLE_NOTIFICATION,
+    then: Joi.object().keys({
+      guideName: Joi.string().required(),
+      userName: Joi.string().required(),
+      campaignName: Joi.string().required(),
+    }),
+  },
 
   ]).required(),
 }).options({ allowUnknown: true, stripUnknown: true });

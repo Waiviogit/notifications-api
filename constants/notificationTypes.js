@@ -65,6 +65,7 @@ exports.NOTIFICATIONS_TYPES = {
   GROUP_ID_UPDATES_REJECT: 'groupIdUpdatesReject',
   THREAD_AUTHOR_FOLLOWER: 'threadAuthorFollower',
   JUDGES_NOTIFICATION: 'judgesNotification',
+  PAYABLE_NOTIFICATION: 'payableNotification',
 };
 
 exports.SERVICE_NOTIFICATION_TYPES = {

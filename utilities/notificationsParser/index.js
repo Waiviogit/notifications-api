@@ -35,4 +35,5 @@ module.exports = {
   objectUpdates: require('./objectUpdates'),
   groupIdUpdates: require('./groupIdUpdates'),
   judgesNotification: require('./judgesNotification'),
+  payableNotification: require('./payableNotification'),
 };

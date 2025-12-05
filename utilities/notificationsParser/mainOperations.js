@@ -9,7 +9,7 @@ const {
   claimReward, comment, customJson, fillOrder, like, rejectUpdate,
   restaurantStatus, suspendedStatus, transfer, delegate, withdrawVesting, witnessVote,
   wobjectReward, webSiteBalance, powerDown, undelegate, delegateVestingShares, powerUp,
-  cancelUnstake, arbitrage, objectUpdates, groupIdUpdates, judgesNotification,
+  cancelUnstake, arbitrage, objectUpdates, groupIdUpdates, judgesNotification, payableNotification,
 } = require('.');
 
 const getNotifications = async (operation) => {
@@ -151,6 +151,9 @@ const getNotifications = async (operation) => {
       break;
     case NOTIFICATIONS_TYPES.JUDGES_NOTIFICATION:
       notifications = await judgesNotification(params);
+      break;
+    case NOTIFICATIONS_TYPES.PAYABLE_NOTIFICATION:
+      notifications = await payableNotification(params);
       break;
   }
   return notifications;
